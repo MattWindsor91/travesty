@@ -25,10 +25,11 @@
 open Base
 
 module type Generic_types = sig
-  (** [t] is the type of container to map over. *)
   type 'a t
-  (** [elt] is the type of element inside the container. *)
+  (** Placeholder for the container type. *)
+
   type 'a elt
+  (** Placeholder for the type of elements inside the container. *)
 end
 
 (** [Generic] is the parent interface of [S0] and [S1], abstracting

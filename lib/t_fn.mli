@@ -22,23 +22,25 @@
    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Function combinators and miscellanea *)
+(** Miscellaneous function combinators.
 
-(** [on lift f] lifts a binary function [f] using the lifter [lift].
-    It does the same thing as the `on` function from Haskell, but
-    with arguments flipped to make sense without infixing. *)
+    [T_fn] contains various higher-order functions in the style of
+    Core_kernel's [Fn] module.
+ *)
+
 val on
   :  ('a -> 'b)
   -> ('b -> 'b -> 'r)
   -> ('a -> 'a -> 'r)
-;;
+(** [on lift f] lifts a binary function [f] using the lifter [lift].
+    It does the same thing as the `on` function from Haskell, but
+    with arguments flipped to make sense without infixing. *)
 
-(** [conj f g] lifts [&&] over predicates [f] and [g].
-    It is short-circuiting: [g] is never called if [f] returns
-    false. *)
 val conj
   :  ('a -> bool)
   -> ('a -> bool)
   -> 'a
   -> bool
-;;
+(** [conj f g] lifts [&&] over predicates [f] and [g].
+    It is short-circuiting: [g] is never called if [f] returns
+    false. *)

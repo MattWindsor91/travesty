@@ -22,10 +22,5 @@
    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** [Traversable] provides signatures and functors for containers and
-    data structures that can be 'traversed': mapped across with a
-    monadic side-effect.
-
-    It resembles the Haskell Traversable typeclass. *)
-
+(** See {{!Traversable_intf}Traversable_intf}. *)
 include Traversable_intf.Traversable

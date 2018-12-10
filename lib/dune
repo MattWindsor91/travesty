@@ -1,7 +1,7 @@
 ;; -*- mode: lisp; -*-
 
 (library
- (name utils)
+ (name lib)
  (public_name travesty)
  (inline_tests)
  (preprocess
