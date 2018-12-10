@@ -1,6 +1,6 @@
 opam-version: "2.0"
 name: "travesty"
-version: "v0.1"
+version: "v0.1.1"
 synopsis: "Monadically traversable containers"
 description:
   "'Travesty' is a library for defining containers with monadic traversals,
@@ -9,7 +9,7 @@ description:
 maintainer: "Matt Windsor <m.windsor@imperial.ac.uk>"
 authors: "Matt Windsor <m.windsor@imperial.ac.uk>"
 license: "MIT"
-doc: "https://MattWindsor91.github.io/travesty/api"
+doc: "https://MattWindsor91.github.io/travesty/"
 homepage: "https://MattWindsor91.github.io/travesty"
 bug-reports: "https://github.com/MattWindsor91/travesty/issues"
 depends: [
