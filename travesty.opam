@@ -9,7 +9,8 @@ description:
 maintainer: "Matt Windsor <m.windsor@imperial.ac.uk>"
 authors: "Matt Windsor <m.windsor@imperial.ac.uk>"
 license: "MIT"
-homepage: "https://github.com/MattWindsor91/travesty"
+doc: "https://MattWindsor91.github.io/travesty/api"
+homepage: "https://MattWindsor91.github.io/travesty"
 bug-reports: "https://github.com/MattWindsor91/travesty/issues"
 depends: [
   "dune" {build}
