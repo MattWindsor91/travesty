@@ -3,6 +3,8 @@
 - Improve API documentation.
 - Move functors and concrete modules out of `Intf` files.
 - Generally rationalise the interface ready for a public release.
+- Add various container modules from `act`: `Singleton`, `T_list`, and
+  `T_option`.
 
 # v0.1.1 (2018-12-10)
 
