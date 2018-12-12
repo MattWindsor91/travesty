@@ -22,9 +22,43 @@
    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Haskell-style state transformers *)
+(** Haskell-style state transformers.
 
-(** The actual interface of [State_transform] is kept in
-   [State_transform_intf]; that way, both this and the implementation
-   can include the same module type declarations. *)
-include State_transform_intf.State_transform
+    State transformers generalise state monads.  They attach
+    onto an existing monad, and allow the stateful computations to
+    return and handle values inside that monad.  For example,
+    transforming [On_error] provides stateful, potentially-failing
+    computations.
+
+    We provide two signatures for state transformers: one corresponding to the
+    situation where the state type is fixed at the module level ({{!S}S}), and
+    one leaving the state type as part of the monad type ({{!S2}S2}).  Both
+    have corresponding {{!make}make functors}.
+
+    We also provide a functor {{!To_S}To_S} for fixing the state type in an
+    arity-2 monad after the fact.  *)
+
+open Base
+
+(** {2 Signatures} *)
+
+include module type of State_transform_intf
+(** {{!State_transform_intf}State_transform_intf} contains the signatures for
+    [State_transform]. *)
+
+(** {2 Manipulating state transformers} *)
+
+module To_S (M : S2) (B : Base.T) : S with type state = B.t
+                                       and type 'a t = ('a, B.t) M.t
+                                       and module Inner = M.Inner
+(** [To_S] flattens a [S2] into an [S] by fixing the state type to [B.t]. *)
+
+(** {2:make Functors for making state transformers} *)
+
+module Make (B : Basic) : S with type state = B.t and module Inner = B.Inner
+(** [Make] makes an {{!S}S} (state transformer with fixed state type) from a
+    {{!Basic}Basic}. *)
+
+module Make2 (M : Monad.S) : S2 with module Inner = M
+(** [Make2] makes an {{!S2}S2} (state transformer with variable state type) from
+    a [Monad.S]. *)

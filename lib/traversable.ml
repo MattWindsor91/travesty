@@ -30,7 +30,7 @@ include Traversable_intf
    implementing the derived operations (fold-map, fold, iterate) in an
    arity-generic way. *)
 module type Derived_ops_maker = sig
-  include Mappable.Generic_types
+  include Types_intf.Generic
 
   module On_monad :
     functor (M : Monad.S) ->
@@ -99,7 +99,7 @@ end = struct
 end
 
 module Make_container0 (I : Basic_container0)
-  : Container0 with type t := I.t and type elt := I.Elt.t = struct
+  : S0_container with type t := I.t and type elt := I.Elt.t = struct
   (* [I] needs a bit of rearrangement to fit in the derived operation
      functors. *)
   module Maker = struct
@@ -127,7 +127,7 @@ module Make_container0 (I : Basic_container0)
 end
 
 module Make_container1 (I : Basic_container1)
-  : Container1 with type 'a t := 'a I.t = struct
+  : S1_container with type 'a t := 'a I.t = struct
   (* [I] needs a bit of rearrangement to fit in the derived operation
      functors (as above, but slightly differently). *)
   module Maker = struct

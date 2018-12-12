@@ -22,7 +22,25 @@
    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** [Mappable] contains signatures and extensions for types that
-    can be (non-monadically) mapped over. *)
+(** Non-monadic mapping.
 
-include Mappable_intf.Mappable
+    [Mappable] contains signatures and extensions for types that
+    can be (non-monadically) mapped over.  It resembles the Haskell (but not
+    the OCaml!) notion of a functor, though we call the mapping function
+    [map].  *)
+
+(** {2 Signatures} *)
+
+include module type of Mappable_intf
+(** {{!Mappable_intf}Mappable_intf} contains the signatures for
+    [Mappable]. *)
+
+(** {2 Extending mappable containers}
+
+    We define several derived functions for mappable containers in
+    {{!Mappable_intf}Mappable_intf}---here, we define functors to generate
+    them. *)
+
+module Extend1 (S : S1_container) : Extensions1 with type 'a t := 'a S.t
+(** [Extend1] implements [Extensions1] for an arity-1 mappable
+     container. *)

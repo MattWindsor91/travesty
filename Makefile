@@ -11,6 +11,10 @@ clean:
 build:
 	dune build
 
+.PHONY: doc
+doc:
+	dune build @doc
+
 .PHONY: test
 test:
 	dune runtest --force

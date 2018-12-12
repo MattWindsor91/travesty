@@ -22,43 +22,29 @@
    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-open Core_kernel
+(** Generic type signatures.
 
-(** [Generic] contains the signature bits common to all state monad
+    [Types_intf] contains several signatures that contain types for
+    container-like structures.  These are intended for inclusion in
+    other signatures. *)
+
+(** [Generic] defines the types used in arity-generic container-like
     signatures. *)
 module type Generic = sig
-  include State_transform_intf.Generic_builders
-  (** State monads share the signatures of their builder functions with
-      state transformers... *)
+  type 'a t
+  (** Placeholder for the container type. *)
 
-  include State_transform_intf.Generic_runners
-    with type ('a, 's) t := ('a, 's) t
-     and type 'a final := 'a final
-     and type 's state := 's state
-  (** ...as well as their runner functions... *)
-
-  include State_transform_intf.Fix with type ('a, 's) t := ('a, 's) t
-  (** ...and fixed-point combinators. *)
+  type 'a elt
+  (** Placeholder for the type of elements inside the container. *)
 end
 
-(** [S] is the signature of state monads parametrised over their
-    value, but with a fixed state type. *)
-module type S = sig
-  type state
-  (** The fixed state type. *)
+(** [S0] defines the types used in arity-0 container-like signatures. *)
+module type S0 = sig
+  type t
+  (** The container type. *)
 
-  include Monad.S
-  include T_monad.Extensions with type 'a t := 'a t
-  include Generic with type ('a, 's) t := 'a t
-                   and type 's state := state
-                   and type 'a final := 'a
+  type elt
+  (** The element type. *)
 end
 
-(** [S2] is the signature of state monads parametrised over both
-    value and state types. *)
-module type S2 = sig
-  include Monad.S2
-  include Generic with type ('a, 's) t := ('a, 's) t
-                   and type 's state := 's
-                   and type 'a final := 'a
-end
+(** There is no [S1], as Core's [T2] has the same effect. *)
