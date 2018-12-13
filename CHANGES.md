@@ -9,6 +9,7 @@
 - Added `Traversable.Chain0`, a functor for combining two
   `S0_container` instances together for nested traversal.
 - Improve API documentation.
+- Added `T_fn.disj` to go with `T_fn.conj`.
 
 # v0.1.3 (2018-12-13)
 
