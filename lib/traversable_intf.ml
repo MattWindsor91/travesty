@@ -52,7 +52,21 @@ module type Generic = sig
 
   val map_m : 'a t -> f:('a elt -> 'b elt M.t) -> 'b t M.t
   (** [map_m c ~f] maps [f] over every [t] in [c], threading through
-     monadic state. *)
+      monadic state.
+
+      Example:
+
+      {[
+        (* T_list adds monadic traversals to a list;
+           With_errors (in S1_container) implements them on the On_error
+           monad. *)
+
+        let f x =
+          Or_error.(if 0 < x then error_string "negative!" else ok x)
+        in
+        T_list.With_errors.map_m integers ~f
+      ]}
+*)
 end
 
 (** {2:sigs Basic signatures} *)
