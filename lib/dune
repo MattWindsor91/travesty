@@ -1,7 +1,6 @@
 ;; -*- mode: lisp; -*-
 
 (library
- (name lib)
  (public_name travesty)
  (inline_tests)
  (preprocess

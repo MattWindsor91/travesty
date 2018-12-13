@@ -1,3 +1,9 @@
+# v0.1.3 (2018-12-13)
+
+- Fix incorrect module name (was `Lib`, not `Travesty`).
+- Restrict to OCaml v4.06+ (this was the case in the final v0.1.2
+  OPAM release, but not upstream).
+
 # v0.1.2 (2018-12-12)
 
 - Improve API documentation.
