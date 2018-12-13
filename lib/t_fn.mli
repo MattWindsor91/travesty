@@ -34,13 +34,49 @@ val on
   -> ('a -> 'a -> 'r)
 (** [on lift f] lifts a binary function [f] using the lifter [lift].
     It does the same thing as the `on` function from Haskell, but
-    with arguments flipped to make sense without infixing. *)
+    with arguments flipped to make sense without infixing.
 
-val conj
-  :  ('a -> bool)
-  -> ('a -> bool)
-  -> 'a
-  -> bool
+    Example:
+
+    {[
+      let ints = on fst    Int.equal (42, "banana") (42, "apple") in
+      let strs = on snd String.equal (42, "banana") (42, "apple") in
+      ints, strs (* --> true, false *)
+    ]}
+*)
+
+val conj : ('a -> bool) -> ('a -> bool) -> 'a -> bool
 (** [conj f g] lifts [&&] over predicates [f] and [g].
     It is short-circuiting: [g] is never called if [f] returns
-    false. *)
+    false.
+
+    Examples:
+
+    {[
+      let is_zero = Int.(conj is_non_negative is_non_positive)
+    ]}
+
+    {[
+      (* Short-circuiting: *)
+      conj (fun () -> true)  (fun () -> failwith "oops") (); (* --> exception *)
+      conj (fun () -> false) (fun () -> failwith "oops") (); (* --> false *)
+    ]}
+*)
+
+val disj : ('a -> bool) -> ('a -> bool) -> 'a -> bool
+(** [disj f g] lifts [||] over predicates [f] and [g].
+    It is short-circuiting: [g] is never called if [f] returns
+    true.
+
+    Examples:
+
+    {[
+      let is_not_zero = Int.(disj is_negative is_positive)
+    ]}
+
+    {[
+      (* Short-circuiting: *)
+      disj (fun () -> false) (fun () -> failwith "oops") (); (* --> exception *)
+      disj (fun () -> true)  (fun () -> failwith "oops") (); (* --> false *)
+    ]}
+*)

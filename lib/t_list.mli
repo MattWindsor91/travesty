@@ -42,12 +42,38 @@ val exclude : f:('a -> bool) -> 'a t -> 'a t
 (** [exclude ~f xs] is the inverse of [filter ~f xs]. *)
 
 val prefixes : 'a t -> 'a t t
-(** [prefixes xs] returns all non-empty prefixes of [xs]. *)
+(** [prefixes xs] returns all non-empty prefixes of [xs].
+
+    Examples:
+
+    {[
+      prefixes [1; 2; 3] (* [ [ 1 ]; [ 1; 2 ]; [ 1; 2; 3 ] *)
+    ]}
+*)
 
 val one : 'a list -> 'a Or_error.t
 (** [one xs] returns [Ok x] if [xs] is a list containing only [x],
-    and an error otherwise. *)
+    and an error otherwise.
+
+    Examples:
+
+    {[
+      one []     (* error -- not enough *)
+      one [1]    (* ok 1 *)
+      one [1; 2] (* error -- too many *)
+    ]}
+*)
 
 val two : 'a list -> ('a * 'a) Or_error.t
 (** [two xs] returns [Ok (x, y)] if [xs] is a list containing only [x]
-    and [y] in that order, and an error otherwise. *)
+    and [y] in that order, and an error otherwise.
+
+    Examples:
+
+    {[
+      two []        (* error -- not enough *)
+      two [1]       (* error -- not enough *)
+      two [1; 2]    (* ok (1, 2) *)
+      two [1; 2; 3] (* error -- too many *)
+    ]}
+*)

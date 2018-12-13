@@ -24,10 +24,37 @@
 
 let on lift f x y = f (lift x) (lift y)
 
+let%expect_test "on: equality" =
+  let ints = on fst Base.Int.equal (42, "banana") (42, "apple") in
+  let strs = on snd Base.String.equal (42, "banana") (42, "apple") in
+  Core_kernel.printf "(%b, %b)\n" ints strs;
+  [%expect {| (true, false) |}]
+;;
+
 let conj f g x = f x && g x
+
+let%expect_test "conj example" =
+  Core_kernel.printf
+    "%b\n" Base.Int.(conj is_non_negative is_non_positive 0);
+  [%expect {| true |}]
+;;
 
 let%expect_test "conj short-circuits" =
   Core_kernel.printf
     "%b\n" (conj (fun () -> false) (fun () -> failwith "oops") ());
   [%expect {| false |}]
+;;
+
+let disj f g x = f x || g x
+
+let%expect_test "disj example" =
+  Core_kernel.printf
+    "%b\n" Base.Int.(disj is_negative is_positive 0);
+  [%expect {| false |}]
+;;
+
+let%expect_test "disj short-circuits" =
+  Core_kernel.printf
+    "%b\n" (disj (fun () -> true) (fun () -> failwith "oops") ());
+  [%expect {| true |}]
 ;;
