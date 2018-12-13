@@ -213,9 +213,18 @@ end
 (** [S0_container] is a generic interface for arity-0 traversable
     containers. *)
 module type S0_container = sig
-  include Types_intf.S0
-  include Generic_container with type 'a t := t and type 'a elt := elt
-  include Mappable.S0_container with type t := t and type elt := elt
+  module Elt : Equal.S
+  (** Elements must have equality.  While this is an extra
+      restriction on top of the Core equivalent, it is required
+      by {{!Traversable.Make_container0}Make_container0}, and helps
+      us define chaining operations. *)
+
+  include Types_intf.S0 with type elt = Elt.t
+  (** We export [Elt.t] as [elt] for compatibility with Core-style
+      containers. *)
+
+  include Generic_container with type 'a t := t and type 'a elt := Elt.t
+  include Mappable.S0_container with type t := t and type elt := Elt.t
 end
 
 (** [S1_container] is a generic interface for arity-1 traversable
@@ -244,7 +253,7 @@ module type S1_container = sig
   include Mappable.Extensions1 with type 'a t := 'a t
 
   module With_elt (Elt : Equal.S)
-    : S0_container with type t := Elt.t t and type elt := Elt.t
+    : S0_container with type t := Elt.t t and module Elt := Elt
   (** [With_elt (Elt)] demotes this [S1_container] to a
       {{!S0_container}S0_container} by fixing the element type to that mentioned
       in [Elt]. *)

@@ -99,7 +99,7 @@ end = struct
 end
 
 module Make_container0 (I : Basic_container0)
-  : S0_container with type t := I.t and type elt := I.Elt.t = struct
+  : S0_container with module Elt := I.Elt and type t := I.t = struct
   (* [I] needs a bit of rearrangement to fit in the derived operation
      functors. *)
   module Maker = struct
@@ -107,6 +107,8 @@ module Make_container0 (I : Basic_container0)
     type 'a elt = I.Elt.t
     module On_monad = I.On_monad
   end
+
+  type elt = I.Elt.t
 
   (* We can implement the non-monadic map using the identity monad. *)
   module Ident = I.On_monad (Monad.Ident)
@@ -170,6 +172,22 @@ module Make_container1 (I : Basic_container1)
       module On_monad (M : Monad.S) = On_monad (M)
     end)
 end
+
+module Chain0
+    (Outer : S0_container)
+    (Inner : S0_container with type t = Outer.Elt.t)
+  : S0_container with module Elt := Inner.Elt
+                  and type t := Outer.t =
+  Make_container0 (struct
+    type t = Outer.t
+    module Elt = Inner.Elt
+
+    module On_monad (M : Monad.S) = struct
+      module OM = Outer.On_monad (M)
+      module IM = Inner.On_monad (M)
+      let map_m x ~f = OM.map_m x ~f:(IM.map_m ~f)
+    end
+  end)
 
 module Helpers (M : Monad.S) = struct
   type 'a traversal = 'a -> 'a M.t

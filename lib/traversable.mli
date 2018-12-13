@@ -50,7 +50,7 @@ include module type of Traversable_intf
     expose functors for building traversable Core-style containers. *)
 
 module Make_container0 (I : Basic_container0)
-  : S0_container with type t := I.t and type elt := I.Elt.t
+  : S0_container with module Elt := I.Elt and type t := I.t
 (** [Make_container0] makes a {{!S0_container}S0_container} from a
     {{!Basic_container0}Basic_container0}. *)
 
@@ -58,6 +58,14 @@ module Make_container1 (I : Basic_container1)
   : S1_container with type 'a t := 'a I.t
 (** [Make_container1] makes a {{!S1_container}S1_container} from a
     {{!Basic_container1}Basic_container1}. *)
+
+module Chain0
+    (Outer : S0_container)
+    (Inner : S0_container with type t = Outer.Elt.t)
+  : S0_container with module Elt := Inner.Elt and type t := Outer.t
+(** [Chain0] chains two {{!S0_container}S0_container} instances
+    together, traversing each element of the outer instance with the
+    inner instance. *)
 
 (** {2 Helper functions} *)
 
