@@ -78,7 +78,11 @@ let%expect_test "max_measure on empty list" =
   [%expect {| 1066 |}]
 ;;
 
-let exclude ~f xs = List.filter ~f:(Fn.non f) xs
+include Filter_mappable.Make1 (struct
+    type 'a t = 'a list
+    let filter_map = List.filter_map
+  end)
+;;
 
 let%expect_test "exclude -ve numbers" =
   let excluded = exclude ~f:Int.is_negative

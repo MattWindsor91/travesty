@@ -36,10 +36,11 @@ type 'a t = 'a list
 include Traversable.S1_container with type 'a t := 'a t
 (** Lists are traversable containers. *)
 
-(** {2 Miscellaneous extension functions} *)
+include Filter_mappable.S1 with type 'a t := 'a t
+(** We can also filter-map over them. *)
 
-val exclude : f:('a -> bool) -> 'a t -> 'a t
-(** [exclude ~f xs] is the inverse of [filter ~f xs]. *)
+
+(** {2 Miscellaneous extension functions} *)
 
 val prefixes : 'a t -> 'a t t
 (** [prefixes xs] returns all non-empty prefixes of [xs].
