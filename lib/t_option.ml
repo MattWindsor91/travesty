@@ -74,6 +74,24 @@ let%expect_test "map_m: returning identity on Some/Some" =
   [%expect {| ((hello)) |}]
 ;;
 
+include Filter_mappable.Make1 (struct
+    type 'a t = 'a option
+    let filter_map = Option.bind
+  end)
+;;
+
+let%expect_test "exclude: Some -> None" =
+  Sexp.output_hum Out_channel.stdout
+    [%sexp (exclude (Some 9) ~f:Int.is_positive : int option)];
+  [%expect {| () |}]
+;;
+
+let%expect_test "exclude: Some -> Some" =
+  Sexp.output_hum Out_channel.stdout
+    [%sexp (exclude (Some 0) ~f:Int.is_positive : int option)];
+  [%expect {| (0) |}]
+;;
+
 let first_some_of_thunks thunks =
   List.fold_until thunks
     ~init:()

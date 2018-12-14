@@ -36,6 +36,10 @@ type 'a t = 'a option
 include Traversable.S1_container with type 'a t := 'a t
 (** Options are traversable containers. *)
 
+include Filter_mappable.S1 with type 'a t := 'a t
+(** Options are also filter-mappable; filter-mapping effectively
+    behaves as monadic bind. *)
+
 (** {2 Miscellaneous extension functions} *)
 
 val first_some_of_thunks : (unit -> 'a t) list -> 'a t
