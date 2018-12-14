@@ -120,5 +120,19 @@ module type Extensions1 = sig
 
   val right_pad : padding:'a -> 'a list t -> 'a list t
   (** [right_pad ~padding xs] pads every list in xs with [padding],
-      ensuring all lists have equal length. *)
+      ensuring all lists have equal length.
+
+      Example:
+
+      {[
+        right_pad ~padding:6
+          [ [0; 8; 0; 0]    (* [ [ 0; 8; 0; 0; 6 ] *)
+          ; [9; 9; 9]       (* ; [ 9; 9; 9; 6; 6 ] *)
+          ; [8; 8; 1; 9; 9] (* ; [ 8; 8; 1; 9; 9 ] *)
+          ; [9; 1; 1; 9]    (* ; [ 9; 1; 1; 9; 6 ] *)
+          ; [7; 2; 5]       (* ; [ 7; 2; 5; 6; 6 ] *)
+          ; [3]             (* ; [ 3; 6; 6; 6; 6 ] *)
+          ]                 (* ] *)
+      ]}
+  *)
 end
