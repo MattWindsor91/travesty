@@ -45,6 +45,23 @@ module type Extensions = sig
   val unless_m : bool -> f:(unit -> unit t) -> unit t
   (** [unless_m predicate ~f] returns [f ()] when [predicate] is
      false, and [return ()] otherwise. *)
+
+  val tee_m : 'a -> f:('a -> unit t) -> 'a t
+  (** [tee_m val ~f] executes [f val] for its monadic action, then returns
+      [val].
+
+      Example:
+
+      {[
+        let fail_if_negative x =
+          T_on_error.when_m (Int.is_negative x)
+            ~f:(fun () -> Or_error.error_string "value is negative!")
+        in
+        Or_error.(
+          42 |> T_on_error.tee_m ~f:fail_if_negative >>| (fun x -> x * x)
+        ) (* Ok (1764) *)
+      ]}
+      *)
 end
 
 module Extend (M : Monad.S) : Extensions with type 'a t := 'a M.t

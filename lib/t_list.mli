@@ -24,8 +24,8 @@
 
 (** List extensions.
 
-    This module contains various extensions for Core's [List] module, including
-    adding monadic traversal. *)
+    This module contains various extensions for Core's [List] module,
+   including adding monadic traversal. *)
 
 open Base
 

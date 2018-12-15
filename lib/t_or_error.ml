@@ -22,28 +22,33 @@
    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-open Base
+open Core_kernel
 
-module type Extensions = sig
-  type 'a t
+include Or_error
 
-  val when_m   : bool -> f:(unit -> unit t) -> unit t
-  val unless_m : bool -> f:(unit -> unit t) -> unit t
-  val tee_m    : 'a   -> f:('a   -> unit t) -> 'a   t
-end
+module On_ok = Traversable.Make_container1 (struct
+    type nonrec 'a t = 'a t
 
-module Extend (M : Monad.S) : Extensions with type 'a t := 'a M.t = struct
-  let when_m predicate ~f = if predicate then f () else M.return ()
-  let unless_m predicate ~f = if predicate then M.return () else f ()
-  let tee_m x ~f = M.(f x >>| Fn.const x)
-end
-
-module S2_to_S (M : Monad.S2) (B : T)
-  : Monad.S with type 'a t := ('a, B.t) M.t =
-  Monad.Make (struct
-    type 'a t = ('a, B.t) M.t
-    let map = `Custom M.map
-    let return = M.return
-    let bind = M.bind
+    module On_monad (M : Monad.S) = struct
+      let map_m err ~f = match err with
+        | Result.Ok v -> M.(f v >>| Or_error.return)
+        | Result.Error x -> M.return (Result.Error x)
+    end
   end)
+
+include T_monad.Extend (Or_error)
+
+let%expect_test "tee_m example" =
+  let fail_if_negative x =
+    when_m (Int.is_negative x)
+      ~f:(fun () -> Or_error.error_string "value is negative!")
+  in
+  Sexp.output_hum Stdio.stdout
+    [%sexp (
+      Or_error.(
+        42 |> tee_m ~f:fail_if_negative >>| (fun x -> x * x)
+      )
+      : int t
+    )];
+  [%expect {| (Ok 1764) |}]
 ;;

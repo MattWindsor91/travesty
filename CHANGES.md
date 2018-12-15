@@ -15,6 +15,8 @@
   `S0_container` instances together for nested traversal.
 - Add `T_fn.disj` to go with `T_fn.conj`.
 - Add `Filter_mappable`, which generalises `List.filter_map`.
+- Add `tee_m` to monad extensions.
+- Add `T_or_error`: monad extensions for `Core.Or_error`.
 
 ## Other
 

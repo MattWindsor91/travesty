@@ -22,28 +22,20 @@
    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-open Base
+(** Or-error monad extensions.
 
-module type Extensions = sig
-  type 'a t
+    This module contains various extensions for Core's [Or_error] monad,
+    including monadic traversal over successful values and
+    {{!T_monad} extensions. *)
 
-  val when_m   : bool -> f:(unit -> unit t) -> unit t
-  val unless_m : bool -> f:(unit -> unit t) -> unit t
-  val tee_m    : 'a   -> f:('a   -> unit t) -> 'a   t
-end
+open Core_kernel
 
-module Extend (M : Monad.S) : Extensions with type 'a t := 'a M.t = struct
-  let when_m predicate ~f = if predicate then f () else M.return ()
-  let unless_m predicate ~f = if predicate then M.return () else f ()
-  let tee_m x ~f = M.(f x >>| Fn.const x)
-end
+include module type of Or_error
+(** This module re-exports all of the original mpnad. *)
 
-module S2_to_S (M : Monad.S2) (B : T)
-  : Monad.S with type 'a t := ('a, B.t) M.t =
-  Monad.Make (struct
-    type 'a t = ('a, B.t) M.t
-    let map = `Custom M.map
-    let return = M.return
-    let bind = M.bind
-  end)
-;;
+module On_ok : Traversable.S1_container with type 'a t := 'a t
+(** [On_ok] treats an [Or_error] value as a traversable container,
+    containing one value when it is [Ok] and none otherwise. *)
+
+include T_monad.Extensions with type 'a t := 'a t
+(** Monad extensions for [Or_error]. *)
