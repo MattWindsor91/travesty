@@ -31,8 +31,8 @@ module On_ok = Traversable.Make_container1 (struct
 
     module On_monad (M : Monad.S) = struct
       let map_m err ~f = match err with
-        | Result.Ok v -> M.(f v >>| Or_error.return)
-        | Result.Error x -> M.return (Result.Error x)
+        | Ok v -> M.(f v >>| Or_error.return)
+        | Error x -> M.return (Error x)
     end
   end)
 
