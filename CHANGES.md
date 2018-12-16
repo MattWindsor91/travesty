@@ -15,8 +15,13 @@
   `S0_container` instances together for nested traversal.
 - Add `T_fn.disj` to go with `T_fn.conj`.
 - Add `Filter_mappable`, which generalises `List.filter_map`.
-- Add `tee_m` to monad extensions.
+- Add `tee_m` to monad extensions.  This is a small wrapper over
+  `f x >>| fun () -> x` that allows unit-returning monadic
+  side-effects to be treated as part of a monad pipeline.
 - Add `T_or_error`: monad extensions for `Core.Or_error`.
+- `one` and `two` are now implemented on `T_container`, not just
+  `T_list`.  The errors are slightly less precise, but otherwise
+  nothing has changed.
 
 ## Other
 

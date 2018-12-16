@@ -28,6 +28,8 @@ module type Extensions1 = sig
   type 'a t
   val max_measure : measure:('a -> int) -> ?default:int -> 'a t -> int
   val any : predicates:('a -> bool) t -> 'a -> bool
+  val one : 'a t -> 'a Or_error.t
+  val two : 'a t -> ('a * 'a) Or_error.t
 end
 
 module Extend1 (C : Container.S1)
@@ -37,6 +39,45 @@ module Extend1 (C : Container.S1)
     xs
     |> C.max_elt ~compare:(T_fn.on measure Int.compare)
     |> Option.value_map ~f:measure ~default:default
+
+  let too_few_error () =
+    Or_error.error_string "Expected one element; got none"
+  ;;
+
+  let too_many_error _a =
+    Container.Continue_or_stop.Stop
+      ( Or_error.error_string
+          "Expected one element; got too many"
+      )
+  ;;
+
+  let one xs =
+    C.fold_until xs
+      ~init:`None_yet
+      ~f:(function
+          | `None_yet -> fun x -> Continue (`One x)
+          | `One _    -> too_many_error
+
+        )
+      ~finish:(function
+          | `None_yet -> too_few_error ()
+          | `One x    -> Ok x
+        )
+  ;;
+
+  let two xs =
+    C.fold_until xs
+      ~init:`None_yet
+      ~f:(function
+          | `None_yet -> fun x -> Continue (`One x)
+          | `One x    -> fun y -> Continue (`Two (x, y))
+          | `Two _    -> too_many_error
+        )
+      ~finish:(function
+          | `None_yet | `One _ -> too_few_error ()
+          | `Two (x, y)        -> Ok (x, y)
+        )
+  ;;
 
   let any ~predicates x = C.exists predicates ~f:(fun p -> p x)
 end

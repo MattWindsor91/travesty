@@ -139,17 +139,10 @@ let%expect_test "prefixes: sample list" =
               ((1) (1 2) (1 2 3)) |}]
 ;;
 
-let one = function
-  | [x] -> Ok x
-  | xs ->
-    Or_error.error_s
-      [%message "Expected one element" ~got:(List.length xs : int)]
-;;
-
 let%expect_test "one: zero elements" =
   Sexp.output_hum Out_channel.stdout
     [%sexp (one [] : int Or_error.t)];
-  [%expect {| (Error ("Expected one element" (got 0))) |}]
+  [%expect {| (Error "Expected one element; got none") |}]
 ;;
 
 let%expect_test "one: one element" =
@@ -161,20 +154,13 @@ let%expect_test "one: one element" =
 let%expect_test "one: two elements" =
   Sexp.output_hum Out_channel.stdout
     [%sexp (one [ 27; 53 ] : int Or_error.t)];
-  [%expect {| (Error ("Expected one element" (got 2))) |}]
-;;
-
-let two = function
-  | [x; y] -> Ok (x, y)
-  | xs ->
-    Or_error.error_s
-      [%message "Expected two elements" ~got:(List.length xs : int)]
+  [%expect {| (Error "Expected one element; got too many") |}]
 ;;
 
 let%expect_test "one: one element" =
   Sexp.output_hum Out_channel.stdout
     [%sexp (two [ 42 ] : (int * int) Or_error.t)];
-  [%expect {| (Error ("Expected two elements" (got 1))) |}]
+  [%expect {| (Error "Expected one element; got none") |}]
 ;;
 
 let%expect_test "one: two elements" =
@@ -186,7 +172,7 @@ let%expect_test "one: two elements" =
 let%expect_test "one: three elements" =
   Sexp.output_hum Out_channel.stdout
     [%sexp (two [ "veni"; "vidi"; "vici" ] : (string * string) Or_error.t)];
-  [%expect {| (Error ("Expected two elements" (got 3))) |}]
+  [%expect {| (Error "Expected one element; got too many") |}]
 ;;
 
 let%expect_test "chained list/list traversal example" =
@@ -208,5 +194,5 @@ let%expect_test "chained list/list traversal example" =
       ; [3]
       ]
   in Sexp.output_hum Out_channel.stdout [%sexp (result : int list) ];
-  [%expect {| |}]
+  [%expect {| (0 1 1 8 9 9 9 8 8 1 9 9 9 1 1 9 7 2 5 3) |}]
 ;;
