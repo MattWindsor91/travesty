@@ -32,7 +32,7 @@
     We provide two signatures for state monads: one corresponding to
     the situation where the state type is fixed at the module level
     ({{!S}S}), and one leaving the state type as part of the monad type
-    ({{!S2}S2}).  The former has a corresponding {{!Make}make functor}; 
+    ({{!S2}S2}).  The former has a corresponding {{!Make}make functor};
     the latter has a {{!M2}direct implementation}.
 
     We also provide a functor {{!To_S}To_S} for fixing the state type in an
@@ -61,7 +61,7 @@ module To_S (M : S2) (B : Base.T) : S with type state = B.t
 
 (** {2 Implementations and functors} *)
 
-module Make : functor (B : Base.T) -> S with type state = B.t
+module Make (B : Base.T) : S with type state = B.t
 (** [Make] makes an [S] (state monad with fixed state type) from a single state
     type. *)
 

@@ -253,7 +253,7 @@ module type S1_container = sig
   include Mappable.Extensions1 with type 'a t := 'a t
 
   module With_elt (Elt : Equal.S)
-    : S0_container with type t := Elt.t t and module Elt := Elt
+    : S0_container with type t := Elt.t t and module Elt = Elt
   (** [With_elt (Elt)] demotes this [S1_container] to a
       {{!S0_container}S0_container} by fixing the element type to that mentioned
       in [Elt]. *)

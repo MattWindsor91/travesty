@@ -188,3 +188,25 @@ let%expect_test "one: three elements" =
     [%sexp (two [ "veni"; "vidi"; "vici" ] : (string * string) Or_error.t)];
   [%expect {| (Error ("Expected two elements" (got 3))) |}]
 ;;
+
+let%expect_test "chained list/list traversal example" =
+  let module C = Traversable.Chain0
+      (struct
+        type t = int list list
+        include With_elt (struct type t = int list [@@deriving eq] end)
+      end)
+      (With_elt (struct type t = int [@@deriving eq] end))
+  in
+  let result =
+    C.to_list
+      [ [0; 1; 1; 8]
+      ; [9; 9; 9]
+      ; [8; 8; 1; 9; 9]
+      ; [9; 1; 1]
+      ; [9]
+      ; [7; 2; 5]
+      ; [3]
+      ]
+  in Sexp.output_hum Out_channel.stdout [%sexp (result : int list) ];
+  [%expect {| |}]
+;;
