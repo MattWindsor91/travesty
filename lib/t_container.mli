@@ -47,8 +47,22 @@ module type Extensions1 = sig
   (** [any ~predicates x] tests [x] against [predicates] until one
       returns [true], or all return [false]. *)
 
+  val at_most_one : 'a t -> 'a option Or_error.t
+  (** [at_most_one xs] returns [Ok None] if [xs] is empty;
+      [Ok Some(x)] if it contains only [x];
+      and an error otherwise.
+
+      Examples:
+
+      {[
+        T_list.at_most_one []     (* ok None *)
+               at_most_one [1]    (* ok (Some 1) *)
+               at_most_one [1; 2] (* error -- too many *)
+      ]}
+  *)
+
   val one : 'a t -> 'a Or_error.t
-  (** [one xs] returns [Ok x] if [xs] is a list containing only [x],
+  (** [one xs] returns [Ok x] if [xs] contains only [x],
       and an error otherwise.
 
       Examples:

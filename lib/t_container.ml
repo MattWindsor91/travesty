@@ -28,6 +28,7 @@ module type Extensions1 = sig
   type 'a t
   val max_measure : measure:('a -> int) -> ?default:int -> 'a t -> int
   val any : predicates:('a -> bool) t -> 'a -> bool
+  val at_most_one : 'a t -> 'a option Or_error.t
   val one : 'a t -> 'a Or_error.t
   val two : 'a t -> ('a * 'a) Or_error.t
 end
@@ -41,7 +42,7 @@ module Extend1 (C : Container.S1)
     |> Option.value_map ~f:measure ~default:default
 
   let too_few_error () =
-    Or_error.error_string "Expected one element; got none"
+    Error.of_string "Expected one element; got none"
   ;;
 
   let too_many_error _a =
@@ -51,7 +52,7 @@ module Extend1 (C : Container.S1)
       )
   ;;
 
-  let one xs =
+  let at_most_one xs =
     C.fold_until xs
       ~init:`None_yet
       ~f:(function
@@ -60,9 +61,17 @@ module Extend1 (C : Container.S1)
 
         )
       ~finish:(function
-          | `None_yet -> too_few_error ()
-          | `One x    -> Ok x
+          | `None_yet -> Ok None
+          | `One x    -> Ok (Some x)
         )
+  ;;
+
+  let one xs =
+    Or_error.(
+      xs
+      |> at_most_one
+      >>= Result.of_option ~error:(too_few_error ())
+    )
   ;;
 
   let two xs =
@@ -74,7 +83,7 @@ module Extend1 (C : Container.S1)
           | `Two _    -> too_many_error
         )
       ~finish:(function
-          | `None_yet | `One _ -> too_few_error ()
+          | `None_yet | `One _ -> Result.Error (too_few_error ())
           | `Two (x, y)        -> Ok (x, y)
         )
   ;;

@@ -139,6 +139,24 @@ let%expect_test "prefixes: sample list" =
               ((1) (1 2) (1 2 3)) |}]
 ;;
 
+let%expect_test "at_most_one: zero elements" =
+  Sexp.output_hum Out_channel.stdout
+    [%sexp (at_most_one [] : int option Or_error.t)];
+  [%expect {| (Ok ()) |}]
+;;
+
+let%expect_test "at_most_one: one element" =
+  Sexp.output_hum Out_channel.stdout
+    [%sexp (at_most_one [ 42 ] : int option Or_error.t)];
+  [%expect {| (Ok (42)) |}]
+;;
+
+let%expect_test "at_most_one: two elements" =
+  Sexp.output_hum Out_channel.stdout
+    [%sexp (one [ 27; 53 ] : int Or_error.t)];
+  [%expect {| (Error "Expected one element; got too many") |}]
+;;
+
 let%expect_test "one: zero elements" =
   Sexp.output_hum Out_channel.stdout
     [%sexp (one [] : int Or_error.t)];
