@@ -38,6 +38,11 @@ module Extend (M : Monad.S) : Extensions with type 'a t := 'a M.t = struct
   let tee_m x ~f = M.(f x >>| Fn.const x)
 end
 
+module To_mappable (M : Monad.S)
+  : Mappable.S1 with type 'a t := 'a M.t = struct
+  let map = M.map
+end
+
 module S2_to_S (M : Monad.S2) (B : T)
   : Monad.S with type 'a t := ('a, B.t) M.t =
   Monad.Make (struct

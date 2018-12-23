@@ -25,7 +25,7 @@
 (** Signatures for filter-mapping.
 
     The {{!basics}basic signatures}, which contain only
-   {{!filter_map}filter_map, are {{!Basic0}Basic0} and
+   {{!filter_map}filter_map}, are {{!Basic0}Basic0} and
    {{!Basic1}Basic1}.  We also define {{!sigs}richer signatures},
    {{!S0}S0} and {{!S1}S1}, for which we provide functors in
    {{!Filter_mappable}the main interface}. *)
@@ -57,8 +57,8 @@ open Base
 module type Generic_basic = sig
   include Types_intf.Generic
   (** [Generic_basic] refers to the container type as ['a t], and the
-     element type as ['a elt]; substitute [t]/[elt] (arity-0) or ['a
-     t]/['a] (arity-1) accordingly below. *)
+     element type as ['a elt]; substitute [t]/[elt] (arity-0) or
+      ['a t]/['a] (arity-1) accordingly below. *)
 
   val filter_map : 'a t -> f:('a elt -> 'b elt option) -> 'b t
   (** [filter_map c ~f] maps [f] over every [t] in [c], discarding any

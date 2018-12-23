@@ -8,3 +8,5 @@
  (libraries
   core_kernel))
 
+(documentation
+ (mld_files ("index")))

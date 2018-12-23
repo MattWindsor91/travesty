@@ -72,5 +72,12 @@ module Extend (M : Monad.S) : Extensions with type 'a t := 'a M.t
 
 module S2_to_S (M : Monad.S2) (B : T)
   : Monad.S with type 'a t := ('a, B.t) M.t
-(** [S2_to_S] demotes an arity-2 monad [M] to an arity-1 one,
+(** Demotes an arity-2 monad [M] to an arity-1 one,
     fixing its second type to be [B.t]. *)
+
+module To_mappable (M : Monad.S) : Mappable.S1 with type 'a t := 'a M.t
+(** Converts a monad to a mappable over [M.map].
+
+    At time of writing, [M] satisfies {{!Mappable.S1}the mappable interface}
+    in its own right; this functor mainly exists as insurance in case the
+    two interfaces ever diverge. *)
