@@ -23,6 +23,8 @@
   `T_list`.  The errors are slightly less precise, but otherwise
   nothing has changed.
 - Add `at_most_one` to complement `one` and `two`.
+- Add `Monad.To_mappable`, which makes sure that monads can be
+  converted to mappables.
 
 ## Other
 
