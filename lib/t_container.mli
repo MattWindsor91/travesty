@@ -43,9 +43,33 @@ module type Extensions1 = sig
       If [xs] is empty, return [default] if given, and [0]
       otherwise. *)
 
-  val any : predicates:('a -> bool) t -> 'a -> bool
-  (** [any ~predicates x] tests [x] against [predicates] until one
-      returns [true], or all return [false]. *)
+  (** {3 Containers of predicates}
+
+      The following functions concern containers of predicates
+      (functions of type ['a -> bool]). *)
+
+  val any : 'a -> predicates:('a -> bool) t -> bool
+  (** [any x ~predicates] tests [x] against [predicates] until one
+      returns [true], in which case it returns [true];
+      or all return [false], in which case it returns [false]. *)
+
+  val all : 'a -> predicates:('a -> bool) t -> bool
+  (** [any x ~predicates] tests [x] against [predicates] until one
+      returns [false], in which case it returns [false];
+      or all return [true], in which case it returns [true]. *)
+
+  val none : 'a -> predicates:('a -> bool) t -> bool
+  (** [none x ~predicates] is the same as [any x] with all predicates
+     in [predicates] negated.  It tests [x] against [predicates] until
+     one returns [true], in which case it returns [false]; or all
+     return [false], in which case it returns [true]. *)
+
+  (** {3 Testing for a specific number of elements}
+
+      The following functions help in checking whether a container
+      has a particular, commonly-required number of elements (zero or
+      one, one, two, and so on).
+  *)
 
   val at_most_one : 'a t -> 'a option Or_error.t
   (** [at_most_one xs] returns [Ok None] if [xs] is empty;

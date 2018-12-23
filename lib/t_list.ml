@@ -139,6 +139,51 @@ let%expect_test "prefixes: sample list" =
               ((1) (1 2) (1 2 3)) |}]
 ;;
 
+let%expect_test "any: short-circuit on true" =
+  Sexp.output_hum Out_channel.stdout
+    [%sexp (any ~predicates:[Int.is_positive; fun _ -> assert false] 10 : bool)];
+  [%expect {| true |}]
+
+let%expect_test "any: positive result" =
+  Sexp.output_hum Out_channel.stdout
+    [%sexp (any ~predicates:[Int.is_positive; Int.is_negative] 10 : bool)];
+  [%expect {| true |}]
+
+let%expect_test "any: negative result" =
+  Sexp.output_hum Out_channel.stdout
+    [%sexp (any ~predicates:[Int.is_positive; Int.is_negative] 0 : bool)];
+  [%expect {| false |}]
+
+let%expect_test "all: short-circuit on false" =
+  Sexp.output_hum Out_channel.stdout
+    [%sexp (all ~predicates:[Int.is_negative; fun _ -> assert false] 10 : bool)];
+  [%expect {| false |}]
+
+let%expect_test "all: positive result" =
+  Sexp.output_hum Out_channel.stdout
+    [%sexp (all ~predicates:[Int.is_positive; Int.is_non_negative] 10 : bool)];
+  [%expect {| true |}]
+
+let%expect_test "all: negative result" =
+  Sexp.output_hum Out_channel.stdout
+    [%sexp (all ~predicates:[Int.is_positive; Int.is_negative] 10 : bool)];
+  [%expect {| false |}]
+
+let%expect_test "none: short-circuit on true" =
+  Sexp.output_hum Out_channel.stdout
+    [%sexp (none ~predicates:[Int.is_positive; fun _ -> assert false] 10 : bool)];
+  [%expect {| false |}]
+
+let%expect_test "none: positive result" =
+  Sexp.output_hum Out_channel.stdout
+    [%sexp (none ~predicates:[Int.is_positive; Int.is_negative] 0 : bool)];
+  [%expect {| true |}]
+
+let%expect_test "none: negative result" =
+  Sexp.output_hum Out_channel.stdout
+    [%sexp (none ~predicates:[Int.is_positive; Int.is_negative] 10 : bool)];
+  [%expect {| false |}]
+
 let%expect_test "at_most_one: zero elements" =
   Sexp.output_hum Out_channel.stdout
     [%sexp (at_most_one [] : int option Or_error.t)];

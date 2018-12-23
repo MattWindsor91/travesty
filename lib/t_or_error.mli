@@ -26,12 +26,12 @@
 
     This module contains various extensions for Core's [Or_error] monad,
     including monadic traversal over successful values and
-    {{!T_monad} extensions. *)
+    {{!T_monad}T_monad} extensions. *)
 
 open Core_kernel
 
 include module type of Or_error
-(** This module re-exports all of the original mpnad. *)
+(** This module re-exports all of the original monad. *)
 
 module On_ok : Traversable.S1_container with type 'a t := 'a t
 (** [On_ok] treats an [Or_error] value as a traversable container,

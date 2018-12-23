@@ -27,7 +27,9 @@ open Core_kernel
 module type Extensions1 = sig
   type 'a t
   val max_measure : measure:('a -> int) -> ?default:int -> 'a t -> int
-  val any : predicates:('a -> bool) t -> 'a -> bool
+  val any : 'a -> predicates:('a -> bool) t -> bool
+  val all : 'a -> predicates:('a -> bool) t -> bool
+  val none : 'a -> predicates:('a -> bool) t -> bool
   val at_most_one : 'a t -> 'a option Or_error.t
   val one : 'a t -> 'a Or_error.t
   val two : 'a t -> ('a * 'a) Or_error.t
@@ -88,5 +90,7 @@ module Extend1 (C : Container.S1)
         )
   ;;
 
-  let any ~predicates x = C.exists predicates ~f:(fun p -> p x)
+  let any  x ~predicates = C.exists predicates ~f:(fun p -> p x)
+  let all  x ~predicates = C.for_all predicates ~f:(fun p -> p x)
+  let none x ~predicates = not (any x ~predicates)
 end

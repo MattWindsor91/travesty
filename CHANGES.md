@@ -8,6 +8,8 @@
   `Basic_container0`, and shouldn't break any code using
   `Make_container0`, but may cause custom-built modules to fail to
   type-check.
+- `T_container.any`'s arguments have swapped order, to be more
+  in line with `Core` idioms.
 
 ## New features
 
@@ -22,9 +24,10 @@
 - `one` and `two` are now implemented on `T_container`, not just
   `T_list`.  The errors are slightly less precise, but otherwise
   nothing has changed.
-- Add `at_most_one` to complement `one` and `two`.
+- Add `T_container.at_most_one` to complement `one` and `two`.
 - Add `Monad.To_mappable`, which makes sure that monads can be
   converted to mappables.
+- Add `T_container.all` and `none`, to complement `any`.
 
 ## Other
 
