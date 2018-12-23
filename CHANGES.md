@@ -1,4 +1,4 @@
-# Scheduled for next release
+# v0.2.0 (2018-12-23)
 
 ## Breaking changes
 
