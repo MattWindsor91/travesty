@@ -24,15 +24,62 @@
 
 open Core_kernel
 
-module type Extensions1 = sig
-  type 'a t
-  val max_measure : measure:('a -> int) -> ?default:int -> 'a t -> int
-  val any : 'a -> predicates:('a -> bool) t -> bool
-  val all : 'a -> predicates:('a -> bool) t -> bool
-  val none : 'a -> predicates:('a -> bool) t -> bool
-  val at_most_one : 'a t -> 'a option Or_error.t
-  val one : 'a t -> 'a Or_error.t
-  val two : 'a t -> ('a * 'a) Or_error.t
+include T_container_intf
+
+let too_few_error () =
+  Error.of_string "Expected one element; got none"
+;;
+
+let too_many_error _a =
+  Container.Continue_or_stop.Stop
+    ( Or_error.error_string
+        "Expected one element; got too many"
+    )
+;;
+
+module Extend0 (C : Container.S0)
+  : Extensions0 with type t := C.t and type elt := C.elt = struct
+
+  let max_measure ~measure ?(default=0) xs =
+    xs
+    |> C.max_elt ~compare:(T_fn.on measure Int.compare)
+    |> Option.value_map ~f:measure ~default:default
+
+  let at_most_one xs =
+    C.fold_until xs
+      ~init:`None_yet
+      ~f:(function
+          | `None_yet -> fun x -> Continue (`One x)
+          | `One _    -> too_many_error
+
+        )
+      ~finish:(function
+          | `None_yet -> Ok None
+          | `One x    -> Ok (Some x)
+        )
+  ;;
+
+  let one xs =
+    Or_error.(
+      xs
+      |> at_most_one
+      >>= Result.of_option ~error:(too_few_error ())
+    )
+  ;;
+
+  let two xs =
+    C.fold_until xs
+      ~init:`None_yet
+      ~f:(function
+          | `None_yet -> fun x -> Continue (`One x)
+          | `One x    -> fun y -> Continue (`Two (x, y))
+          | `Two _    -> too_many_error
+        )
+      ~finish:(function
+          | `None_yet | `One _ -> Result.Error (too_few_error ())
+          | `Two (x, y)        -> Ok (x, y)
+        )
+  ;;
 end
 
 module Extend1 (C : Container.S1)

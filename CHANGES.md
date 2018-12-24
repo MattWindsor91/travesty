@@ -1,3 +1,10 @@
+# Proposed v0.2.1 (TBA)
+
+# New features
+
+- Add `T_container.Extensions0` and `Extend0`, which generalise most
+  of `Extensions1`/`Extend1` to arity-0 containers.
+
 # v0.2.0 (2018-12-23)
 
 ## Breaking changes
