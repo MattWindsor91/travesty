@@ -4,6 +4,9 @@
 
 - Add `T_container.Extensions0` and `Extend0`, which generalise most
   of `Extensions1`/`Extend1` to arity-0 containers.
+- Generalise `T_container`'s predicate extensions (`any`/`all`/`none`)
+  over arity-0 containers, provided that their `elt` is `x -> bool` for
+  some `x`.
 
 # v0.2.0 (2018-12-23)
 

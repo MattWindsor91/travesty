@@ -42,6 +42,13 @@ module Extend0 (C : Container.S0) : Extensions0 with type t := C.t
 (** [Extend0] creates {{!T_container_intf.Extensions0}extensions} for a
     [Container.S0]. *)
 
+module Extend0_predicate
+    (P : T) (C : Container.S0 with type elt = (P.t -> bool))
+  : Extensions0_predicate with type t := C.t and type item := P.t
+  (** [Extend0_predicate] creates
+     {{!T_container_intf.Extensions0_predicate}extensions} for a
+     [Container.S0] over predicates. *)
+
 module Extend1 (C : Container.S1) : Extensions1 with type 'a t := 'a C.t
 (** [Extend1] creates {{!T_container_intf.Extensions1}extensions} for a
     [Container.S1]. *)

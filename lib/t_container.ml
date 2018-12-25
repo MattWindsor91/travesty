@@ -82,6 +82,15 @@ module Extend0 (C : Container.S0)
   ;;
 end
 
+module Extend0_predicate (P : T) (C : Container.S0 with type elt = (P.t -> bool))
+  : Extensions0_predicate with type t := C.t and type item := P.t = struct
+  include Extend0 (C)
+
+  let any  x ~predicates = C.exists predicates ~f:(fun p -> p x)
+  let all  x ~predicates = C.for_all predicates ~f:(fun p -> p x)
+  let none x ~predicates = not (any x ~predicates)
+end
+
 module Extend1 (C : Container.S1)
   : Extensions1 with type 'a t := 'a C.t = struct
 

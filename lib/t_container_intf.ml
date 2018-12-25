@@ -100,6 +100,35 @@ module type Generic_extensions = sig
       otherwise. *)
 end
 
+(** {3 Containers of predicates}
+
+    The following functions concern containers of predicates
+    (functions of type ['a -> bool]). *)
+
+module type Generic_predicate_extensions = sig
+  type 'a t
+  (** The generic type of predicate containers. *)
+
+  type 'a item
+  (** The generic type of predicate target elements. *)
+
+  val any : 'a item -> predicates:'a t -> bool
+  (** [any x ~predicates] tests [x] against [predicates] until one
+      returns [true], in which case it returns [true];
+      or all return [false], in which case it returns [false]. *)
+
+  val all : 'a item -> predicates:'a t -> bool
+  (** [any x ~predicates] tests [x] against [predicates] until one
+      returns [false], in which case it returns [false];
+      or all return [true], in which case it returns [true]. *)
+
+  val none : 'a item -> predicates:'a t -> bool
+  (** [none x ~predicates] is the same as [any x] with all predicates
+     in [predicates] negated.  It tests [x] against [predicates] until
+     one returns [true], in which case it returns [false]; or all
+     return [false], in which case it returns [true]. *)
+end
+
 (** {2:a0 Arity-0 container extensions}
 
     These extensions target arity-0 containers (implementations of
@@ -113,6 +142,21 @@ end
 module type Extensions0 = sig
   include Types_intf.S0
   include Generic_extensions with type 'a t := t and type 'a elt := elt
+end
+
+(** Extensions for a [Container.S0] whose elements are predicates.
+
+    This signature extends and constrains {{!Extensions0}Extensions0}. *)
+module type Extensions0_predicate = sig
+  type t
+  (** Type of predicate containers *)
+
+  type item
+  (** Type of items being tested against predicates. *)
+
+  include Extensions0 with type t := t and type elt := (item -> bool)
+  include Generic_predicate_extensions with type 'a t := t
+                                        and type 'a item := item
 end
 
 (** {2:a1 Arity-1 container extensions}
@@ -132,24 +176,8 @@ module type Extensions1 = sig
 
   include Generic_extensions with type 'a t := 'a t and type 'a elt := 'a
 
-  (** {3 Containers of predicates}
-
-      The following functions concern containers of predicates
-      (functions of type ['a -> bool]). *)
-
-  val any : 'a -> predicates:('a -> bool) t -> bool
-  (** [any x ~predicates] tests [x] against [predicates] until one
-      returns [true], in which case it returns [true];
-      or all return [false], in which case it returns [false]. *)
-
-  val all : 'a -> predicates:('a -> bool) t -> bool
-  (** [any x ~predicates] tests [x] against [predicates] until one
-      returns [false], in which case it returns [false];
-      or all return [true], in which case it returns [true]. *)
-
-  val none : 'a -> predicates:('a -> bool) t -> bool
-  (** [none x ~predicates] is the same as [any x] with all predicates
-     in [predicates] negated.  It tests [x] against [predicates] until
-     one returns [true], in which case it returns [false]; or all
-     return [false], in which case it returns [true]. *)
+  include Generic_predicate_extensions with type 'a t := ('a -> bool) t
+                                        and type 'a item := 'a
+  (** Predicate extensions are available on all arity-1 containers,
+      provided that we fix the element type parameter to ['a -> bool]. *)
 end
