@@ -8,6 +8,7 @@
   over arity-0 containers, provided that their `elt` is `x -> bool` for
   some `x`.
 - Add `Bi_mappable`, an implementation of bifunctors.
+- Add `T_alist`, an extended form of `List.Assoc`.
 
 # v0.2.0 (2018-12-23)
 

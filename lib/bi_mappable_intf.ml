@@ -292,3 +292,9 @@ module type Extensions2 = sig
      and type right := Right.t
   (** Fixes the right type of this container to [Right.t]. *)
 end
+
+(** Combines {{!S2}S2} and {{!Extensions2}Extensions2}. *)
+module type S2_with_extensions = sig
+  include S2
+  include Extensions2 with type ('l, 'r) t := ('l, 'r) t
+end

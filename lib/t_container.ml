@@ -98,6 +98,7 @@ module Extend1 (C : Container.S1)
     xs
     |> C.max_elt ~compare:(T_fn.on measure Int.compare)
     |> Option.value_map ~f:measure ~default:default
+  ;;
 
   let too_few_error () =
     Error.of_string "Expected one element; got none"
