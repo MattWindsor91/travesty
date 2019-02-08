@@ -7,6 +7,7 @@
 - Generalise `T_container`'s predicate extensions (`any`/`all`/`none`)
   over arity-0 containers, provided that their `elt` is `x -> bool` for
   some `x`.
+- Add `Bi_mappable`, an implementation of bifunctors.
 
 # v0.2.0 (2018-12-23)
 
