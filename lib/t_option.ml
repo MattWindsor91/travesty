@@ -26,8 +26,8 @@ open Core_kernel
 
 type 'a t = 'a option
 
-include Traversable.Make_container1 (struct
-    type 'a t = 'a option
+include Traversable.Extend_container1 (struct
+    include Option
 
     module On_monad (M : Monad.S) = struct
       let map_m xo ~f =

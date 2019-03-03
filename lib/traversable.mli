@@ -49,15 +49,32 @@ include module type of Traversable_intf
     all of the key functionality for a Core-style container.  As such, we
     expose functors for building traversable Core-style containers. *)
 
-module Make_container0 (I : Basic_container0)
+module Make_container0 (I : Basic0)
   : S0_container with module Elt = I.Elt and type t := I.t
 (** [Make_container0] makes a {{!S0_container}S0_container} from a
-    {{!Basic_container0}Basic_container0}. *)
+    {{!Basic0}Basic0}. *)
 
-module Make_container1 (I : Basic_container1)
+module Make_container1 (I : Basic1)
   : S1_container with type 'a t := 'a I.t
 (** [Make_container1] makes a {{!S1_container}S1_container} from a
+    {{!Basic1}Basic1}. *)
+
+
+(** {2 Extending existing containers}
+
+    We also expose functors for adding monadic traversals to existing
+    containers. *)
+
+module Extend_container0 (I : Basic_container0)
+  : S0_container with module Elt = I.Elt and type t := I.t
+(** [Extend_container0] makes a {{!S0_container}S0_container} from a
+    {{!Basic_container0}Basic_container0}. *)
+
+module Extend_container1 (I : Basic_container1)
+  : S1_container with type 'a t := 'a I.t
+(** [Extend_container1] makes a {{!S1_container}S1_container} from a
     {{!Basic_container1}Basic_container1}. *)
+
 
 (** {2 Chaining together traversables} *)
 

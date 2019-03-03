@@ -1,4 +1,13 @@
-# Proposed v0.2.1 (TBA)
+# v0.3.0 (2019-03-03)
+
+## Breaking changes
+
+- Now targeting v0.12 of Jane Street's upstream libraries.  This release of
+  travesty no longer supports v0.11.
+- Traversable signature names have changed: `Basic_container0` is now `Basic0`,
+  and `Basic_container1` is now `Basic1`.  The original names are now used for
+  stronger interfaces that include implementations of `Container.S*`; see
+  'new features' below for information.
 
 # New features
 
@@ -9,6 +18,20 @@
   some `x`.
 - Add `Bi_mappable`, an implementation of bifunctors.
 - Add `T_alist`, an extended form of `List.Assoc`.
+- Split the Traversable container functors into two kinds: the
+  `Make_container*` functors now take `Basic*` signatures (but are otherwise
+  the same---they still produce their own `Container.S*` instances); the new
+  `Extend_container*` functors take the now-stronger `Basic_container*`
+  signatures, which include custom implementations of `Container.S*`, and
+  use those instead.  The idea is that `Make` is for building new containers
+  from traversals, and `Extend` is for adding traversals to existing containers.
+
+## Other
+
+- `T_list` and `T_option` now use `Extend_container1` internally: the upshot
+  of this is that they re-use the existing Core implementations of container
+  operations where possible, rather than (slowly) re-building them using
+  `fold_m`.
 
 # v0.2.0 (2018-12-23)
 

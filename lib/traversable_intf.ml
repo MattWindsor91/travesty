@@ -89,13 +89,28 @@ module type S1 = sig
   include Generic with type 'a t := 'a t and type 'a elt := 'a
 end
 
-(** {2:build Building containers from traversable types} *)
+(** {2:build Building containers from traversable types}
+
+    Any traversable type can be turned into a Core container, using the monadic
+    fold to implement all container functionality.  The unified signature of a
+    Core container with monadic traversals is {{!S0_container}S0_container}
+    (arity 0) or {{!S1_container}S1_container} (arity 1).
+
+    To satisfy these signatures for new types, implement {{!Basic0}Basic0} or
+    {{!Basic1}Basic1}, and use the corresponding [Make] functor in
+    {{!Traversable}Traversable}.
+
+    For types that are _already_ Core containers, or types where custom
+    implementation of the Core signature are desired, implement
+    {{!Basic_container0}Basic_container0} or
+    {{!Basic_container1}Basic_container1}, and use the [Extend] functors. *)
 
 (** {3 Input signatures} *)
 
-(** [Basic_container0] is the signature that traversable containers of
-   arity 0 must implement. *)
-module type Basic_container0 = sig
+(** [Basic0] is the minimal signature that traversable containers of
+   arity 0 must implement to be extensible into
+   {{!S0_container}S0_container}. *)
+module type Basic0 = sig
   type t
   (** The container type. *)
 
@@ -108,14 +123,31 @@ module type Basic_container0 = sig
   (** [On_monad] implements monadic traversal for a given monad [M]. *)
 end
 
-(** [Basic_container1] is the signature that traversable containers
-   of arity 1 must implement. *)
-module type Basic_container1 = sig
+(** [Basic_container0] combines {{!Basic0}Basic0} and the Core container
+   signature, and is used for extending existing containers into
+   {{!S0_container}S0_container}s. *)
+module type Basic_container0 = sig
+  include Basic0
+  include Container.S0 with type t := t and type elt := Elt.t
+end
+
+(** [Basic1] is the minimal signature that traversable containers of arity 1
+    must implement to be extensible into. *)
+module type Basic1 = sig
   type 'a t
   (** The container type. *)
 
   module On_monad (M : Monad.S) : S1 with type 'a t := 'a t and module M := M
   (** [On_monad] implements monadic traversal for a given monad. *)
+end
+
+
+(** [Basic_container1] combines {{!Basic1}Basic1} and the Core container
+   signature, and is used for extending existing containers into
+   {{!S1_container}S1_container}s. *)
+module type Basic_container1 = sig
+  include Basic1
+  include Container.S1 with type 'a t := 'a t
 end
 
 (** {3 Helper signatures} *)

@@ -32,8 +32,7 @@ include Traversable_intf
 module type Derived_ops_maker = sig
   include Types_intf.Generic
 
-  module On_monad :
-    functor (M : Monad.S) ->
+  module On_monad (M : Monad.S) :
       (Generic with module M := M
                 and type 'a t := 'a t
                 and type 'a elt := 'a elt)
@@ -87,26 +86,46 @@ module Derived_ops_gen (I : Derived_ops_maker) = struct
   let mapi     = D.mapi_m
 end
 
+(* Basic-signature modules need a bit of rearrangement to fit in the derived
+   operation functors. *)
+
+(** Internal functor for rearranging arity-0 basics to derived-ops makers. *)
+module Basic0_to_derived_ops_maker (I : Basic0)
+  : Derived_ops_maker with type 'a t = I.t
+                       and type 'a elt = I.Elt.t
+                       and module On_monad = I.On_monad = struct
+  type 'a t = I.t
+  type 'a elt = I.Elt.t
+  module On_monad = I.On_monad
+end
+
+(** Internal functor for rearranging arity-1 basics to derived-ops makers. *)
+module Basic1_to_derived_ops_maker (I : Basic1)
+  : Derived_ops_maker with type 'a t = 'a I.t
+                       and type 'a elt = 'a
+                       and module On_monad = I.On_monad = struct
+  type 'a t = 'a I.t
+  type 'a elt = 'a
+  module On_monad = I.On_monad
+end
+
+
 (** [Container_gen] is an internal functor used to generate the input
    to [Container] functors in an arity-generic way. *)
 module Container_gen (I : Derived_ops_maker) : sig
   val fold : 'a I.t -> init:'acc -> f:('acc -> 'a I.elt -> 'acc) -> 'acc
   val iter : [> `Custom of 'a I.t -> f:('a I.elt -> unit) -> unit ]
+  val length : [> `Define_using_fold ]
 end = struct
   module D = Derived_ops_monadic_gen (I) (Monad.Ident)
   let fold = D.fold_m
   let iter = `Custom D.iter_m
+  let length = `Define_using_fold
 end
 
-module Make_container0 (I : Basic_container0)
+module Extend_container0 (I : Basic_container0)
   : S0_container with module Elt = I.Elt and type t := I.t = struct
-  (* [I] needs a bit of rearrangement to fit in the derived operation
-     functors. *)
-  module Maker = struct
-    type 'a t = I.t
-    type 'a elt = I.Elt.t
-    module On_monad = I.On_monad
-  end
+  module Maker = Basic0_to_derived_ops_maker (I)
 
   module Elt = I.Elt
   type elt = I.Elt.t
@@ -116,10 +135,7 @@ module Make_container0 (I : Basic_container0)
   let map = Ident.map_m
   include Derived_ops_gen (Maker)
 
-  include Container.Make0 (struct
-      include I
-      include Container_gen (Maker)
-    end)
+  include (I : Container.S0 with type t = I.t and type elt := elt)
 
   module On_monad (MS : Monad.S) = struct
     include I.On_monad (MS)
@@ -129,24 +145,28 @@ module Make_container0 (I : Basic_container0)
   module With_errors = On_monad (Or_error)
 end
 
-module Make_container1 (I : Basic_container1)
+module Make_container0 (I : Basic0)
+  : S0_container with module Elt = I.Elt and type t := I.t =
+  Extend_container0 (struct
+    include I
+    include Container.Make0 (struct
+      include I
+      include Container_gen (Basic0_to_derived_ops_maker (I))
+    end)
+  end)
+;;
+
+module Extend_container1 (I : Basic_container1)
   : S1_container with type 'a t := 'a I.t = struct
   (* [I] needs a bit of rearrangement to fit in the derived operation
      functors (as above, but slightly differently). *)
-  module Maker = struct
-    type 'a t = 'a I.t
-    type 'a elt = 'a
-    module On_monad = I.On_monad
-  end
+  module Maker = Basic1_to_derived_ops_maker (I)
 
   module Ident = I.On_monad (Monad.Ident)
   let map = Ident.map_m
   include Derived_ops_gen (Maker)
 
-  module C = Container.Make (struct
-      type nonrec 'a t = 'a I.t
-      include Container_gen (Maker)
-    end)
+  module C = (I : Container.S1 with type 'a t := 'a I.t)
   include C
   include Mappable.Extend1 (struct
       type nonrec 'a t = 'a I.t
@@ -173,6 +193,17 @@ module Make_container1 (I : Basic_container1)
       module On_monad (M : Monad.S) = On_monad (M)
     end)
 end
+
+module Make_container1 (I : Basic1)
+  : S1_container with type 'a t := 'a I.t =
+  Extend_container1 (struct
+    include I
+    include Container.Make (struct
+      type nonrec 'a t = 'a I.t
+      include Container_gen (Basic1_to_derived_ops_maker (I))
+    end)
+  end)
+;;
 
 module Chain0
     (Outer : S0_container)
