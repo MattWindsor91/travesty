@@ -28,6 +28,8 @@
     container-like structures.  These are intended for inclusion in
     other signatures. *)
 
+(** {2 Mappable and traversable} *)
+
 (** [Generic] defines the types used in arity-generic container-like
     signatures. *)
 module type Generic = sig
@@ -47,4 +49,50 @@ module type S0 = sig
   (** The element type. *)
 end
 
-(** There is no [S1], as Core's [T2] has the same effect. *)
+(** There is no [S1], as Core's [T1] has the same effect. *)
+
+(** {2 Bi-mappable and bi-traversable} *)
+
+(** Types used in generic signatures over bi-operations. *)
+module type Bi_generic = sig
+  type ('l, 'r) t
+  (** Generic container type. *)
+
+  type 'l left
+  (** Generic left type. *)
+
+  type 'r right
+  (** Generic right type. *)
+end
+
+(** Types used in leftwards arity-1 bi-operation signatures. *)
+module type Bi_left = sig
+  type 'l t
+  (** Partially fixed type of containers. *)
+
+  type right
+  (** Fixed type of right elements. *)
+end
+
+(** Types used in rightwards arity-1 bi-operation signatures. *)
+module type Bi_right = sig
+  type 'r t
+  (** Partially fixed type of containers. *)
+
+  type left
+  (** Fixed type of left elements. *)
+end
+
+(** Types used in arity-0 bi-operation signatures. *)
+module type Bi0 = sig
+  type t
+  (** Fixed type of containers. *)
+
+  type left
+  (** Fixed type of left elements. *)
+
+  type right
+  (** Fixed type of right elements. *)
+end
+
+(** There is no [Bi2], as Core's [T2] has the same effect. *)

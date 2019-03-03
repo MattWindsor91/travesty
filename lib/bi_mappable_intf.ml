@@ -26,62 +26,14 @@
 
     The {{!sigs}main signatures} are {{!S2}S2}, {{!S1_left}S1_left},
     {{!S1_right}S1_right}, and {{!S0}S0}
-    We also define {{!containers}container} forms of the above, which include
-    the Core container interfaces, and {{!Extensions2}Extensions2}, a
-    signature of extensions to arity-2 bi-mappable containers. *)
+    We also define various {{!exts}extension signatures}. *)
 
 open Base
-
-(** {2:types Type signatures}
-
-    These mainly exist to eliminate redundancy in the other signatures. *)
-
-(** Types used in generic signatures. *)
-module type Generic_types = sig
-  type ('l, 'r) t
-  (** Generic container type. *)
-
-  type 'l left
-  (** Generic left type. *)
-
-  type 'r right
-  (** Generic right type. *)
-end
-
-(** Types used in leftwards arity-1 signatures. *)
-module type Types_left = sig
-  type 'l t
-  (** Partially fixed type of containers. *)
-
-  type right
-  (** Fixed type of right elements. *)
-end
-
-(** Types used in rightwards arity-1 signatures. *)
-module type Types_right = sig
-  type 'r t
-  (** Partially fixed type of containers. *)
-
-  type left
-  (** Fixed type of left elements. *)
-end
-
-(** Types used in arity-0 signatures. *)
-module type Types0 = sig
-  type t
-  (** Fixed type of containers. *)
-
-  type left
-  (** Fixed type of left elements. *)
-
-  type right
-  (** Fixed type of right elements. *)
-end
 
 (** {2:generic The generic signature}
 
     As with {{!Traversable}Traversable}, we define the signature of
-    mappable structures in an arity-generic way, then specialise
+    bi-mappable structures in an arity-generic way, then specialise
     it for the various arities.
 *)
 
@@ -100,7 +52,7 @@ end
       ['l left] becomes ['l], and ['r right] becomes ['r].
 *)
 module type Generic = sig
-  include Generic_types
+  include Types_intf.Bi_generic
 
   val bi_map
     :  ('l1, 'r1) t
@@ -126,7 +78,7 @@ end
     Functions mapped over arity-0 types must preserve both element
    types. *)
 module type S0 = sig
-  include Types0
+  include Types_intf.Bi0
 
   include Generic with type ('l, 'r) t := t
                    and type 'l left := left
@@ -139,7 +91,7 @@ end
     Functions mapped over arity-1 types may change the left element
    type, but not the right. *)
 module type S1_left = sig
-  include Types_left
+  include Types_intf.Bi_left
 
   include Generic with type ('l, 'r) t := 'l t
                    and type 'l left := 'l
@@ -152,7 +104,7 @@ end
     Functions mapped over arity-1 types may change the right element
    type, but not the left. *)
 module type S1_right = sig
-  include Types_right
+  include Types_intf.Bi_right
 
   include Generic with type ('l, 'r) t := 'r t
                    and type 'l left := left
@@ -170,7 +122,7 @@ module type S2 = sig
                    and type 'r right := 'r
 end
 
-(** {2 Extensions}
+(** {2:exts Extensions}
 
     The signatures below describe various functions we can derive from
     bi-mappable types and mappable containers.  To apply them to existing
@@ -179,7 +131,7 @@ end
 (** [Generic_extensions] describes extensions that apply to all arities,
     in an arity-neutral manner. *)
 module type Generic_extensions = sig
-  include Generic_types
+  include Types_intf.Bi_generic
 
   val map_left : ('l1, 'r) t -> f:('l1 left -> 'l2 left) -> ('l2, 'r) t
   (** [map_left c ~f] maps [f] over the left type of [c] only. *)
@@ -190,7 +142,8 @@ end
 
 (** Extensions for arity-0 bi-mappable containers. *)
 module type Extensions0 = sig
-  include Types0
+  include Types_intf.Bi0
+
   include Generic_extensions
     with type ('l, 'r) t := t
      and type 'l left := left
@@ -207,17 +160,18 @@ end
    {{!Extensions0}Extensions0}. *)
 module type S0_with_extensions = sig
   include S0
+
   include Extensions0
     with type t := t
      and type left := left
      and type right := right
 end
 
-
 (** Extensions for arity-1 bi-mappable containers with a floating left
    type. *)
 module type Extensions1_left = sig
-  include Types_left
+  include Types_intf.Bi_left
+
   include Generic_extensions
     with type ('l, 'r) t := 'l t
      and type 'l left := 'l
@@ -245,7 +199,8 @@ end
 (** Extensions for arity-1 bi-mappable containers with a floating right
    type. *)
 module type Extensions1_right = sig
-  include Types_right
+  include Types_intf.Bi_right
+
   include Generic_extensions
     with type ('l, 'r) t := 'r t
      and type 'l left := left
@@ -273,8 +228,7 @@ end
 (** [Extensions2] describes various extensions of arity-1 mappable
    containers. *)
 module type Extensions2 = sig
-  type ('l, 'r) t
-  (** Type of containers. *)
+  include T2
 
   include Generic_extensions with type ('l, 'r) t := ('l, 'r) t
                               and type 'l left := 'l
