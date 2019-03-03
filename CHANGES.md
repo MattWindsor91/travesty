@@ -4,6 +4,7 @@
 
 - Now targeting v0.12 of Jane Street's upstream libraries.  This release of
   travesty no longer supports v0.11.
+- As a result, travesty no longer supports OCaml 4.06; please use 4.07+.
 - Traversable signature names have changed: `Basic_container0` is now `Basic0`,
   and `Basic_container1` is now `Basic1`.  The original names are now used for
   stronger interfaces that include implementations of `Container.S*`; see
