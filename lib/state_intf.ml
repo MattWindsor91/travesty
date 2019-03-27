@@ -27,38 +27,46 @@ open Core_kernel
 (** [Generic] contains the signature bits common to all state monad
     signatures. *)
 module type Generic = sig
-  include State_transform_intf.Generic_builders
   (** State monads share the signatures of their builder functions with
       state transformers... *)
+  include State_transform_intf.Generic_builders
 
-  include State_transform_intf.Generic_runners
+  (** ...as well as their runner functions... *)
+  include
+    State_transform_intf.Generic_runners
     with type ('a, 's) t := ('a, 's) t
      and type 'a final := 'a final
      and type 's state := 's state
-  (** ...as well as their runner functions... *)
 
-  include State_transform_intf.Fix with type ('a, 's) t := ('a, 's) t
   (** ...and fixed-point combinators. *)
+  include State_transform_intf.Fix with type ('a, 's) t := ('a, 's) t
 end
 
 (** [S] is the signature of state monads parametrised over their
     value, but with a fixed state type. *)
 module type S = sig
-  type state
   (** The fixed state type. *)
+  type state
 
   include Monad.S
+
   include T_monad.Extensions with type 'a t := 'a t
-  include Generic with type ('a, 's) t := 'a t
-                   and type 's state := state
-                   and type 'a final := 'a
+
+  include
+    Generic
+    with type ('a, 's) t := 'a t
+     and type 's state := state
+     and type 'a final := 'a
 end
 
 (** [S2] is the signature of state monads parametrised over both
     value and state types. *)
 module type S2 = sig
   include Monad.S2
-  include Generic with type ('a, 's) t := ('a, 's) t
-                   and type 's state := 's
-                   and type 'a final := 'a
+
+  include
+    Generic
+    with type ('a, 's) t := ('a, 's) t
+     and type 's state := 's
+     and type 'a final := 'a
 end

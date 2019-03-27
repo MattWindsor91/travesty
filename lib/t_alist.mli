@@ -26,7 +26,6 @@
 
 include module type of Core_kernel.List.Assoc
 
-include Bi_mappable.S2_with_extensions
-  with type ('l, 'r) t := ('l, 'r) t
 (** Associative lists are bi-mappable; the left type is keys,
     and the right type is values. *)
+include Bi_mappable.S2_with_extensions with type ('l, 'r) t := ('l, 'r) t

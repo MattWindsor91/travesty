@@ -54,8 +54,8 @@ open Base
 module type Generic = sig
   include Types_intf.Bi_generic
 
-  val bi_map
-    :  ('l1, 'r1) t
+  val bi_map :
+       ('l1, 'r1) t
     -> left:('l1 left -> 'l2 left)
     -> right:('r1 right -> 'r2 right)
     -> ('l2, 'r2) t
@@ -80,9 +80,11 @@ end
 module type S0 = sig
   include Types_intf.Bi0
 
-  include Generic with type ('l, 'r) t := t
-                   and type 'l left := left
-                   and type 'r right := right
+  include
+    Generic
+    with type ('l, 'r) t := t
+     and type 'l left := left
+     and type 'r right := right
 end
 
 (** [S1_left] is the signature of an arity-1 bi-mappable type with a
@@ -93,9 +95,11 @@ end
 module type S1_left = sig
   include Types_intf.Bi_left
 
-  include Generic with type ('l, 'r) t := 'l t
-                   and type 'l left := 'l
-                   and type 'r right := right
+  include
+    Generic
+    with type ('l, 'r) t := 'l t
+     and type 'l left := 'l
+     and type 'r right := right
 end
 
 (** [S1_right] is the signature of an arity-1 bi-mappable type with a
@@ -106,20 +110,24 @@ end
 module type S1_right = sig
   include Types_intf.Bi_right
 
-  include Generic with type ('l, 'r) t := 'r t
-                   and type 'l left := left
-                   and type 'r right := 'r
+  include
+    Generic
+    with type ('l, 'r) t := 'r t
+     and type 'l left := left
+     and type 'r right := 'r
 end
 
 (** [S2] is the signature of an arity-2 bi-mappable type with
     floating left and right types. *)
 module type S2 = sig
-  include T2
   (** Type of containers. *)
+  include T2
 
-  include Generic with type ('l, 'r) t := ('l, 'r) t
-                   and type 'l left := 'l
-                   and type 'r right := 'r
+  include
+    Generic
+    with type ('l, 'r) t := ('l, 'r) t
+     and type 'l left := 'l
+     and type 'r right := 'r
 end
 
 (** {2:exts Extensions}
@@ -144,16 +152,17 @@ end
 module type Extensions0 = sig
   include Types_intf.Bi0
 
-  include Generic_extensions
+  include
+    Generic_extensions
     with type ('l, 'r) t := t
      and type 'l left := left
      and type 'r right := right
 
-  module Map_left : Mappable.S0 with type t := t
   (** Permits mapping over the left type. *)
+  module Map_left : Mappable.S0 with type t := t
 
-  module Map_right : Mappable.S0 with type t := t
   (** Permits mapping over the right type. *)
+  module Map_right : Mappable.S0 with type t := t
 end
 
 (** Combines {{!S0}S0} and
@@ -161,10 +170,8 @@ end
 module type S0_with_extensions = sig
   include S0
 
-  include Extensions0
-    with type t := t
-     and type left := left
-     and type right := right
+  include
+    Extensions0 with type t := t and type left := left and type right := right
 end
 
 (** Extensions for arity-1 bi-mappable containers with a floating left
@@ -172,28 +179,27 @@ end
 module type Extensions1_left = sig
   include Types_intf.Bi_left
 
-  include Generic_extensions
+  include
+    Generic_extensions
     with type ('l, 'r) t := 'l t
      and type 'l left := 'l
      and type 'r right := right
 
-  module Fix_left (Left : T) : S0_with_extensions
-    with type t := Left.t t
-     and type left := Left.t
   (** Fixes the left type of this container to [Left.t]. *)
+  module Fix_left (Left : T) :
+    S0_with_extensions with type t := Left.t t and type left := Left.t
 
-  include Mappable.S1 with type 'l t := 'l t
   (** Bi-mappable types with a fixed right type are mappable
       over their left. *)
+  include Mappable.S1 with type 'l t := 'l t
 end
 
 (** Combines {{!S1_left}S1_left} and
    {{!Extensions1_left}Extensions1_left}. *)
 module type S1_left_with_extensions = sig
   include S1_left
-  include Extensions1_left
-    with type 'l t := 'l t
-     and type right := right
+
+  include Extensions1_left with type 'l t := 'l t and type right := right
 end
 
 (** Extensions for arity-1 bi-mappable containers with a floating right
@@ -201,28 +207,27 @@ end
 module type Extensions1_right = sig
   include Types_intf.Bi_right
 
-  include Generic_extensions
+  include
+    Generic_extensions
     with type ('l, 'r) t := 'r t
      and type 'l left := left
      and type 'r right := 'r
 
-  module Fix_right (Right : T) : S0_with_extensions
-    with type t := Right.t t
-     and type right := Right.t
   (** Fixes the right type of this container to [Right.t]. *)
+  module Fix_right (Right : T) :
+    S0_with_extensions with type t := Right.t t and type right := Right.t
 
-  include Mappable.S1 with type 'r t := 'r t
   (** Bi-mappable types with a fixed left type are mappable
       over their right. *)
+  include Mappable.S1 with type 'r t := 'r t
 end
 
 (** Combines {{!S1_right}S1_right} and
    {{!Extensions1_right}Extensions1_right}. *)
 module type S1_right_with_extensions = sig
   include S1_right
-  include Extensions1_right
-    with type 'r t := 'r t
-     and type left := left
+
+  include Extensions1_right with type 'r t := 'r t and type left := left
 end
 
 (** [Extensions2] describes various extensions of arity-1 mappable
@@ -230,25 +235,30 @@ end
 module type Extensions2 = sig
   include T2
 
-  include Generic_extensions with type ('l, 'r) t := ('l, 'r) t
-                              and type 'l left := 'l
-                              and type 'r right := 'r
+  include
+    Generic_extensions
+    with type ('l, 'r) t := ('l, 'r) t
+     and type 'l left := 'l
+     and type 'r right := 'r
 
   (** To fix both types, use [T.Fix_left(Left).Fix_right(right)]. *)
 
-  module Fix_left (Left : T) : S1_right_with_extensions
+  (** Fixes the left type of this container to [Left.t]. *)
+  module Fix_left (Left : T) :
+    S1_right_with_extensions
     with type 'r t := (Left.t, 'r) t
      and type left := Left.t
-  (** Fixes the left type of this container to [Left.t]. *)
 
-  module Fix_right (Right : T) : S1_left_with_extensions
+  (** Fixes the right type of this container to [Right.t]. *)
+  module Fix_right (Right : T) :
+    S1_left_with_extensions
     with type 'l t := ('l, Right.t) t
      and type right := Right.t
-  (** Fixes the right type of this container to [Right.t]. *)
 end
 
 (** Combines {{!S2}S2} and {{!Extensions2}Extensions2}. *)
 module type S2_with_extensions = sig
   include S2
+
   include Extensions2 with type ('l, 'r) t := ('l, 'r) t
 end

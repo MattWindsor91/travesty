@@ -27,10 +27,9 @@ open Base
 type 'a t = 'a [@@deriving sexp]
 
 include Traversable.Make_container1 (struct
-    type nonrec 'a t = 'a t
+  type nonrec 'a t = 'a t
 
-    module On_monad (M : Monad.S) = struct
-      let map_m x ~f = f x
-    end
-  end)
-;;
+  module On_monad (M : Monad.S) = struct
+    let map_m x ~f = f x
+  end
+end)

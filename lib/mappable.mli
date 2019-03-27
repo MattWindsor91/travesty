@@ -31,9 +31,9 @@
 
 (** {2 Signatures} *)
 
-include module type of Mappable_intf
 (** {{!Mappable_intf}Mappable_intf} contains the signatures for
     [Mappable]. *)
+include module type of Mappable_intf
 
 (** {2 Extending mappable containers}
 
@@ -41,6 +41,6 @@ include module type of Mappable_intf
     {{!Mappable_intf}Mappable_intf}---here, we define functors to generate
     them. *)
 
-module Extend1 (S : S1_container) : Extensions1 with type 'a t := 'a S.t
 (** [Extend1] implements [Extensions1] for an arity-1 mappable
      container. *)
+module Extend1 (S : S1_container) : Extensions1 with type 'a t := 'a S.t

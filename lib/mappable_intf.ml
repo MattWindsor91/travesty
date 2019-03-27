@@ -47,10 +47,10 @@ open Base
       and ['a elt] becomes ['a].
 *)
 module type Generic = sig
-  include Types_intf.Generic
   (** [Generic] refers to the container type as ['a t], and the element type
       as ['a elt]; substitute [t]/[elt] (arity-0) or ['a t]/['a] (arity-1)
       accordingly below. *)
+  include Types_intf.Generic
 
   val map : 'a t -> f:('a elt -> 'b elt) -> 'b t
   (** [map c ~f] maps [f] over every [t] in [c]. *)
@@ -69,6 +69,7 @@ end
    type.  *)
 module type S0 = sig
   include Types_intf.S0
+
   include Generic with type 'a t := t and type 'a elt := elt
 end
 
@@ -92,12 +93,14 @@ end
 (** [S0_container] is the signature of an arity-0 mappable container. *)
 module type S0_container = sig
   include S0
+
   include Container.S0 with type t := t and type elt := elt
 end
 
 (** [S1_container] is the signature of an arity-1 mappable container. *)
 module type S1_container = sig
   include S1
+
   include Container.S1 with type 'a t := 'a t
 end
 
@@ -110,13 +113,13 @@ end
 (** [Extensions1] describes various extensions of arity-1 mappable
    containers. *)
 module type Extensions1 = sig
-  type 'a t
   (** [t] is the type of the container to map over. *)
+  type 'a t
 
-  include T_container.Extensions1 with type 'a t := 'a t
-    (** [Extensions1] includes the container extensions from
+  (** [Extensions1] includes the container extensions from
         {{!T_container}T_container}, as they work with any arity-1
         container. *)
+  include T_container.Extensions1 with type 'a t := 'a t
 
   val right_pad : padding:'a -> 'a list t -> 'a list t
   (** [right_pad ~padding xs] pads every list in xs with [padding],

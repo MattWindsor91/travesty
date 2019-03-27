@@ -27,31 +27,16 @@ open Core_kernel
 module M = struct
   include Core_kernel.List.Assoc
 
-  let bi_map
-      (c : ('k1, 'v1) t)
-      ~(left : 'k1 -> 'k2)
-      ~(right : 'v1 -> 'v2)
-    : ('k2, 'v2) t =
+  let bi_map (c : ('k1, 'v1) t) ~(left : 'k1 -> 'k2) ~(right : 'v1 -> 'v2) :
+      ('k2, 'v2) t =
     List.map c ~f:(fun (k, v) -> (left k, right v))
-  ;;
 end
 
 include M
 include Bi_mappable.Extend2 (M)
 
 let%expect_test "bi_map example" =
-  let sample =
-    [ "foo", 27
-    ; "bar", 53
-    ; "baz", 99
-    ]
-  in
-  let sample' =
-    bi_map sample
-      ~left:String.capitalize
-      ~right:Int.neg
-  in
-  Sexp.output_hum stdout
-    [%sexp (sample' : (string, int) t)];
+  let sample = [("foo", 27); ("bar", 53); ("baz", 99)] in
+  let sample' = bi_map sample ~left:String.capitalize ~right:Int.neg in
+  Sexp.output_hum stdout [%sexp (sample' : (string, int) t)] ;
   [%expect {| ((Foo -27) (Bar -53) (Baz -99)) |}]
-;;

@@ -29,16 +29,16 @@ open Base
     This module contains various extensions for Core's [Option] module,
     including adding monadic traversal. *)
 
-type 'a t = 'a option
 (** [t] is just [option], re-exported to make this module satisfy
     various container interfaces. *)
+type 'a t = 'a option
 
-include Traversable.S1_container with type 'a t := 'a t
 (** Options are traversable containers. *)
+include Traversable.S1_container with type 'a t := 'a t
 
-include Filter_mappable.S1 with type 'a t := 'a t
 (** Options are also filter-mappable; filter-mapping effectively
     behaves as monadic bind. *)
+include Filter_mappable.S1 with type 'a t := 'a t
 
 (** {2 Miscellaneous extension functions} *)
 

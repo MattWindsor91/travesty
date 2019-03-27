@@ -23,32 +23,27 @@
    SOFTWARE. *)
 
 open Core_kernel
-
 include Or_error
 
 module On_ok = Traversable.Make_container1 (struct
-    type nonrec 'a t = 'a t
+  type nonrec 'a t = 'a t
 
-    module On_monad (M : Monad.S) = struct
-      let map_m err ~f = match err with
-        | Ok v -> M.(f v >>| Or_error.return)
-        | Error x -> M.return (Error x)
-    end
-  end)
+  module On_monad (M : Monad.S) = struct
+    let map_m err ~f =
+      match err with
+      | Ok v -> M.(f v >>| Or_error.return)
+      | Error x -> M.return (Error x)
+  end
+end)
 
 include T_monad.Extend (Or_error)
 
 let%expect_test "tee_m example" =
   let fail_if_negative x =
-    when_m (Int.is_negative x)
-      ~f:(fun () -> Or_error.error_string "value is negative!")
+    when_m (Int.is_negative x) ~f:(fun () ->
+        Or_error.error_string "value is negative!" )
   in
   Sexp.output_hum Stdio.stdout
-    [%sexp (
-      Or_error.(
-        42 |> tee_m ~f:fail_if_negative >>| (fun x -> x * x)
-      )
-      : int t
-    )];
+    [%sexp
+      (Or_error.(42 |> tee_m ~f:fail_if_negative >>| fun x -> x * x) : int t)] ;
   [%expect {| (Ok 1764) |}]
-;;

@@ -26,9 +26,9 @@
 
 open Core_kernel
 
-include module type of T_container_intf
 (** As usual, we store the extension signatures in a separate
     {{!T_container_intf}intf module}. *)
+include module type of T_container_intf
 
 (** {2:functors Extension functors}
 
@@ -37,18 +37,17 @@ include module type of T_container_intf
     {{!T_container_intf.Extensions1}Extensions1}.
 *)
 
-module Extend0 (C : Container.S0) : Extensions0 with type t := C.t
-                                                 and type elt := C.elt
 (** [Extend0] creates {{!T_container_intf.Extensions0}extensions} for a
     [Container.S0]. *)
+module Extend0 (C : Container.S0) :
+  Extensions0 with type t := C.t and type elt := C.elt
 
-module Extend0_predicate
-    (P : T) (C : Container.S0 with type elt = (P.t -> bool))
-  : Extensions0_predicate with type t := C.t and type item := P.t
-  (** [Extend0_predicate] creates
+(** [Extend0_predicate] creates
      {{!T_container_intf.Extensions0_predicate}extensions} for a
      [Container.S0] over predicates. *)
+module Extend0_predicate (P : T) (C : Container.S0 with type elt = P.t -> bool) :
+  Extensions0_predicate with type t := C.t and type item := P.t
 
-module Extend1 (C : Container.S1) : Extensions1 with type 'a t := 'a C.t
 (** [Extend1] creates {{!T_container_intf.Extensions1}extensions} for a
     [Container.S1]. *)
+module Extend1 (C : Container.S1) : Extensions1 with type 'a t := 'a C.t

@@ -55,10 +55,10 @@ open Base
     - For arity-1 types, use {{!Basic1}Basic1}: ['a t] becomes ['a t],
     and ['a elt] becomes ['a].  *)
 module type Generic_basic = sig
-  include Types_intf.Generic
   (** [Generic_basic] refers to the container type as ['a t], and the
      element type as ['a elt]; substitute [t]/[elt] (arity-0) or
       ['a t]/['a] (arity-1) accordingly below. *)
+  include Types_intf.Generic
 
   val filter_map : 'a t -> f:('a elt -> 'b elt option) -> 'b t
   (** [filter_map c ~f] maps [f] over every [t] in [c], discarding any
@@ -73,6 +73,7 @@ end
    type.  *)
 module type Basic0 = sig
   include Types_intf.S0
+
   include Generic_basic with type 'a t := t and type 'a elt := elt
 end
 
@@ -80,8 +81,8 @@ end
 
     Functions mapped over arity-1 types may change the element type. *)
 module type Basic1 = sig
-  type 'a t
   (** The type of the container to map over. *)
+  type 'a t
 
   include Generic_basic with type 'a t := 'a t and type 'a elt := 'a
 end
@@ -101,8 +102,8 @@ end
    {{!S1}S1}: ['a t] becomes ['a t], and ['a elt] becomes
    ['a].  *)
 module type Generic = sig
-  include Generic_basic
   (** [Generic] strictly extends [Generic_basic]. *)
+  include Generic_basic
 
   val filter : 'a t -> f:('a elt -> bool) -> 'a t
   (** [filter c ~f] checks [f] over every [t] in [c], discarding any
@@ -124,6 +125,7 @@ end
    type.  *)
 module type S0 = sig
   include Types_intf.S0
+
   include Generic with type 'a t := t and type 'a elt := elt
 end
 
@@ -131,8 +133,8 @@ end
 
     Functions mapped over arity-1 types may change the element type. *)
 module type S1 = sig
-  type 'a t
   (** The type of the container to map over. *)
+  type 'a t
 
   include Generic with type 'a t := 'a t and type 'a elt := 'a
 end

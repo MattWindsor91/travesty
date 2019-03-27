@@ -29,16 +29,15 @@
 
 open Base
 
-type 'a t = 'a list
 (** [t] is just [list], re-exported to make this module satisfy
     various container interfaces. *)
+type 'a t = 'a list
 
-include Traversable.S1_container with type 'a t := 'a t
 (** Lists are traversable containers. *)
+include Traversable.S1_container with type 'a t := 'a t
 
-include Filter_mappable.S1 with type 'a t := 'a t
 (** We can also filter-map over them. *)
-
+include Filter_mappable.S1 with type 'a t := 'a t
 
 (** {2 Miscellaneous extension functions} *)
 

@@ -23,15 +23,14 @@
    SOFTWARE. *)
 
 open Base
-
 include Mappable_intf
 
-module Extend1 (S : S1_container)
-  : Extensions1 with type 'a t := 'a S.t = struct
+module Extend1 (S : S1_container) : Extensions1 with type 'a t := 'a S.t =
+struct
   include T_container.Extend1 (S)
 
   let right_pad ~padding xs =
     let maxlen = max_measure ~measure:List.length xs
-    and f = Fn.const padding
-    in S.map ~f:(fun p -> p @ List.init (maxlen - List.length p) ~f) xs
+    and f = Fn.const padding in
+    S.map ~f:(fun p -> p @ List.init (maxlen - List.length p) ~f) xs
 end

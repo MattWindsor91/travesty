@@ -30,26 +30,25 @@
 
 (** {2 Signatures} *)
 
-include module type of Filter_mappable_intf
 (** {{!Filter_mappable_intf}Filter_mappable_intf} contains the
    signatures for [Filter_mappable]. *)
+include module type of Filter_mappable_intf
 
 (** {2 Making full instances from basic ones} *)
 
-module Make0 (F : Basic0) : S0 with type t := F.t
-                                and type elt := F.elt
 (** [Make0] makes an {{!S0}S0} from a {{!Basic0}Basic0}. *)
+module Make0 (F : Basic0) : S0 with type t := F.t and type elt := F.elt
 
-module Make1 (F : Basic1) : S1 with type 'a t := 'a F.t
 (** [Make0] makes an {{!S1}S1} from a {{!Basic1}Basic1}. *)
+module Make1 (F : Basic1) : S1 with type 'a t := 'a F.t
 
 (** {2 Deriving Mappable} *)
 
-module To_mappable0 (F : Basic0) : Mappable.S0 with type t := F.t
-                                                and type elt := F.elt
 (** [To_mappable0] lowers a filter-mappable arity-0 type to a mappable
    one. *)
+module To_mappable0 (F : Basic0) :
+  Mappable.S0 with type t := F.t and type elt := F.elt
 
-module To_mappable1 (F : Basic1) : Mappable.S1 with type 'a t := 'a F.t
 (** [To_mappable1] lowers a filter-mappable arity-1 type to a mappable
    one. *)
+module To_mappable1 (F : Basic1) : Mappable.S1 with type 'a t := 'a F.t

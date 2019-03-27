@@ -27,28 +27,33 @@ open Base
 module type Extensions = sig
   type 'a t
 
-  val when_m   : bool -> f:(unit -> unit t) -> unit t
+  val when_m : bool -> f:(unit -> unit t) -> unit t
+
   val unless_m : bool -> f:(unit -> unit t) -> unit t
-  val tee_m    : 'a   -> f:('a   -> unit t) -> 'a   t
+
+  val tee_m : 'a -> f:('a -> unit t) -> 'a t
 end
 
 module Extend (M : Monad.S) : Extensions with type 'a t := 'a M.t = struct
   let when_m predicate ~f = if predicate then f () else M.return ()
+
   let unless_m predicate ~f = if predicate then M.return () else f ()
+
   let tee_m x ~f = M.(f x >>| Fn.const x)
 end
 
-module To_mappable (M : Monad.S)
-  : Mappable.S1 with type 'a t := 'a M.t = struct
+module To_mappable (M : Monad.S) : Mappable.S1 with type 'a t := 'a M.t =
+struct
   let map = M.map
 end
 
-module S2_to_S (M : Monad.S2) (B : T)
-  : Monad.S with type 'a t := ('a, B.t) M.t =
-  Monad.Make (struct
-    type 'a t = ('a, B.t) M.t
-    let map = `Custom M.map
-    let return = M.return
-    let bind = M.bind
-  end)
-;;
+module S2_to_S (M : Monad.S2) (B : T) :
+  Monad.S with type 'a t := ('a, B.t) M.t = Monad.Make (struct
+  type 'a t = ('a, B.t) M.t
+
+  let map = `Custom M.map
+
+  let return = M.return
+
+  let bind = M.bind
+end)

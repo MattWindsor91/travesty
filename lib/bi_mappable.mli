@@ -36,9 +36,9 @@
 
 (** {2 Signatures} *)
 
-include module type of Bi_mappable_intf
 (** {{!Bi_mappable_intf}Bi_mappable_intf} contains the signatures for
     [Bi_mappable]. *)
+include module type of Bi_mappable_intf
 
 (** {2 Extending bi-mappable containers}
 
@@ -46,26 +46,24 @@ include module type of Bi_mappable_intf
    {{!Bi_mappable_intf}Bi_mappable_intf}---here, we define functors to
    generate them. *)
 
-module Extend2 (S : S2) : Extensions2
-  with type ('l, 'r) t := ('l, 'r) S.t
 (** [Extend2] implements [Extensions2] for an arity-2 bi-mappable
      container. *)
+module Extend2 (S : S2) : Extensions2 with type ('l, 'r) t := ('l, 'r) S.t
 
-module Extend1_left (S : S1_left) : Extensions1_left
-  with type 'l t := 'l S.t
-   and type right := S.right
 (** [Extend1_left] implements [Extensions1_left] for an arity-1
    bi-mappable container with floating left type. *)
+module Extend1_left (S : S1_left) :
+  Extensions1_left with type 'l t := 'l S.t and type right := S.right
 
-module Extend1_right (S : S1_right) : Extensions1_right
-  with type 'r t := 'r S.t
-   and type left := S.left
 (** [Extend1_right] implements [Extensions1_right] for an arity-1
    bi-mappable container with floating right type. *)
+module Extend1_right (S : S1_right) :
+  Extensions1_right with type 'r t := 'r S.t and type left := S.left
 
-module Extend0 (S : S0) : Extensions0
+(** [Extend0] implements [Extensions0] for an arity-0
+   bi-mappable container. *)
+module Extend0 (S : S0) :
+  Extensions0
   with type t := S.t
    and type left := S.left
    and type right := S.right
-(** [Extend0] implements [Extensions0] for an arity-0
-   bi-mappable container. *)

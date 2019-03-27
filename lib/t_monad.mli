@@ -35,8 +35,8 @@ open Base
 
     To create an instance of [Extensions], use {{!Extend}Extend}. *)
 module type Extensions = sig
-  type 'a t
   (** The type of the extended monad. *)
+  type 'a t
 
   val when_m : bool -> f:(unit -> unit t) -> unit t
   (** [when_m predicate ~f] returns [f ()] when [predicate] is true,
@@ -64,20 +64,19 @@ module type Extensions = sig
       *)
 end
 
-module Extend (M : Monad.S) : Extensions with type 'a t := 'a M.t
 (** [Extend] creates {{!Extensions}Extensions} for a
     [Monad.S]. *)
+module Extend (M : Monad.S) : Extensions with type 'a t := 'a M.t
 
 (** {2:misc Miscellaneous} *)
 
-module S2_to_S (M : Monad.S2) (B : T)
-  : Monad.S with type 'a t := ('a, B.t) M.t
 (** Demotes an arity-2 monad [M] to an arity-1 one,
     fixing its second type to be [B.t]. *)
+module S2_to_S (M : Monad.S2) (B : T) : Monad.S with type 'a t := ('a, B.t) M.t
 
-module To_mappable (M : Monad.S) : Mappable.S1 with type 'a t := 'a M.t
 (** Converts a monad to a mappable over [M.map].
 
     At time of writing, [M] satisfies {{!Mappable.S1}the mappable interface}
     in its own right; this functor mainly exists as insurance in case the
     two interfaces ever diverge. *)
+module To_mappable (M : Monad.S) : Mappable.S1 with type 'a t := 'a M.t

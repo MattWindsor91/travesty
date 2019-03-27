@@ -5,8 +5,7 @@
  (inline_tests)
  (preprocess
   (pps ppx_deriving.std ppx_expect ppx_jane))
- (libraries
-  core_kernel))
+ (libraries core_kernel))
 
 (documentation
  (mld_files ("index")))

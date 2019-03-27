@@ -1,2 +1,3 @@
-(lang dune 1.6)
+(lang dune 1.8)
 (name travesty)
+(using fmt 1.1)

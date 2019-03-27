@@ -37,11 +37,10 @@ open Base
     containers. *)
 
 module type Generic_extensions = sig
-  include Types_intf.Generic
-    (** [Generic_extensions] refers to the container type as ['a t],
+  (** [Generic_extensions] refers to the container type as ['a t],
        and the element type as ['a elt]; substitute [t]/[elt]
        (arity-0) or ['a t]/['a] (arity-1) accordingly below. *)
-
+  include Types_intf.Generic
 
   (** {3 Testing for a specific number of elements}
 
@@ -106,11 +105,11 @@ end
     (functions of type ['a -> bool]). *)
 
 module type Generic_predicate_extensions = sig
-  type 'a t
   (** The generic type of predicate containers. *)
+  type 'a t
 
-  type 'a item
   (** The generic type of predicate target elements. *)
+  type 'a item
 
   val any : 'a item -> predicates:'a t -> bool
   (** [any x ~predicates] tests [x] against [predicates] until one
@@ -141,6 +140,7 @@ end
     {{!Generic_extensions}Generic_extensions}. *)
 module type Extensions0 = sig
   include Types_intf.S0
+
   include Generic_extensions with type 'a t := t and type 'a elt := elt
 end
 
@@ -148,15 +148,16 @@ end
 
     This signature extends and constrains {{!Extensions0}Extensions0}. *)
 module type Extensions0_predicate = sig
-  type t
   (** Type of predicate containers *)
+  type t
 
-  type item
   (** Type of items being tested against predicates. *)
+  type item
 
-  include Extensions0 with type t := t and type elt := (item -> bool)
-  include Generic_predicate_extensions with type 'a t := t
-                                        and type 'a item := item
+  include Extensions0 with type t := t and type elt := item -> bool
+
+  include
+    Generic_predicate_extensions with type 'a t := t and type 'a item := item
 end
 
 (** {2:a1 Arity-1 container extensions}
@@ -171,13 +172,15 @@ end
     {{!Generic_extensions}Generic_extensions} as well as extensions
     that require the ability to change the element type mid-flight. *)
 module type Extensions1 = sig
-  type 'a t
   (** The type of the container to extend. *)
+  type 'a t
 
   include Generic_extensions with type 'a t := 'a t and type 'a elt := 'a
 
-  include Generic_predicate_extensions with type 'a t := ('a -> bool) t
-                                        and type 'a item := 'a
   (** Predicate extensions are available on all arity-1 containers,
       provided that we fix the element type parameter to ['a -> bool]. *)
+  include
+    Generic_predicate_extensions
+    with type 'a t := ('a -> bool) t
+     and type 'a item := 'a
 end

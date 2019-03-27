@@ -42,23 +42,25 @@ open Base
 
 (** {2 Signatures} *)
 
-include module type of State_transform_intf
 (** {{!State_transform_intf}State_transform_intf} contains the signatures for
     [State_transform]. *)
+include module type of State_transform_intf
 
 (** {2 Manipulating state transformers} *)
 
-module To_S (M : S2) (B : Base.T) : S with type state = B.t
-                                       and type 'a t = ('a, B.t) M.t
-                                       and module Inner = M.Inner
 (** [To_S] flattens a [S2] into an [S] by fixing the state type to [B.t]. *)
+module To_S (M : S2) (B : Base.T) :
+  S
+  with type state = B.t
+   and type 'a t = ('a, B.t) M.t
+   and module Inner = M.Inner
 
 (** {2:make Functors for making state transformers} *)
 
-module Make (B : Basic) : S with type state = B.t and module Inner = B.Inner
 (** [Make] makes an {{!S}S} (state transformer with fixed state type) from a
     {{!Basic}Basic}. *)
+module Make (B : Basic) : S with type state = B.t and module Inner = B.Inner
 
-module Make2 (M : Monad.S) : S2 with module Inner = M
 (** [Make2] makes an {{!S2}S2} (state transformer with variable state type) from
     a [Monad.S]. *)
+module Make2 (M : Monad.S) : S2 with module Inner = M

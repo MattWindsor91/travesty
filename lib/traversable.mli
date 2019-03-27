@@ -39,9 +39,9 @@ open Base
 
 (** {2 Signatures} *)
 
-include module type of Traversable_intf
 (** {{!Traversable_intf}Traversable_intf} contains the signatures for
     [Traversable]. *)
+include module type of Traversable_intf
 
 (** {2 Making containers}
 
@@ -49,49 +49,46 @@ include module type of Traversable_intf
     all of the key functionality for a Core-style container.  As such, we
     expose functors for building traversable Core-style containers. *)
 
-module Make_container0 (I : Basic0)
-  : S0_container with module Elt = I.Elt and type t := I.t
 (** [Make_container0] makes a {{!S0_container}S0_container} from a
     {{!Basic0}Basic0}. *)
+module Make_container0 (I : Basic0) :
+  S0_container with module Elt = I.Elt and type t := I.t
 
-module Make_container1 (I : Basic1)
-  : S1_container with type 'a t := 'a I.t
 (** [Make_container1] makes a {{!S1_container}S1_container} from a
     {{!Basic1}Basic1}. *)
-
+module Make_container1 (I : Basic1) : S1_container with type 'a t := 'a I.t
 
 (** {2 Extending existing containers}
 
     We also expose functors for adding monadic traversals to existing
     containers. *)
 
-module Extend_container0 (I : Basic_container0)
-  : S0_container with module Elt = I.Elt and type t := I.t
 (** [Extend_container0] makes a {{!S0_container}S0_container} from a
     {{!Basic_container0}Basic_container0}. *)
+module Extend_container0 (I : Basic_container0) :
+  S0_container with module Elt = I.Elt and type t := I.t
 
-module Extend_container1 (I : Basic_container1)
-  : S1_container with type 'a t := 'a I.t
 (** [Extend_container1] makes a {{!S1_container}S1_container} from a
     {{!Basic_container1}Basic_container1}. *)
-
+module Extend_container1 (I : Basic_container1) :
+  S1_container with type 'a t := 'a I.t
 
 (** {2 Chaining together traversables} *)
 
-module Chain0
-    (Outer : S0_container)
-    (Inner : S0_container with type t := Outer.Elt.t)
-  : S0_container with module Elt = Inner.Elt and type t := Outer.t
 (** [Chain0] chains two {{!S0_container}S0_container} instances
     together, traversing each element of the outer instance with the
     inner instance. *)
+module Chain0
+    (Outer : S0_container)
+    (Inner : S0_container with type t := Outer.Elt.t) :
+  S0_container with module Elt = Inner.Elt and type t := Outer.t
 
 (** {2 Helper functions} *)
 
 (** Utility functions for building traversals.  *)
 module Helpers (M : Monad.S) : sig
-  type 'a traversal = ('a -> 'a M.t)
   (** [traversal] is shorthand for a traversal function over [M]. *)
+  type 'a traversal = 'a -> 'a M.t
 
   (** {3 Variants}
 
@@ -163,24 +160,18 @@ module Helpers (M : Monad.S) : sig
       ]}
   *)
 
-  val proc_variant0
-    :  unit traversal
-    -> 'cont Base.Variant.t
-    -> 'cont M.t
+  val proc_variant0 : unit traversal -> 'cont Base.Variant.t -> 'cont M.t
   (** [proc_variant0 f variant] lifts a traversal [f] over a
       Variantslib nullary variant constructor [variant]. *)
 
-  val proc_variant1
-    :  'a traversal
-    -> ('a -> 'cont) Base.Variant.t
-    -> 'a
-    -> 'cont M.t
+  val proc_variant1 :
+    'a traversal -> ('a -> 'cont) Base.Variant.t -> 'a -> 'cont M.t
   (** [proc_variant1 f variant a] lifts a traversal [f] over a
       Variantslib unary variant constructor [variant] with argument
       [a]. *)
 
-  val proc_variant2
-    : ('a * 'b) traversal
+  val proc_variant2 :
+       ('a * 'b) traversal
     -> ('a -> 'b -> 'cont) Base.Variant.t
     -> 'a
     -> 'b
@@ -189,8 +180,8 @@ module Helpers (M : Monad.S) : sig
       Variantslib binary variant constructor [variant] with arguments
       [a] and [b]. *)
 
-  val proc_variant3
-    :  ('a * 'b * 'c) traversal
+  val proc_variant3 :
+       ('a * 'b * 'c) traversal
     -> ('a -> 'b -> 'c -> 'cont) Base.Variant.t
     -> 'a
     -> 'b
@@ -260,8 +251,8 @@ module Helpers (M : Monad.S) : sig
       ]}
   *)
 
-  val proc_field
-    :  'elt traversal
+  val proc_field :
+       'elt traversal
     -> 'cont M.t
     -> ([> `Set_and_create], 'cont, 'elt) Field.t_with_perm
     -> 'cont M.t

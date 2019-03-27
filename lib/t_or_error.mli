@@ -30,12 +30,12 @@
 
 open Core_kernel
 
-include module type of Or_error
 (** This module re-exports all of the original monad. *)
+include module type of Or_error
 
-module On_ok : Traversable.S1_container with type 'a t := 'a t
 (** [On_ok] treats an [Or_error] value as a traversable container,
     containing one value when it is [Ok] and none otherwise. *)
+module On_ok : Traversable.S1_container with type 'a t := 'a t
 
-include T_monad.Extensions with type 'a t := 'a t
 (** Monad extensions for [Or_error]. *)
+include T_monad.Extensions with type 'a t := 'a t

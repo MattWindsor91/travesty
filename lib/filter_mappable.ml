@@ -23,56 +23,57 @@
    SOFTWARE. *)
 
 open Base
-
 include Filter_mappable_intf
 
-module Make_generic (F : Generic_basic)
-  : Generic with type 'a t := 'a F.t and type 'a elt := 'a F.elt = struct
+module Make_generic (F : Generic_basic) :
+  Generic with type 'a t := 'a F.t and type 'a elt := 'a F.elt = struct
   include F
 
   let filter xs ~f = filter_map xs ~f:(fun x -> Option.some_if (f x) x)
+
   let exclude xs ~f = filter xs ~f:(Fn.non f)
 end
 
-module Make0 (F : Basic0)
-  : S0 with type t := F.t and type elt := F.elt = Make_generic (struct
-    type 'a t = F.t
-    type 'a elt = F.elt
-    let filter_map = F.filter_map
-  end)
-;;
+module Make0 (F : Basic0) : S0 with type t := F.t and type elt := F.elt =
+Make_generic (struct
+  type 'a t = F.t
 
-module Make1 (F : Basic1) : S1 with type 'a t := 'a F.t =
-  Make_generic (struct
-    type 'a t = 'a F.t
-    type 'a elt = 'a
-    let filter_map = F.filter_map
-  end)
-;;
+  type 'a elt = F.elt
 
-module To_mappable_generic (F : Generic_basic)
-  : Mappable.Generic with type 'a t := 'a F.t
-                      and type 'a elt := 'a F.elt = struct
+  let filter_map = F.filter_map
+end)
+
+module Make1 (F : Basic1) : S1 with type 'a t := 'a F.t = Make_generic (struct
+  type 'a t = 'a F.t
+
+  type 'a elt = 'a
+
+  let filter_map = F.filter_map
+end)
+
+module To_mappable_generic (F : Generic_basic) :
+  Mappable.Generic with type 'a t := 'a F.t and type 'a elt := 'a F.elt =
+struct
   include F
 
   let map xs ~f = filter_map xs ~f:(fun x -> Some (f x))
 end
 
-module To_mappable0 (F : Basic0)
-  : Mappable.S0 with type t := F.t and type elt := F.elt =
-  To_mappable_generic (struct
-    type 'a t = F.t
-    type 'a elt = F.elt
-    let filter_map = F.filter_map
-  end)
-;;
+module To_mappable0 (F : Basic0) :
+  Mappable.S0 with type t := F.t and type elt := F.elt =
+To_mappable_generic (struct
+  type 'a t = F.t
 
-module To_mappable1 (F : Basic1)
-  : Mappable.S1 with type 'a t := 'a F.t =
-  To_mappable_generic (struct
-    type 'a t = 'a F.t
-    type 'a elt = 'a
-    let filter_map = F.filter_map
-  end)
-;;
+  type 'a elt = F.elt
 
+  let filter_map = F.filter_map
+end)
+
+module To_mappable1 (F : Basic1) : Mappable.S1 with type 'a t := 'a F.t =
+To_mappable_generic (struct
+  type 'a t = 'a F.t
+
+  type 'a elt = 'a
+
+  let filter_map = F.filter_map
+end)

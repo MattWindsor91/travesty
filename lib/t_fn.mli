@@ -28,10 +28,7 @@
     Core_kernel's [Fn] module.
  *)
 
-val on
-  :  ('a -> 'b)
-  -> ('b -> 'b -> 'r)
-  -> ('a -> 'a -> 'r)
+val on : ('a -> 'b) -> ('b -> 'b -> 'r) -> 'a -> 'a -> 'r
 (** [on lift f] lifts a binary function [f] using the lifter [lift].
     It does the same thing as the `on` function from Haskell, but
     with arguments flipped to make sense without infixing.

@@ -28,10 +28,10 @@
     useful for passing one item to functors and other contexts that expect
     a container. *)
 
-type 'a t = 'a [@@deriving sexp]
 (** ['a t] is just ['a], but made to look like a container type.
     If its inner type is sexpable, it is too. *)
+type 'a t = 'a [@@deriving sexp]
 
-include Traversable.S1_container with type 'a t := 'a t
 (** We implement {{!Traversable.S1_container}S1_container}, and, by extension,
     the Core container interface. *)
+include Traversable.S1_container with type 'a t := 'a t

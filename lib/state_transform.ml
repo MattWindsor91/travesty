@@ -23,60 +23,59 @@
    SOFTWARE. *)
 
 open Core_kernel
-
 include State_transform_intf
 
-module Make2 (M : Monad.S)
-  : S2 with module Inner = M = struct
+module Make2 (M : Monad.S) : S2 with module Inner = M = struct
   module Inner = M
 
   module T = struct
-    type ('a, 's) t = ('s -> ('s * 'a) Inner.t)
+    type ('a, 's) t = 's -> ('s * 'a) Inner.t
 
     include Monad.Make2 (struct
-        type nonrec ('a, 's) t = ('a, 's) t
+      type nonrec ('a, 's) t = ('a, 's) t
 
-        let map' wc ~f state =
-          let open Inner.Let_syntax in
-          let%map (state', a) = wc state in
-          (state', f a)
-        ;;
+      let map' wc ~f state =
+        let open Inner.Let_syntax in
+        let%map state', a = wc state in
+        (state', f a)
 
-        let map = `Custom map'
+      let map = `Custom map'
 
-        let bind wc ~f state =
-          let open Inner.Let_syntax in
-          let%bind (state', a) = wc state in
-          (f a) state'
-        ;;
+      let bind wc ~f state =
+        let open Inner.Let_syntax in
+        let%bind state', a = wc state in
+        (f a) state'
 
-        let return a state = Inner.return (state, a)
-      end)
+      let return a state = Inner.return (state, a)
+    end)
   end
 
   include T
 
   let run' f ctx = f ctx
-  let run  f ctx = f ctx |> Inner.map ~f:snd
+
+  let run f ctx = f ctx |> Inner.map ~f:snd
 
   module Monadic = struct
     let make = Fn.id
 
     let peek f ctx =
       let open Inner.Let_syntax in
-      let%map v = f ctx in (ctx, v)
-    ;;
+      let%map v = f ctx in
+      (ctx, v)
 
     let modify f ctx =
       let open Inner.Let_syntax in
-      let%map ctx' = f ctx in (ctx', ())
-    ;;
+      let%map ctx' = f ctx in
+      (ctx', ())
 
     let return (x : 'a Inner.t) ctx = Inner.(x >>| Tuple2.create ctx)
   end
 
   let make f = Monadic.make (Fn.compose Inner.return f)
+
   let peek f = Monadic.peek (Fn.compose Inner.return f)
+
   let modify f = Monadic.modify (Fn.compose Inner.return f)
 
   let fix ~f init =
@@ -84,39 +83,40 @@ module Make2 (M : Monad.S)
       let mu_monad x = Monadic.make (mu x) in
       let f' =
         Let_syntax.(
-          let%bind a'   = f mu_monad a in
-          let%map  ctx' = peek (Fn.id) in
-          (ctx', a')
-        )
+          let%bind a' = f mu_monad a in
+          let%map ctx' = peek Fn.id in
+          (ctx', a'))
       in
       run f' ctx
     in
     Monadic.make (mu init)
-  ;;
 end
 
-module To_S (M : S2) (B : Base.T)
-  : S with type state = B.t
-       and type 'a t = ('a, B.t) M.t
-       and module Inner = M.Inner = struct
+module To_S (M : S2) (B : Base.T) :
+  S
+  with type state = B.t
+   and type 'a t = ('a, B.t) M.t
+   and module Inner = M.Inner = struct
   type state = B.t
 
   module M1 = struct
     type 'a t = ('a, state) M.t
+
     include T_monad.S2_to_S (M) (B)
   end
+
   include M1
   include T_monad.Extend (M1)
 
   let lift = M.return
 
-  include (M : Generic with type ('a, 's) t := 'a t
-                        and type 's state := state
-                        and module Inner = M.Inner)
-
+  include (
+    M :
+      Generic
+      with type ('a, 's) t := 'a t
+       and type 's state := state
+       and module Inner = M.Inner )
 end
 
-module Make (B : Basic)
-  : S with type state = B.t and module Inner = B.Inner =
+module Make (B : Basic) : S with type state = B.t and module Inner = B.Inner =
   To_S (Make2 (B.Inner)) (B)
-;;

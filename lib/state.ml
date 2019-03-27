@@ -23,7 +23,6 @@
    SOFTWARE. *)
 
 open Core_kernel
-
 include State_intf
 
 (* We implement all of the various monads and functors in terms of
@@ -33,26 +32,29 @@ include State_intf
 
 module M2 : S2 = State_transform.Make2 (Monad.Ident)
 
-module To_S (M : S2) (B : Base.T)
-  : S with type state = B.t
-       and type 'a t = ('a, B.t) M.t = struct
+module To_S (M : S2) (B : Base.T) :
+  S with type state = B.t and type 'a t = ('a, B.t) M.t = struct
   type state = B.t
 
   module M1 = struct
     type 'a t = ('a, state) M.t
+
     include T_monad.S2_to_S (M) (B)
   end
+
   include M1
   include T_monad.Extend (M1)
 
-  include (M : Generic with type ('a, 's) t := 'a t
-                        and type 'a final := 'a
-                        and type 's state := state)
+  include (
+    M :
+      Generic
+      with type ('a, 's) t := 'a t
+       and type 'a final := 'a
+       and type 's state := state )
 end
 
-module Make (B : T) : S with type state = B.t =
-  State_transform.Make (struct
-    type t = B.t
-    module Inner = Monad.Ident
-  end)
-;;
+module Make (B : T) : S with type state = B.t = State_transform.Make (struct
+  type t = B.t
+
+  module Inner = Monad.Ident
+end)

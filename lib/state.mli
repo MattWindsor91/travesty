@@ -49,23 +49,22 @@
 
 (** {2 Signatures} *)
 
-include module type of State_intf
 (** {{!State_intf}State_intf} contains the signatures for [State]. *)
+include module type of State_intf
 
 (** {2 Manipulating state monads} *)
 
-module To_S (M : S2) (B : Base.T) : S with type state = B.t
-                                       and type 'a t = ('a, B.t) M.t
 (** [To_S] flattens a {{!S2}S2} into an {{!S}S} by fixing the state type
       to [B.t]. *)
+module To_S (M : S2) (B : Base.T) :
+  S with type state = B.t and type 'a t = ('a, B.t) M.t
 
 (** {2 Implementations and functors} *)
 
-module Make (B : Base.T) : S with type state = B.t
 (** [Make] makes an [S] (state monad with fixed state type) from a single state
     type. *)
+module Make (B : Base.T) : S with type state = B.t
 
-module M2 : S2
 (** [M2] is a basic implementation of {{!S2}S2} (state monad with variable
     state type). *)
-
+module M2 : S2

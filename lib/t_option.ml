@@ -27,89 +27,75 @@ open Core_kernel
 type 'a t = 'a option
 
 include Traversable.Extend_container1 (struct
-    include Option
+  include Option
 
-    module On_monad (M : Monad.S) = struct
-      let map_m xo ~f =
-        let open M.Let_syntax in
-        Option.fold xo
-          ~init:(return None)
-          ~f:(fun state x ->
-              let%bind _ = state in
-              let%map  x' = f x in
-              Some x')
-      ;;
-    end
-  end)
-;;
+  module On_monad (M : Monad.S) = struct
+    let map_m xo ~f =
+      let open M.Let_syntax in
+      Option.fold xo ~init:(return None) ~f:(fun state x ->
+          let%bind _ = state in
+          let%map x' = f x in
+          Some x' )
+  end
+end)
 
 let%expect_test "generated option map behaves properly: Some" =
   Sexp.output_hum Out_channel.stdout
-    [%sexp (map ~f:(fun x -> x * x) (Some 12) : int option)];
+    [%sexp (map ~f:(fun x -> x * x) (Some 12) : int option)] ;
   [%expect {| (144) |}]
-;;
 
 let%expect_test "generated option map behaves properly: None" =
   Sexp.output_hum Out_channel.stdout
-    [%sexp (map ~f:(fun x -> x * x) None : int option)];
+    [%sexp (map ~f:(fun x -> x * x) None : int option)] ;
   [%expect {| () |}]
-;;
 
 let%expect_test "generated option count behaves properly: Some/yes" =
   Sexp.output_hum Out_channel.stdout
-    [%sexp (count ~f:Int.is_positive (Some 42) : int)];
+    [%sexp (count ~f:Int.is_positive (Some 42) : int)] ;
   [%expect {| 1 |}]
-;;
 
 let%expect_test "generated option count behaves properly: Some/no" =
   Sexp.output_hum Out_channel.stdout
-    [%sexp (count ~f:Int.is_positive (Some (-42)) : int)];
+    [%sexp (count ~f:Int.is_positive (Some (-42)) : int)] ;
   [%expect {| 0 |}]
-;;
 
 let%expect_test "map_m: returning identity on Some/Some" =
   let module M = On_monad (Option) in
   Sexp.output_hum Out_channel.stdout
-    [%sexp (M.map_m ~f:(Option.some) (Some "hello") : string option option)];
+    [%sexp (M.map_m ~f:Option.some (Some "hello") : string option option)] ;
   [%expect {| ((hello)) |}]
-;;
 
 include Filter_mappable.Make1 (struct
-    type 'a t = 'a option
-    let filter_map = Option.bind
-  end)
-;;
+  type 'a t = 'a option
+
+  let filter_map = Option.bind
+end)
 
 let%expect_test "exclude: Some -> None" =
   Sexp.output_hum Out_channel.stdout
-    [%sexp (exclude (Some 9) ~f:Int.is_positive : int option)];
+    [%sexp (exclude (Some 9) ~f:Int.is_positive : int option)] ;
   [%expect {| () |}]
-;;
 
 let%expect_test "exclude: Some -> Some" =
   Sexp.output_hum Out_channel.stdout
-    [%sexp (exclude (Some 0) ~f:Int.is_positive : int option)];
+    [%sexp (exclude (Some 0) ~f:Int.is_positive : int option)] ;
   [%expect {| (0) |}]
-;;
 
 let first_some_of_thunks thunks =
-  List.fold_until thunks
-    ~init:()
+  List.fold_until thunks ~init:()
     ~f:(fun () thunk ->
-        Option.value_map (thunk ())
-          ~default:(Container.Continue_or_stop.Continue ())
-          ~f:(fun x -> Stop (Some x)))
+      Option.value_map (thunk ())
+        ~default:(Container.Continue_or_stop.Continue ()) ~f:(fun x ->
+          Stop (Some x) ) )
     ~finish:(Fn.const None)
-;;
 
 let%expect_test "first_some_of_thunks: short-circuiting works" =
   Sexp.output_hum Out_channel.stdout
     [%sexp
-      (first_some_of_thunks
-         [ Fn.const None
-         ; Fn.const (Some "hello")
-         ; Fn.const (Some "world")
-         ; (fun () -> failwith "this shouldn't happen")
-         ] : string option)];
+      ( first_some_of_thunks
+          [ Fn.const None
+          ; Fn.const (Some "hello")
+          ; Fn.const (Some "world")
+          ; (fun () -> failwith "this shouldn't happen") ]
+        : string option )] ;
   [%expect {| (hello) |}]
-;;

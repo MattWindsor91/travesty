@@ -27,17 +27,17 @@ open Base
 (** [Generic_types] contains generic versions of the types used in
     [Generic_builders] and [Generic_runners]. *)
 module type Generic_types = sig
-  type ('a, 's) t
   (** [t] is the type of the state monad. *)
+  type ('a, 's) t
 
-  type 'a final
   (** [final] is the type of returned results.  In transformers, this
      becomes ['a Inner.t]; otherwise, it becomes just ['a]. *)
+  type 'a final
 
-  type 's state
   (** [state] is the type used to represent the state outside of its
      monad.  In [S], ['s state] becomes [x] for some type [x]; in
      [S2], ['s state] becomes ['s]. *)
+  type 's state
 end
 
 (** [Generic_builders] contains generic versions of the 'builder'
@@ -82,10 +82,7 @@ end
 module type Fix = sig
   type ('a, 's) t
 
-  val fix
-    :  f:(('a -> ('a, 's) t) -> 'a -> ('a, 's) t)
-    -> 'a
-    -> ('a, 's) t
+  val fix : f:(('a -> ('a, 's) t) -> 'a -> ('a, 's) t) -> 'a -> ('a, 's) t
   (** [fix ~f init] builds a fixed point on [f].
 
       At each step, [f] is passed a continuation [mu] and a value [a].
@@ -100,23 +97,27 @@ end
 module type Generic = sig
   include Generic_builders with type 'a final := 'a
 
-  module Inner : Monad.S
   (** [Inner] is the monad to which we're adding state. *)
+  module Inner : Monad.S
 
-  include Generic_runners with type ('a, 's) t := ('a, 's) t
-                           and type 'a final := 'a Inner.t
-                           and type 's state := 's state
   (** State transformers have the same runner signatures as
       state monads, but lifted into the inner monad. *)
+  include
+    Generic_runners
+    with type ('a, 's) t := ('a, 's) t
+     and type 'a final := 'a Inner.t
+     and type 's state := 's state
 
   include Fix with type ('a, 's) t := ('a, 's) t
 
-  module Monadic : Generic_builders with type 'a state := 'a state
-                                     and type 'a final := 'a Inner.t
-                                     and type ('a, 's) t := ('a, 's) t
   (** [Monadic] contains a version of the builder interface that
       can interact with the inner monad ([Inner]) this state
       transformer is overlaying. *)
+  module Monadic :
+    Generic_builders
+    with type 'a state := 'a state
+     and type 'a final := 'a Inner.t
+     and type ('a, 's) t := ('a, 's) t
 end
 
 (** [S] is the signature of state monad transformers with a fixed
@@ -126,31 +127,33 @@ end
    example, [Or_error].  We can use this to build computations that
    are both stateful and can fail, for instance. *)
 module type S = sig
-  type state
   (** The fixed state type. *)
+  type state
 
   include Monad.S
+
   include T_monad.Extensions with type 'a t := 'a t
-  include Generic with type ('a, 's) t := 'a t
-                   and type 's state := state
-  include Monad_transform.S_fixed with type 'a t := 'a t
-                                   and module Inner := Inner
+
+  include Generic with type ('a, 's) t := 'a t and type 's state := state
+
+  include
+    Monad_transform.S_fixed with type 'a t := 'a t and module Inner := Inner
 end
 
 (** [Basic] is the signature that must be implemented
     by state systems being lifted into [S_transform] instances. *)
 module type Basic = sig
-  type t
   (** The type of the state. *)
+  type t
 
-  module Inner : Monad.S
   (** [Inner] is the monad to which we're adding state. *)
+  module Inner : Monad.S
 end
 
 (** [S2] is the signature of state transformers parametrised over both
    value and state types. *)
 module type S2 = sig
   include Monad.S2
-  include Generic with type ('a, 's) t := ('a, 's) t
-                   and type 's state := 's
+
+  include Generic with type ('a, 's) t := ('a, 's) t and type 's state := 's
 end

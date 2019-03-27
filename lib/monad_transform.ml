@@ -28,13 +28,13 @@ module type S_fixed = sig
   type 'a t
 
   module Inner : Monad.S
+
   val lift : 'a Inner.t -> 'a Inner.t t
 end
 
 module type S = sig
   type 'a t
 
-  module On_monad (M : Monad.S) : S_fixed with type 'a t := 'a t
-                                           and module Inner := M
-  ;;
+  module On_monad (M : Monad.S) :
+    S_fixed with type 'a t := 'a t and module Inner := M
 end
