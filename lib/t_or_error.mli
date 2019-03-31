@@ -38,3 +38,20 @@ module On_ok : Traversable.S1_container with type 'a t := 'a t
 
 (** Monad extensions for [Or_error]. *)
 include T_monad.Extensions with type 'a t := 'a t
+
+(** {2 Shortcuts for combining errors}
+
+    These functions are just shorthand for mapping over a list, then using
+    the various [combine_errors] functions in Core.
+
+    Prefer using these, where possible, over the analogous functions in
+    {{!T_list.With_errors} T_list.With_errors}; these ones correctly merge
+    errors. *)
+
+val combine_map : 'a list -> f:('a -> 'b t) -> 'b list t
+(** [combine_map xs ~f] is short for [map xs ~f] followed by
+    [combine_errors]. *)
+
+val combine_map_unit : 'a list -> f:('a -> unit t) -> unit t
+(** [combine_map_unit xs ~f] is short for [map xs ~f] followed by
+    [combine_errors_unit]. *)

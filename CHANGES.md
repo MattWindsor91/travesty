@@ -1,3 +1,14 @@
+# v0.3.1 (TBA)
+
+## New features
+
+- Add `T_monad.tee`, which is a counterpart to `tee_m` that accepts a
+  non-monadic function.  (This is somewhat less useful, but still helps in
+  terms of slotting, say, debug printing into a monadic pipeline.)
+- Add `T_or_error.combine_map[_unit]`, which are shorthand for
+  mapping followed by `combine_errors[_unit]`, and are recommended for use
+  instead of `map_m` and `iter_m` when using lists and `Or_error`.
+
 # v0.3.0 (2019-03-03)
 
 ## Breaking changes
@@ -10,7 +21,7 @@
   stronger interfaces that include implementations of `Container.S*`; see
   'new features' below for information.
 
-# New features
+## New features
 
 - Add `T_container.Extensions0` and `Extend0`, which generalise most
   of `Extensions1`/`Extend1` to arity-0 containers.

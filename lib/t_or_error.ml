@@ -48,3 +48,9 @@ let%expect_test "tee_m example" =
     [%sexp
       (Or_error.(42 |> tee_m ~f:fail_if_negative >>| fun x -> x * x) : int t)] ;
   [%expect {| (Ok 1764) |}]
+
+let combine_map (xs : 'a list) ~(f : 'a -> 'b t) : 'b list t =
+  xs |> List.map ~f |> Or_error.combine_errors
+
+let combine_map_unit (xs : 'a list) ~(f : 'a -> unit t) : unit t =
+  xs |> List.map ~f |> Or_error.combine_errors_unit
