@@ -2,25 +2,24 @@
 
    Copyright (c) 2018 by Matt Windsor
 
-   Permission is hereby granted, free of charge, to any person
-   obtaining a copy of this software and associated documentation
-   files (the "Software"), to deal in the Software without
-   restriction, including without limitation the rights to use, copy,
-   modify, merge, publish, distribute, sublicense, and/or sell copies
-   of the Software, and to permit persons to whom the Software is
-   furnished to do so, subject to the following conditions:
+   Permission is hereby granted, free of charge, to any person obtaining a
+   copy of this software and associated documentation files (the
+   "Software"), to deal in the Software without restriction, including
+   without limitation the rights to use, copy, modify, merge, publish,
+   distribute, sublicense, and/or sell copies of the Software, and to permit
+   persons to whom the Software is furnished to do so, subject to the
+   following conditions:
 
-   The above copyright notice and this permission notice shall be
-   included in all copies or substantial portions of the Software.
+   The above copyright notice and this permission notice shall be included
+   in all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-   SOFTWARE. *)
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+   NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+   USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 open Core_kernel
 
@@ -107,7 +106,8 @@ let%expect_test "map_m: list" =
   let module M = On_monad (List) in
   Sexp.output_hum Out_channel.stdout
     [%sexp
-      (List.bind ~f:(M.map_m ~f:(fun k -> [k; 0])) [[1; 2; 3]] : int list list)] ;
+      ( List.bind ~f:(M.map_m ~f:(fun k -> [k; 0])) [[1; 2; 3]]
+        : int list list )] ;
   [%expect
     {|
               ((1 2 3) (1 2 0) (1 0 3) (1 0 0) (0 2 3) (0 2 0) (0 0 3) (0 0 0)) |}]
@@ -148,7 +148,8 @@ let%expect_test "all: short-circuit on false" =
 
 let%expect_test "all: positive result" =
   Sexp.output_hum Out_channel.stdout
-    [%sexp (all ~predicates:[Int.is_positive; Int.is_non_negative] 10 : bool)] ;
+    [%sexp
+      (all ~predicates:[Int.is_positive; Int.is_non_negative] 10 : bool)] ;
   [%expect {| true |}]
 
 let%expect_test "all: negative result" =
@@ -228,7 +229,13 @@ let%expect_test "chained list/list traversal example" =
   in
   let result =
     C.to_list
-      [[0; 1; 1; 8]; [9; 9; 9]; [8; 8; 1; 9; 9]; [9; 1; 1]; [9]; [7; 2; 5]; [3]]
+      [ [0; 1; 1; 8]
+      ; [9; 9; 9]
+      ; [8; 8; 1; 9; 9]
+      ; [9; 1; 1]
+      ; [9]
+      ; [7; 2; 5]
+      ; [3] ]
   in
   Sexp.output_hum Out_channel.stdout [%sexp (result : int list)] ;
   [%expect {| (0 1 1 8 9 9 9 8 8 1 9 9 9 1 1 9 7 2 5 3) |}]

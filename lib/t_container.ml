@@ -2,25 +2,24 @@
 
    Copyright (c) 2018 by Matt Windsor
 
-   Permission is hereby granted, free of charge, to any person
-   obtaining a copy of this software and associated documentation
-   files (the "Software"), to deal in the Software without
-   restriction, including without limitation the rights to use, copy,
-   modify, merge, publish, distribute, sublicense, and/or sell copies
-   of the Software, and to permit persons to whom the Software is
-   furnished to do so, subject to the following conditions:
+   Permission is hereby granted, free of charge, to any person obtaining a
+   copy of this software and associated documentation files (the
+   "Software"), to deal in the Software without restriction, including
+   without limitation the rights to use, copy, modify, merge, publish,
+   distribute, sublicense, and/or sell copies of the Software, and to permit
+   persons to whom the Software is furnished to do so, subject to the
+   following conditions:
 
-   The above copyright notice and this permission notice shall be
-   included in all copies or substantial portions of the Software.
+   The above copyright notice and this permission notice shall be included
+   in all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-   SOFTWARE. *)
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+   NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+   USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 open Core_kernel
 include T_container_intf
@@ -41,24 +40,33 @@ module Extend0 (C : Container.S0) :
   let at_most_one xs =
     C.fold_until xs ~init:`None_yet
       ~f:(function
-        | `None_yet -> fun x -> Continue (`One x) | `One _ -> too_many_error )
+        | `None_yet -> fun x -> Continue (`One x) | `One _ -> too_many_error
+        )
       ~finish:(function `None_yet -> Ok None | `One x -> Ok (Some x))
 
   let one xs =
-    Or_error.(xs |> at_most_one >>= Result.of_option ~error:(too_few_error ()))
+    Or_error.(
+      xs |> at_most_one >>= Result.of_option ~error:(too_few_error ()))
 
   let two xs =
     C.fold_until xs ~init:`None_yet
       ~f:(function
-        | `None_yet -> fun x -> Continue (`One x)
-        | `One x -> fun y -> Continue (`Two (x, y))
-        | `Two _ -> too_many_error )
+        | `None_yet ->
+            fun x -> Continue (`One x)
+        | `One x ->
+            fun y -> Continue (`Two (x, y))
+        | `Two _ ->
+            too_many_error )
       ~finish:(function
-        | `None_yet | `One _ -> Result.Error (too_few_error ())
-        | `Two (x, y) -> Ok (x, y) )
+        | `None_yet | `One _ ->
+            Result.Error (too_few_error ())
+        | `Two (x, y) ->
+            Ok (x, y) )
 end
 
-module Extend0_predicate (P : T) (C : Container.S0 with type elt = P.t -> bool) :
+module Extend0_predicate
+    (P : T)
+    (C : Container.S0 with type elt = P.t -> bool) :
   Extensions0_predicate with type t := C.t and type item := P.t = struct
   include Extend0 (C)
 
@@ -85,21 +93,28 @@ struct
   let at_most_one xs =
     C.fold_until xs ~init:`None_yet
       ~f:(function
-        | `None_yet -> fun x -> Continue (`One x) | `One _ -> too_many_error )
+        | `None_yet -> fun x -> Continue (`One x) | `One _ -> too_many_error
+        )
       ~finish:(function `None_yet -> Ok None | `One x -> Ok (Some x))
 
   let one xs =
-    Or_error.(xs |> at_most_one >>= Result.of_option ~error:(too_few_error ()))
+    Or_error.(
+      xs |> at_most_one >>= Result.of_option ~error:(too_few_error ()))
 
   let two xs =
     C.fold_until xs ~init:`None_yet
       ~f:(function
-        | `None_yet -> fun x -> Continue (`One x)
-        | `One x -> fun y -> Continue (`Two (x, y))
-        | `Two _ -> too_many_error )
+        | `None_yet ->
+            fun x -> Continue (`One x)
+        | `One x ->
+            fun y -> Continue (`Two (x, y))
+        | `Two _ ->
+            too_many_error )
       ~finish:(function
-        | `None_yet | `One _ -> Result.Error (too_few_error ())
-        | `Two (x, y) -> Ok (x, y) )
+        | `None_yet | `One _ ->
+            Result.Error (too_few_error ())
+        | `Two (x, y) ->
+            Ok (x, y) )
 
   let any x ~predicates = C.exists predicates ~f:(fun p -> p x)
 

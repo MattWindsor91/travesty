@@ -2,44 +2,45 @@
 
    Copyright (c) 2018 by Matt Windsor
 
-   Permission is hereby granted, free of charge, to any person
-   obtaining a copy of this software and associated documentation
-   files (the "Software"), to deal in the Software without
-   restriction, including without limitation the rights to use, copy,
-   modify, merge, publish, distribute, sublicense, and/or sell copies
-   of the Software, and to permit persons to whom the Software is
-   furnished to do so, subject to the following conditions:
+   Permission is hereby granted, free of charge, to any person obtaining a
+   copy of this software and associated documentation files (the
+   "Software"), to deal in the Software without restriction, including
+   without limitation the rights to use, copy, modify, merge, publish,
+   distribute, sublicense, and/or sell copies of the Software, and to permit
+   persons to whom the Software is furnished to do so, subject to the
+   following conditions:
 
-   The above copyright notice and this permission notice shall be
-   included in all copies or substantial portions of the Software.
+   The above copyright notice and this permission notice shall be included
+   in all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-   BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-   SOFTWARE. *)
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+   NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+   USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 open Core_kernel
 include Traversable_intf
 
-(** [Derived_ops_maker] is an internal module type used for
-   implementing the derived operations (fold-map, fold, iterate) in an
-   arity-generic way. *)
+(** [Derived_ops_maker] is an internal module type used for implementing the
+    derived operations (fold-map, fold, iterate) in an arity-generic way. *)
 module type Derived_ops_maker = sig
   include Types_intf.Generic
 
   module On_monad (M : Monad.S) :
-    Generic with module M := M and type 'a t := 'a t and type 'a elt := 'a elt
+    Generic
+    with module M := M
+     and type 'a t := 'a t
+     and type 'a elt := 'a elt
 end
 
 (** [Derived_ops_monadic_gen] is an internal functor used to generate
-   several derived monadic operations (monadic fold-map, monadic
-   iteration, etc) from a monadic traversal in an arity-generic
-   way. *)
-module Derived_ops_monadic_gen (I : Derived_ops_maker) (M : Monad.S) = struct
+    several derived monadic operations (monadic fold-map, monadic iteration,
+    etc) from a monadic traversal in an arity-generic way. *)
+module Derived_ops_monadic_gen (I : Derived_ops_maker) (M : Monad.S) =
+struct
   (* We use the state monad to implement fold-map. *)
   module SM = State_transform.Make2 (M)
   module IM = I.On_monad (M)
@@ -53,10 +54,13 @@ module Derived_ops_monadic_gen (I : Derived_ops_maker) (M : Monad.S) = struct
         end)
     in
     let module ISM = I.On_monad (SM') in
-    SM.run' (ISM.map_m ~f:(fun x -> SM.Monadic.make (fun s -> f s x)) c) init
+    SM.run'
+      (ISM.map_m ~f:(fun x -> SM.Monadic.make (fun s -> f s x)) c)
+      init
 
   let fold_m c ~init ~f =
-    M.(fold_map_m ~init c ~f:(fun k x -> f k x >>| fun x' -> (x', x)) >>| fst)
+    M.(
+      fold_map_m ~init c ~f:(fun k x -> f k x >>| fun x' -> (x', x)) >>| fst)
 
   let iter_m c ~f =
     M.(IM.map_m ~f:(fun x -> M.(f x >>| fun () -> x)) c >>| fun _ -> ())
@@ -68,11 +72,10 @@ module Derived_ops_monadic_gen (I : Derived_ops_maker) (M : Monad.S) = struct
 end
 
 (** Internal functor for generating several derived non-monadic,
-   non-[Container] operations (map, iterate) from a fold-map, generic
-   over both arity-0 and arity-1. *)
+    non-[Container] operations (map, iterate) from a fold-map, generic over
+    both arity-0 and arity-1. *)
 module Derived_ops_gen (I : Derived_ops_maker) = struct
-  (* As usual, we just use the monadic equivalents over the identity
-     monad. *)
+  (* As usual, we just use the monadic equivalents over the identity monad. *)
   module D = Derived_ops_monadic_gen (I) (Monad.Ident)
 
   let fold_map = D.fold_map_m
@@ -109,8 +112,8 @@ module Basic1_to_derived_ops_maker (I : Basic1) :
   module On_monad = I.On_monad
 end
 
-(** [Container_gen] is an internal functor used to generate the input
-   to [Container] functors in an arity-generic way. *)
+(** [Container_gen] is an internal functor used to generate the input to
+    [Container] functors in an arity-generic way. *)
 module Container_gen (I : Derived_ops_maker) : sig
   val fold : 'a I.t -> init:'acc -> f:('acc -> 'a I.elt -> 'acc) -> 'acc
 
@@ -200,14 +203,14 @@ module Extend_container1 (I : Basic_container1) :
 
     module Elt = Elt
 
-    (* The [S0] fold-map has a strictly narrower function type than
-         the [S1] one, so we can just supply the same [On_monad]. *)
+    (* The [S0] fold-map has a strictly narrower function type than the [S1]
+       one, so we can just supply the same [On_monad]. *)
     module On_monad (M : Monad.S) = On_monad (M)
   end)
 end
 
-module Make_container1 (I : Basic1) : S1_container with type 'a t := 'a I.t =
-Extend_container1 (struct
+module Make_container1 (I : Basic1) :
+  S1_container with type 'a t := 'a I.t = Extend_container1 (struct
   include I
 
   include Container.Make (struct
