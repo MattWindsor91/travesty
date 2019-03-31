@@ -22,23 +22,16 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 open Base
-
-module type Extensions = sig
-  type 'a t
-
-  val when_m : bool -> f:(unit -> unit t) -> unit t
-
-  val unless_m : bool -> f:(unit -> unit t) -> unit t
-
-  val tee_m : 'a -> f:('a -> unit t) -> 'a t
-end
+include T_monad_intf
 
 module Extend (M : Monad.S) : Extensions with type 'a t := 'a M.t = struct
   let when_m predicate ~f = if predicate then f () else M.return ()
 
   let unless_m predicate ~f = if predicate then M.return () else f ()
 
-  let tee_m x ~f = M.(f x >>| Fn.const x)
+  let tee_m (x : 'a) ~(f : 'a -> unit M.t) : 'a M.t = M.(f x >>| Fn.const x)
+
+  let tee (x : 'a) ~(f : 'a -> unit) : 'a M.t = f x ; M.return x
 end
 
 module To_mappable (M : Monad.S) : Mappable.S1 with type 'a t := 'a M.t =
