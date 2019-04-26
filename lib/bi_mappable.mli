@@ -63,3 +63,15 @@ module Extend0 (S : S0) :
   with type t := S.t
    and type left := S.left
    and type right := S.right
+
+(** {2 Chaining containers} *)
+
+(** [Chain_Bi2_Map1 (Bi) (Map)] composes a bi-map [Bi] on an inner arity-2
+    container with an ordinary map [Map] on an outer arity-1 container,
+    producing an arity-2 bi-map across the whole container. For example, we
+    can make {{!T_alist} associative lists} bi-mappable by composing a
+    bi-map over {{!T_tuple2} pairs} [(a * b)] with ordinary
+    {{!T_list} list}, creating a bi-map over associative lists
+    [(a, b) List.Assoc.t]. *)
+module Chain_Bi2_Map1 (Bi : S2) (Map : Mappable.S1) :
+  S2 with type ('l, 'r) t = ('l, 'r) Bi.t Map.t

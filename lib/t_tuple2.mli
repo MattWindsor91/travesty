@@ -21,16 +21,18 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-open Core_kernel
-include Core_kernel.List.Assoc
-module M = Bi_mappable.Chain_Bi2_Map1 (T_tuple2) (T_list)
+(** An expanded version of Core's pair (2-tuple) module.
 
-include (M : module type of M with type ('k, 'v) t := ('k, 'v) t)
+    This expanded overlay contains a {{!Bi_mappable} bi-mappable}
+    implementation for pairs. *)
 
-include Bi_mappable.Extend2 (M)
+include module type of Core_kernel.Tuple2
 
-let%expect_test "bi_map example" =
-  let sample = [("foo", 27); ("bar", 53); ("baz", 99)] in
-  let sample' = bi_map sample ~left:String.capitalize ~right:Int.neg in
-  Sexp.output_hum stdout [%sexp (sample' : (string, int) t)] ;
-  [%expect {| ((Foo -27) (Bar -53) (Baz -99)) |}]
+(** Pairs are trivially bi-mappable; the left type is [fst], and the right
+    type is [snd]. For example:
+
+    {[
+      bi_map ("foo", 27) ~left:String.capitalize ~right:Int.neg
+      (* returns: ("Foo", -27) *)
+    ]} *)
+include Bi_mappable.S2_with_extensions with type ('l, 'r) t := ('l, 'r) t

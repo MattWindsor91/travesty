@@ -22,15 +22,20 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 open Core_kernel
-include Core_kernel.List.Assoc
-module M = Bi_mappable.Chain_Bi2_Map1 (T_tuple2) (T_list)
 
-include (M : module type of M with type ('k, 'v) t := ('k, 'v) t)
+module M = struct
+  include Core_kernel.Tuple2
 
+  let bi_map ((l, r) : ('k1, 'v1) t) ~(left : 'k1 -> 'k2)
+      ~(right : 'v1 -> 'v2) : ('k2, 'v2) t =
+    (left l, right r)
+end
+
+include M
 include Bi_mappable.Extend2 (M)
 
 let%expect_test "bi_map example" =
-  let sample = [("foo", 27); ("bar", 53); ("baz", 99)] in
+  let sample = ("foo", 27) in
   let sample' = bi_map sample ~left:String.capitalize ~right:Int.neg in
   Sexp.output_hum stdout [%sexp (sample' : (string, int) t)] ;
-  [%expect {| ((Foo -27) (Bar -53) (Baz -99)) |}]
+  [%expect {| (Foo -27) |}]

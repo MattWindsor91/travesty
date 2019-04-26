@@ -8,6 +8,10 @@
 - Add `T_or_error.combine_map[_unit]`, which are shorthand for
   mapping followed by `combine_errors[_unit]`, and are recommended for use
   instead of `map_m` and `iter_m` when using lists and `Or_error`.
+- Add `T_tuple2`, an extended `Core_kernel.Tuple2` adding bi-mappability.
+- Add chaining for arity-2 bi-mappable containers across arity-1 mappable
+  containers.  We now implement `T_alist`'s bi-mappable interface using
+  this and `T_tuple2`.
 
 # v0.3.0 (2019-03-03)
 

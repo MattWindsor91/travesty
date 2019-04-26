@@ -128,3 +128,12 @@ struct
     include Extend1_left (M)
   end
 end
+
+module Chain_Bi2_Map1 (Bi : S2) (Map : Mappable.S1) :
+  S2 with type ('l, 'r) t = ('l, 'r) Bi.t Map.t = struct
+  type ('l, 'r) t = ('l, 'r) Bi.t Map.t
+
+  let bi_map (x : ('l1, 'r1) t) ~(left : 'l1 -> 'l2) ~(right : 'r1 -> 'r2) :
+      ('l2, 'r2) t =
+    Map.map x ~f:(Bi.bi_map ~left ~right)
+end
