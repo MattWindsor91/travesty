@@ -1,5 +1,7 @@
 # Travesty
 
+[![Build Status](https://travis-ci.com/MattWindsor91/travesty.svg?branch=master)](https://travis-ci.com/MattWindsor91/travesty)
+
 _Travesty_ is a library for defining containers with monadic traversals,
 inspired by Haskell's
 [Traversable](http://hackage.haskell.org/package/base/docs/Data-Traversable.html)
