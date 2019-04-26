@@ -23,8 +23,15 @@
 
 (** An expanded version of Core's associative list module. *)
 
+(** This module completely subsumes the equivalent module in [Core_kernel]. *)
 include module type of Core_kernel.List.Assoc
 
 (** Associative lists are bi-mappable; the left type is keys, and the right
-    type is values. *)
+    type is values. For example:
+
+    {[
+      bi_map [("foo", 27); ("bar", 53); ("baz", 99)]
+        ~left:String.capitalize ~right:Int.neg
+      (* returns: [("Foo", -27); ("Bar", -53); ("Baz", -99)] *)
+    ]} *)
 include Bi_mappable.S2_with_extensions with type ('l, 'r) t := ('l, 'r) t

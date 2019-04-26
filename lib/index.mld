@@ -9,19 +9,18 @@ extensions on top of Core.  These focus on making a more 'purely
 functional', Haskell-esque style of programming easier, though with
 a focus on pragmatism over mathematical purity.
 
-{3 Other similar libraries}
-
-- The {{: https://binaryanalysisplatform.github.io/bap/api/v1.5.0/Monads.html}BAP monads library}
-  also contains implementations of monadic traversals, as well as several
-  of [Travesty]'s other extensions.
-
 {3 Traversal interfaces}
 
 [Travesty]'s main contribution is the
 {{!Travesty.Traversable}Traversable} module, which implements monadic
-traversal.  It also includes a {{!Travesty.Mappable}Mappable} module,
-which adds various bits of support for mappable containers (what
-Haskell would call 'functors').
+traversal.
+
+It also includes several other, related concepts:
+
+- {{!Travesty.Mappable}Mappable}: various bits of support for mappable containers
+  (what Haskell would call 'functors');
+- {{!Travesty.Bi_mappable}Bi_mappable}: support for containers that can be mapped over in two ways
+  (often called 'bifunctors').
 
 {3 State monads}
 
@@ -45,7 +44,21 @@ don't clash with Core modules if Travesty is opened globally.
 
 {4 Implementation expansions}
 
+- 2-tuples ({{!Travesty.T_tuple2}T_tuple2})
+- Associative lists ({{!Travesty.T_alist}T_alist})
 - Errors ({{!Travesty.T_or_error}T_or_error})
 - Functions ({{!Travesty.T_fn}T_fn})
 - Lists ({{!Travesty.T_list}T_list})
 - Options ({{!Travesty.T_list}T_option})
+
+{3 Related projects}
+
+{4 Other similar libraries}
+
+- The {{: https://binaryanalysisplatform.github.io/bap/api/v1.6.0/Monads.html}BAP monads library}
+  also contains implementations of monadic traversals, as well as several
+  of [Travesty]'s other extensions.
+
+{4 Projects depending on Travesty}
+
+- {{: https://github.com/MattWindsor91/act}act}, a toolbox for automatic compiler testing.

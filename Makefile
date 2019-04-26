@@ -11,6 +11,10 @@ clean:
 build:
 	dune build
 
+.PHONY: fmt
+fmt:
+	dune build @fmt --auto-promote
+
 .PHONY: doc
 doc:
 	dune build @doc
