@@ -12,10 +12,10 @@ Travesty also contains several other bits of Haskell-style monad functionality:
 
 - state monads (`State`);
 - state transformers (`State_transform`);
-- monadic traversal and various extensions on lists (`T_list`) and options
-  (`T_option`);
-- miscellaneous extensions on monads (`T_monad`), containers (`T_containers`),
-  and functions (`T_fn`).
+- miscellaneous extensions on monads (`Monad_exts`) and containers (`Containers_exts`);
+- pre-extended forms of various `Base` (`Base_exts`) and `Core_kernel` (`Core_kernel_exts`)
+  containers;
+- extra function combinators (`Base_exts.Fn` and `Core_kernel_exts.Fn`).
 
 Travesty is licenced under the MIT licence, and is a spin-off from the
 [act](https://github.com/MattWindsor91/act) project.
@@ -24,8 +24,8 @@ Travesty is licenced under the MIT licence, and is a spin-off from the
 
 See the [API documentation](https://MattWindsor91.github.io/travesty).
 
-Travesty shouldn't shadow any existing Core modules (any modules containing
-extensions on them are prefixed by `T_`), so `open Travesty` should work.
+Travesty tries to shadow existing modules only within `Base_exts` and
+`Core_kernel_exts`.
 
 ## Contributions
 
