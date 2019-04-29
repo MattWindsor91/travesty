@@ -182,7 +182,7 @@ module type Extensions1_left = sig
 
   (** Fixes the left type of this container to [Left.t]. *)
   module Fix_left (Left : T) :
-    S0_with_extensions with type t := Left.t t and type left := Left.t
+    S0_with_extensions with type t = Left.t t and type left := Left.t
 
   (** Bi-mappable types with a fixed right type are mappable over their
       left. *)
@@ -210,7 +210,7 @@ module type Extensions1_right = sig
 
   (** Fixes the right type of this container to [Right.t]. *)
   module Fix_right (Right : T) :
-    S0_with_extensions with type t := Right.t t and type right := Right.t
+    S0_with_extensions with type t = Right.t t and type right := Right.t
 
   (** Bi-mappable types with a fixed left type are mappable over their
       right. *)
@@ -241,13 +241,13 @@ module type Extensions2 = sig
   (** Fixes the left type of this container to [Left.t]. *)
   module Fix_left (Left : T) :
     S1_right_with_extensions
-    with type 'r t := (Left.t, 'r) t
+    with type 'r t = (Left.t, 'r) t
      and type left := Left.t
 
   (** Fixes the right type of this container to [Right.t]. *)
   module Fix_right (Right : T) :
     S1_left_with_extensions
-    with type 'l t := ('l, Right.t) t
+    with type 'l t = ('l, Right.t) t
      and type right := Right.t
 end
 
