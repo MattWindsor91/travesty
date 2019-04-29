@@ -1,0 +1,90 @@
+{2:top Travesty}
+
+[Travesty] is a library for defining containers with monadic
+traversals, inspired by Haskell's Traversable typeclass.  It sits on
+top of Jane Street's Core library ecosystem.
+
+As well as monadic traversals, [Travesty] includes various other
+extensions on top of Core.  These focus on making a more 'purely
+functional', Haskell-esque style of programming easier, though with
+a focus on pragmatism over mathematical purity.
+
+{3 Traversal interfaces}
+
+[Travesty]'s main contribution is the
+{{!Travesty.Traversable}Traversable} module, which implements monadic
+traversal.
+
+It also includes several other, related concepts:
+
+- {{!Travesty.Mappable}Mappable}: various bits of support for mappable containers
+  (what Haskell would call 'functors');
+- {{!Travesty.Bi_mappable}Bi_mappable}: support for containers that can be mapped over in two ways
+  (often called 'bifunctors').
+
+{3 State monads}
+
+[Travesty] also contains implementations of state monads
+({{!Travesty.State}State}) and transformers
+({{!Travesty.State_transform}State_transform}).  These are mainly used
+to implement fold-mapping and folding on top of
+{{!Travesty.Traversable}Traversable}, but we expose them for general
+consumption.
+
+{3 Extensions}
+
+Travesty also contains extensions to various module signatures, as well as
+to Base and Core_kernel container and monad modules.  We keep the latter
+in sub-libraries of [Travesty].
+
+{4 Signature expansions}
+
+These are in the [Travesty] library, and always have the suffix [exts].
+Certain other Travesty signatures pull them in automatically.
+
+- Containers ({{!Travesty.Container_exts}Container_exts})
+- Monads ({{!Travesty.Monad_exts}Monad_exts})
+
+{4 Implementation expansions}
+
+
+These are in the {{!Base_exts}Travesty.Base_exts} library (expanding the [Base]
+versions) and the {{!Core_kernel_exts}Travesty.Core_kernel_exts} library
+(expanding the [Core_kernel] versions).  Each usually has the same name as the
+module it shadows, so you can do the following:
+
+{[
+  open Core_kernel
+  module T = Travesty.Core_kernel_exts
+  type foo = (bar, baz) T.Tuple2.t
+
+  (* or *)
+
+  open Base
+  open! Travesty.Base_exts
+  type foo = (bar, baz) Tuple2.t
+]}
+
+- [Tuple2]: pairs/2-tuples
+  ({{!Base_exts.Tuple2}Base}, {{!Core_kernel_exts.Tuple2}Core_kernel})
+- [Alist] (not [List.Assoc]!): associative lists
+  ({{!Base_exts.Alist}Base}, {{!Core_kernel_exts.Alist}Core_kernel})
+- [Or_error]: error monad
+  ({{!Base_exts.Or_error}Base}, {{!Core_kernel_exts.Or_error}Core_kernel})
+- [Fn]: function combinators ({{!Base_exts.Fn}Base}, {{!Core_kernel_exts.Fn}Core_kernel})
+- [List]: lists
+  ({{!Base_exts.List}Base}, {{!Core_kernel_exts.List}Core_kernel})
+- [Option]: options
+  ({{!Base_exts.Option}Base}, {{!Core_kernel_exts.Option}Core_kernel})
+
+{3 Related projects}
+
+{4 Other similar libraries}
+
+- The {{: https://binaryanalysisplatform.github.io/bap/api/v1.6.0/Monads.html}BAP monads library}
+  also contains implementations of monadic traversals, as well as several
+  of [Travesty]'s other extensions.
+
+{4 Projects depending on Travesty}
+
+- {{: https://github.com/MattWindsor91/act}act}, a toolbox for automatic compiler testing.

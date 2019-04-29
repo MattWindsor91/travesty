@@ -9,7 +9,7 @@ clean:
 
 .PHONY: build
 build:
-	dune build
+	dune build @all
 
 .PHONY: fmt
 fmt:
