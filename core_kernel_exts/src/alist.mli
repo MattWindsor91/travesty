@@ -27,5 +27,5 @@
 include module type of Core_kernel.List.Assoc
 
 (** It also contains all of the extensions in
-    {{!Base_exts.Alist} Base_exts.Alist}. *)
-include module type of Base_exts.Alist.Extensions
+    {{!Travesty_base_exts.Alist} Travesty_base_exts.Alist}. *)
+include module type of Travesty_base_exts.Alist.Extensions

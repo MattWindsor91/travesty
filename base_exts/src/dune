@@ -1,7 +1,7 @@
 ;; -*- mode: lisp; -*-
 
 (library
- (name base_exts)
+ (name travesty_base_exts)
  (public_name travesty.base_exts)
  (synopsis "Travesty-extended versions of Base container modules")
  (inline_tests)

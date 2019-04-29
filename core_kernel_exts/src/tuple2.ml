@@ -21,15 +21,8 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-open Core_kernel
 include Core_kernel.Tuple2
+module T = Travesty_base_exts
 
 include (
-  Base_exts.Tuple2 :
-    module type of Base_exts.Tuple2 with type ('a, 'b) t := ('a, 'b) t )
-
-let%expect_test "bi_map example" =
-  let sample = ("foo", 27) in
-  let sample' = bi_map sample ~left:String.capitalize ~right:Int.neg in
-  Sexp.output_hum stdout [%sexp (sample' : (string, int) t)] ;
-  [%expect {| (Foo -27) |}]
+  T.Tuple2 : module type of T.Tuple2 with type ('x, 'y) t := ('x, 'y) t )

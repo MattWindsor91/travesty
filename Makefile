@@ -19,6 +19,10 @@ fmt:
 doc:
 	dune build @doc
 
+.PHONY: open-doc
+open-doc:
+	open _build/default/_doc/_html/index.html
+
 .PHONY: test
 test:
 	dune runtest --force

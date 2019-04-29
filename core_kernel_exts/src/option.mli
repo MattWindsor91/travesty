@@ -24,8 +24,8 @@
 (** Option extensions for [Core_kernel].
 
     This module expands and merges [Core_kernel.Option] with
-    {{!Base_exts.Option} Base_exts.Option}. *)
+    {{!Travesty_base_exts.Option} Travesty_base_exts.Option}. *)
 
 include module type of Core_kernel.Option
 
-include module type of Base_exts.Option.Extensions
+include module type of Travesty_base_exts.Option.Extensions

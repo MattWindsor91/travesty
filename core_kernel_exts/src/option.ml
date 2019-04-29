@@ -22,4 +22,4 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 include Core_kernel.Option
-include Base_exts.Option.Extensions
+include Travesty_base_exts.Option.Extensions

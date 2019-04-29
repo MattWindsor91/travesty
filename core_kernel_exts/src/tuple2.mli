@@ -31,4 +31,6 @@ include module type of Core_kernel.Tuple2
 
 (** It also includes all of the extensions in
     {{!Base_exts.Tuple2} Base_exts.Tuple2}. *)
-include module type of Base_exts.Tuple2 with type ('l, 'r) t := ('l, 'r) t
+include
+  module type of Travesty_base_exts.Tuple2
+  with type ('l, 'r) t := ('l, 'r) t

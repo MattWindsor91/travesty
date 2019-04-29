@@ -24,11 +24,11 @@
 (** Function combinator extensions for [Core_kernel].
 
     This module expands and merges [Core_kernel.Fn] with
-    {{!Base_exts.Fn} Base_exts.Fn}. *)
+    {{!Travesty_base_exts.Fn} Travesty_base_exts.Fn}. *)
 
 (** It fully subsumes the equivalent module in [Core_kernel]. *)
 include module type of Core_kernel.Fn
 
 (** It also includes all of the extensions in
-    {{!Base_exts.Fn} Base_exts.Fn}. *)
-include module type of Base_exts.Fn.Extensions
+    {{!Travesty_base_exts.Fn} Travesty_base_exts.Fn}. *)
+include module type of Travesty_base_exts.Fn.Extensions

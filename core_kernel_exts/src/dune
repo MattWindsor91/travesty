@@ -1,10 +1,10 @@
 ;; -*- mode: lisp; -*-
 
 (library
- (name core_kernel_exts)
+ (name travesty_core_kernel_exts)
  (public_name travesty.core_kernel_exts)
  (synopsis "Travesty-extended versions of Core_kernel container modules")
  (inline_tests)
  (preprocess
   (pps ppx_deriving.std ppx_expect ppx_jane))
- (libraries core_kernel travesty base_exts))
+ (libraries core_kernel travesty travesty_base_exts))

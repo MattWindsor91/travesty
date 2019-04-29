@@ -24,8 +24,8 @@
 (** Error monad extensions for [Core_kernel].
 
     This module expands and merges [Core_kernel.Or_error] with
-    {{!Base_exts.Or_error} Base_exts.Or_error}. *)
+    {{!Travesty_base_exts.Or_error} Travesty_base_exts.Or_error}. *)
 
 include module type of Core_kernel.Or_error
 
-include module type of Base_exts.Or_error.Extensions
+include module type of Travesty_base_exts.Or_error.Extensions

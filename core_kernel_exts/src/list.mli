@@ -24,11 +24,11 @@
 (** List extensions for [Core_kernel].
 
     This module expands and merges [Core_kernel.List] with
-    {{!Base_exts.List} Base_exts.List}. *)
+    {{!Travesty_base_exts.List} Travesty_base_exts.List}. *)
 
 (** It fully subsumes the equivalent module in [Core_kernel]. *)
 include module type of Core_kernel.List
 
 (** It also includes all of the extensions in
-    {{!Base_exts.List} Base_exts.List}. *)
-include module type of Base_exts.List.Extensions
+    {{!Travesty_base_exts.List} Travesty_base_exts.List}. *)
+include module type of Travesty_base_exts.List.Extensions

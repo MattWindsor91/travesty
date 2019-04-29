@@ -10,12 +10,16 @@ typeclass.  It sits on top of Jane Street's
 
 Travesty also contains several other bits of Haskell-style monad functionality:
 
-- state monads (`State`);
-- state transformers (`State_transform`);
-- miscellaneous extensions on monads (`Monad_exts`) and containers (`Containers_exts`);
-- pre-extended forms of various `Base` (`Base_exts`) and `Core_kernel` (`Core_kernel_exts`)
+- state monads (`Travesty.State`);
+- state transformers (`Travesty.State_transform`);
+- miscellaneous extensions on monads (`Travesty.Monad_exts`) and containers (`Travesty.Containers_exts`);
+- pre-extended forms of various `Base` (`Travesty_base_exts`) and `Core_kernel` (`Travesty_core_kernel_exts`)
   containers;
-- extra function combinators (`Base_exts.Fn` and `Core_kernel_exts.Fn`).
+- extra function combinators (`Travesty_base_exts.Fn` and `Travesty_core_kernel_exts.Fn`).
+
+Note: the `Travesty_base_exts` and `Travesty_core_kernel_exts` modules form
+separate subpackages (`travesty.base_exts` and `travesty.core_kernel_exts`
+respectively).
 
 Travesty is licenced under the MIT licence, and is a spin-off from the
 [act](https://github.com/MattWindsor91/act) project.
@@ -24,8 +28,8 @@ Travesty is licenced under the MIT licence, and is a spin-off from the
 
 See the [API documentation](https://MattWindsor91.github.io/travesty).
 
-Travesty tries to shadow existing modules only within `Base_exts` and
-`Core_kernel_exts`.
+Travesty tries not to shadow existing modules except in the various
+`exts` subpackages.
 
 ## Contributions
 

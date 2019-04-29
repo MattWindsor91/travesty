@@ -22,4 +22,4 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 include Core_kernel.List.Assoc
-include Base_exts.Alist.Extensions
+include Travesty_base_exts.Alist.Extensions

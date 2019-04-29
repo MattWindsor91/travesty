@@ -48,34 +48,34 @@ Certain other Travesty signatures pull them in automatically.
 {4 Implementation expansions}
 
 
-These are in the {{!Base_exts}Travesty.Base_exts} library (expanding the [Base]
-versions) and the {{!Core_kernel_exts}Travesty.Core_kernel_exts} library
+These are in the {{!Travesty_base_exts}Travesty_base_exts} library (expanding the [Base]
+versions) and the {{!Travesty_core_kernel_exts}Travesty_core_kernel_exts} library
 (expanding the [Core_kernel] versions).  Each usually has the same name as the
 module it shadows, so you can do the following:
 
 {[
   open Core_kernel
-  module T = Travesty.Core_kernel_exts
+  module T = Travesty_core_kernel_exts
   type foo = (bar, baz) T.Tuple2.t
 
   (* or *)
 
   open Base
-  open! Travesty.Base_exts
+  open! Travesty_base_exts
   type foo = (bar, baz) Tuple2.t
 ]}
 
 - [Tuple2]: pairs/2-tuples
-  ({{!Base_exts.Tuple2}Base}, {{!Core_kernel_exts.Tuple2}Core_kernel})
+  ({{!Travesty_base_exts.Tuple2}Base}, {{!Travesty_core_kernel_exts.Tuple2}Core_kernel})
 - [Alist] (not [List.Assoc]!): associative lists
-  ({{!Base_exts.Alist}Base}, {{!Core_kernel_exts.Alist}Core_kernel})
+  ({{!Travesty_base_exts.Alist}Base}, {{!Travesty_core_kernel_exts.Alist}Core_kernel})
 - [Or_error]: error monad
-  ({{!Base_exts.Or_error}Base}, {{!Core_kernel_exts.Or_error}Core_kernel})
-- [Fn]: function combinators ({{!Base_exts.Fn}Base}, {{!Core_kernel_exts.Fn}Core_kernel})
+  ({{!Travesty_base_exts.Or_error}Base}, {{!Travesty_core_kernel_exts.Or_error}Core_kernel})
+- [Fn]: function combinators ({{!Travesty_base_exts.Fn}Base}, {{!Travesty_core_kernel_exts.Fn}Core_kernel})
 - [List]: lists
-  ({{!Base_exts.List}Base}, {{!Core_kernel_exts.List}Core_kernel})
+  ({{!Travesty_base_exts.List}Base}, {{!Travesty_core_kernel_exts.List}Core_kernel})
 - [Option]: options
-  ({{!Base_exts.Option}Base}, {{!Core_kernel_exts.Option}Core_kernel})
+  ({{!Travesty_base_exts.Option}Base}, {{!Travesty_core_kernel_exts.Option}Core_kernel})
 
 {3 Related projects}
 
