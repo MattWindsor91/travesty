@@ -34,6 +34,16 @@ include module type of Base.Fn
     We keep these in a separate module to make it easier to import them
     without pulling in the entirety of [Base.Fn]. *)
 module Extensions : sig
+  (** {3 Constant predicates}
+
+      These are convenience shorthands for [Base.Fn.const]. *)
+
+  val always : 'a -> bool
+  (** [always x] is [true]. *)
+
+  val never : 'a -> bool
+  (** [never x] is [false]. *)
+
   (** {3 Pointwise liftings of operators}
 
       These complement [Base.Fn.non]. *)
@@ -50,8 +60,8 @@ module Extensions : sig
 
       {[
         (* Short-circuiting: *)
-        conj (fun () -> true)  (fun () -> failwith "oops") (); (* --> exception *)
-        conj (fun () -> false) (fun () -> failwith "oops") (); (* --> false *)
+        conj always (fun () -> failwith "oops") (); (* --> exception *)
+        conj never  (fun () -> failwith "oops") (); (* --> false *)
       ]} *)
 
   val disj : ('a -> bool) -> ('a -> bool) -> 'a -> bool
@@ -66,8 +76,8 @@ module Extensions : sig
 
       {[
         (* Short-circuiting: *)
-        disj (fun () -> false) (fun () -> failwith "oops") (); (* --> exception *)
-        disj (fun () -> true)  (fun () -> failwith "oops") (); (* --> false *)
+        disj never  (fun () -> failwith "oops") (); (* --> exception *)
+        disj always (fun () -> failwith "oops") (); (* --> false *)
       ]} *)
 
   val ( &&& ) : ('a -> bool) -> ('a -> bool) -> 'a -> bool

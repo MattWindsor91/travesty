@@ -16,6 +16,10 @@ have been renamed or moved into subpackages of `Travesty`:
   of their namesake module.  Usually, they do so by importing the extensions from
   the `Base_exts` version on top of an import of the `Core_kernel` baseline module.
 
+Other breaking changes:
+
+- `Fn.on` now takes its second argument with the label `~f`.
+
 ## New features
 
 - Add `Monad_exts.tee`, which is a counterpart to `tee_m` that accepts a
@@ -28,6 +32,8 @@ have been renamed or moved into subpackages of `Travesty`:
 - Add chaining for arity-2 bi-mappable containers across arity-1 mappable
   containers.  We now implement `Alist`'s bi-mappable interface using
   this and `Tuple2`.
+- `Fn`: add `always`, which behaves like `const true`; and `never`, which
+  behaves as `const false`.
 
 ## Other
 

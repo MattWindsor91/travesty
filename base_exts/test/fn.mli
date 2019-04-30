@@ -1,6 +1,6 @@
 (* This file is part of 'travesty'.
 
-   Copyright (c) 2018 by Matt Windsor
+   Copyright (c) 2018, 2019 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
    copy of this software and associated documentation files (the
@@ -21,28 +21,4 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-include Base.Fn
-
-module Extensions = struct
-  let on (type a b c) (lift : a -> b) (x : a) (y : a) ~(f : b -> b -> c) : c
-      =
-    f (lift x) (lift y)
-
-  let conj (type a) (f : a -> bool) (g : a -> bool) (x : a) : bool =
-    f x && g x
-
-  let ( &&& ) (type a) (f : a -> bool) (g : a -> bool) : a -> bool =
-    conj f g
-
-  let disj (type a) (f : a -> bool) (g : a -> bool) (x : a) : bool =
-    f x || g x
-
-  let ( ||| ) (type a) (f : a -> bool) (g : a -> bool) : a -> bool =
-    disj f g
-
-  let always (type a) (_ : a) : bool = true
-
-  let never (type a) (_ : a) : bool = false
-end
-
-include Extensions
+(** Signature deliberately left blank. *)
