@@ -21,33 +21,33 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-(** An expanded version of Base's associative list module. *)
+open Base
+open Stdio
+open Travesty_base_exts.Alist
 
-(** This module completely subsumes the equivalent module in [Base]. *)
-include module type of Base.List.Assoc
+let print_str_int : (string, int) t -> unit =
+  List.iter ~f:(fun (k, v) -> printf "%s -> %d\n" k v)
 
-(** {2 Extensions}
+let%expect_test "bi_map example" =
+  let sample = [("foo", 27); ("bar", 53); ("baz", 99)] in
+  let sample' = bi_map sample ~left:String.capitalize ~right:Int.neg in
+  print_str_int sample' ;
+  [%expect {|
+    Foo -> -27
+    Bar -> -53
+    Baz -> -99 |}]
 
-    We keep these in a separate module to make it easier to import them
-    without pulling in the entirety of [Base.Assoc]. *)
-module Extensions : sig
-  (** Associative lists are bi-mappable; the left type is keys, and the
-      right type is values. For example:
-
-      {[
-        bi_map [("foo", 27); ("bar", 53); ("baz", 99)]
-          ~left:String.capitalize ~right:Int.neg
-        (* returns: [("Foo", -27); ("Bar", -53); ("Baz", -99)] *)
-      ]} *)
-  include
-    Travesty.Bi_mappable.S2_with_extensions
-    with type ('l, 'r) t := ('l, 'r) t
-
-  val compose :
-    ('a, 'b) t -> ('b, 'c) t -> equal:('b -> 'b -> bool) -> ('a, 'c) t
-  (** [compose a b ~equal] produces an associative list that returns
-      [(x, z)] for each [(x, y)] in [a] such that a [(y', z)] exists in [b],
-      and [equal y y'] is true. *)
-end
-
-include module type of Extensions
+let%expect_test "compose example" =
+  let ab =
+    [("foo", "FOO"); ("bar", "FOO"); ("baz", "BAR"); ("baz", "BAZ")]
+  in
+  let bc = [("FOO", 1); ("FOO", 2); ("BAZ", 3)] in
+  let ac = compose ab bc ~equal:String.equal in
+  print_str_int ac ;
+  [%expect
+    {|
+    foo -> 1
+    foo -> 2
+    bar -> 1
+    bar -> 2
+    baz -> 3 |}]

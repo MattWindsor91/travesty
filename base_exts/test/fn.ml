@@ -36,8 +36,7 @@ let%expect_test "conj example" =
   [%expect {| true |}]
 
 let%expect_test "conj short-circuits" =
-  printf "%b\n"
-    (conj never (fun () -> failwith "oops") ()) ;
+  printf "%b\n" (conj never (fun () -> failwith "oops") ()) ;
   [%expect {| false |}]
 
 let%expect_test "&&& example" =
@@ -65,17 +64,17 @@ let%expect_test "||| short-circuits" =
   [%expect {| true |}]
 
 let%expect_test "always example" =
-  printf "%b\n" (always 27);
+  printf "%b\n" (always 27) ;
   [%expect {| true |}]
 
 let%expect_test "always example (different type, to show polymorphism)" =
-  printf "%b\n" (always "the sun");
+  printf "%b\n" (always "the sun") ;
   [%expect {| true |}]
 
 let%expect_test "never example" =
-  printf "%b\n" (never 53);
+  printf "%b\n" (never 53) ;
   [%expect {| false |}]
 
 let%expect_test "never example (different type, to show polymorphism)" =
-  printf "%b\n" (never "say never again");
+  printf "%b\n" (never "say never again") ;
   [%expect {| false |}]

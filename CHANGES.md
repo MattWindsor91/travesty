@@ -34,6 +34,8 @@ Other breaking changes:
   this and `Tuple2`.
 - `Fn`: add `always`, which behaves like `const true`; and `never`, which
   behaves as `const false`.
+- `Alist`: add `compose`, which is the relational composition on two associative
+  lists.
 
 ## Other
 
