@@ -91,3 +91,5 @@ module Extensions : sig
         ints, strs (* --> true, false *)
       ]} *)
 end
+
+include module type of Extensions
