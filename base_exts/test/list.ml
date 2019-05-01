@@ -222,31 +222,58 @@ let%test_module "one" =
 
 let%test_module "replace" =
   ( module struct
+    let%expect_test "map" =
+      let lst = ["kappa"; "keepo"; "frankerz"; "pogchamp"] in
+      let lst' =
+        replace lst 2 ~f:(Fn.compose Option.some String.uppercase)
+      in
+      print_s [%sexp (lst' : string list Or_error.t)] ;
+      [%expect {| (Ok (kappa keepo FRANKERZ pogchamp)) |}]
+
+    let%expect_test "delete" =
+      let lst = ["kappa"; "keepo"; "frankerz"; "pogchamp"] in
+      let lst' = replace lst 1 ~f:(Fn.const None) in
+      print_s [%sexp (lst' : string list Or_error.t)] ;
+      [%expect {| (Ok (kappa frankerz pogchamp)) |}]
+
+    let%expect_test "out of bounds" =
+      let lst = ["kappa"; "keepo"; "frankerz"; "pogchamp"] in
+      let lst' =
+        replace lst 4 ~f:(Fn.compose Option.some String.uppercase)
+      in
+      print_s [%sexp (lst' : string list Or_error.t)] ;
+      [%expect
+        {|
+      (Error ("Replace failed: index out of range" (insert_at 4) (list_length 4))) |}]
+  end )
+
+let%test_module "replace_m" =
+  ( module struct
     let%expect_test "successfully map" =
       let lst = ["kappa"; "keepo"; "frankerz"; "pogchamp"] in
       let f x = Or_error.return (Some (String.uppercase x)) in
-      let lst' = replace lst 2 ~f in
+      let lst' = With_errors.replace_m lst 2 ~f in
       print_s [%sexp (lst' : string list Or_error.t)] ;
       [%expect {| (Ok (kappa keepo FRANKERZ pogchamp)) |}]
 
     let%expect_test "successfully delete" =
       let lst = ["kappa"; "keepo"; "frankerz"; "pogchamp"] in
       let f _ = Or_error.return None in
-      let lst' = replace lst 1 ~f in
+      let lst' = With_errors.replace_m lst 1 ~f in
       print_s [%sexp (lst' : string list Or_error.t)] ;
       [%expect {| (Ok (kappa frankerz pogchamp)) |}]
 
     let%expect_test "failing function" =
       let lst = ["kappa"; "keepo"; "frankerz"; "pogchamp"] in
       let f _ = Or_error.error_string "function failure" in
-      let lst' = replace lst 3 ~f in
+      let lst' = With_errors.replace_m lst 3 ~f in
       print_s [%sexp (lst' : string list Or_error.t)] ;
       [%expect {| (Error "function failure") |}]
 
     let%expect_test "out of bounds" =
       let lst = ["kappa"; "keepo"; "frankerz"; "pogchamp"] in
       let f x = Or_error.return (Some (String.uppercase x)) in
-      let lst' = replace lst 4 ~f in
+      let lst' = With_errors.replace_m lst 4 ~f in
       print_s [%sexp (lst' : string list Or_error.t)] ;
       [%expect
         {|

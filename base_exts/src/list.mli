@@ -36,24 +36,51 @@ include module type of Base.List
 module Extensions : sig
   (** {3 Travesty instances} *)
 
-  (** Lists are traversable containers. *)
-  include Travesty.Traversable.S1_container with type 'a t := 'a t
+  (** Extended [With_errors], adding functions specific to working with
+      lists in an error-prone context. *)
+  module With_errors : sig
+    include
+      Travesty.Traversable.On_monad1
+      with type 'a t := 'a t
+       and module M := Or_error
+
+    (** {4 Utility functions for modifying lists with error-prone functions} *)
+
+    val replace_m :
+      'a list -> int -> f:('a -> 'a option Or_error.t) -> 'a list Or_error.t
+    (** [replace_m xs at ~f] tries to replace the value at index [at] in
+        [xs] using the possibly-failing function [f]. [f] may return
+        [Ok None], in which case the item is removed
+
+        Examples:
+
+        {[
+          replace [1; 2; 3] 1 ~f:(fun _ -> Ok None) (* Ok [1; 3] *)
+          replace [1; 2; 3] 2 ~f:(fun x -> Ok (Some (x + 1))) (* Ok [1; 2; 4] *)
+        ]} *)
+  end
+
+  (** Lists are traversable containers, but have an extended [With_errors]
+      submodule. *)
+  include
+    Travesty.Traversable.S1_container
+    with type 'a t := 'a t
+     and module With_errors := With_errors
 
   (** We can also filter-map over them. *)
   include Travesty.Filter_mappable.S1 with type 'a t := 'a t
 
   (** {3 Utility functions for modifying lists} *)
 
-  val replace :
-    'a list -> int -> f:('a -> 'a option Or_error.t) -> 'a list Or_error.t
+  val replace : 'a list -> int -> f:('a -> 'a option) -> 'a list Or_error.t
   (** [replace xs at ~f] tries to replace the value at index [at] in [xs]
-      using the possibly-failing function [f]. [f] may return [Ok None], in
-      which case the item is removed.
+      using the function [f]. [f] may return [None], in which case the item
+      is removed.
 
       Examples:
 
       {[
-        replace [1; 2; 3] 1 ~f:(fun _ -> Ok None) (* Ok [1; 3] *)
+        replace [1; 2; 3] 1 ~f:(fun _ -> None) (* Ok [1; 3] *)
         replace [1; 2; 3] 2 ~f:(fun x -> Some (x + 1)) (* Ok [1; 2; 4] *)
       ]} *)
 

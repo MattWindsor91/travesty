@@ -27,7 +27,7 @@ include List
 module Zip = Travesty_containers.Zipper.Plain
 
 module Extensions = struct
-  include Traversable.Extend_container1 (struct
+  module TC = Traversable.Extend_container1 (struct
     include List
 
     module On_monad (M : Monad.S) = struct
@@ -43,14 +43,6 @@ module Extensions = struct
     end
   end)
 
-  include Filter_mappable.Make1 (struct
-    type 'a t = 'a list
-
-    let filter_map = List.filter_map
-  end)
-
-  let prefixes xs = List.mapi ~f:(fun i _ -> List.take xs (i + 1)) xs
-
   let replace_out_of_range (xs : 'a list) (at : int) (_zipper : 'a Zip.t) :
       'a Zip.t Or_error.t =
     Or_error.error_s
@@ -59,19 +51,37 @@ module Extensions = struct
           ~insert_at:(at : int)
           ~list_length:(List.length xs : int)]
 
-  let replace (xs : 'a list) (at : int) ~(f : 'a -> 'a option Or_error.t) :
+  module With_errors = struct
+    include TC.With_errors
+
+    let replace_m (xs : 'a list) (at : int)
+        ~(f : 'a -> 'a option Or_error.t) : 'a list Or_error.t =
+      let open Or_error.Let_syntax in
+      let z_init = Zip.of_list xs in
+      let%bind z_move =
+        Zip.On_error.step_m z_init ~steps:at
+          ~on_empty:(replace_out_of_range xs at)
+      in
+      let%map z_repl =
+        Zip.On_error.map_m_head z_move ~f
+          ~on_empty:(replace_out_of_range xs at)
+      in
+      Zip.to_list z_repl
+  end
+
+  include (TC : module type of TC with module With_errors := With_errors)
+
+  include Filter_mappable.Make1 (struct
+    type 'a t = 'a list
+
+    let filter_map = List.filter_map
+  end)
+
+  let replace (xs : 'a list) (at : int) ~(f : 'a -> 'a option) :
       'a list Or_error.t =
-    let open Or_error.Let_syntax in
-    let z_init = Zip.of_list xs in
-    let%bind z_move =
-      Zip.On_error.step_m z_init ~steps:at
-        ~on_empty:(replace_out_of_range xs at)
-    in
-    let%map z_repl =
-      Zip.On_error.map_m_head z_move ~f
-        ~on_empty:(replace_out_of_range xs at)
-    in
-    Zip.to_list z_repl
+    With_errors.replace_m xs at ~f:(Fn.compose Or_error.return f)
+
+  let prefixes xs = List.mapi ~f:(fun i _ -> List.take xs (i + 1)) xs
 
   let insert (xs : 'a list) (at : int) (value : 'a) : 'a list Or_error.t =
     let open Or_error.Let_syntax in
