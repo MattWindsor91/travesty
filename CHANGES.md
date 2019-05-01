@@ -41,6 +41,8 @@ Other breaking changes:
   behaves as `const false`.
 - `Alist`: add `compose`, which is the relational composition on two associative
   lists.
+- `Travesty_containers.Zipper`: implementations of list zippers (imported from
+  `act`, and subject to change).
 
 ## Other
 

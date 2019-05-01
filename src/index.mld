@@ -47,7 +47,6 @@ Certain other Travesty signatures pull them in automatically.
 
 {4 Implementation expansions}
 
-
 These are in the {{!Travesty_base_exts}Travesty_base_exts} library (expanding the [Base]
 versions) and the {{!Travesty_core_kernel_exts}Travesty_core_kernel_exts} library
 (expanding the [Core_kernel] versions).  Each usually has the same name as the
@@ -76,6 +75,19 @@ module it shadows, so you can do the following:
   ({{!Travesty_base_exts.List}Base}, {{!Travesty_core_kernel_exts.List}Core_kernel})
 - [Option]: options
   ({{!Travesty_base_exts.Option}Base}, {{!Travesty_core_kernel_exts.Option}Core_kernel})
+
+{3 Custom containers}
+
+As well as expanding various [Core] and [Core_kernel] containers, [Travesty]
+features some of its own.  These have various traversal and mapping features
+built in, but aren't necessarily optimised for heavy-duty use.
+
+Each is in the {{!Travesty_containers}Travesty_containers} subpackage
+(in Dune, use [travesty.containers]. *)
+
+- {{!Travesty_containers.Singleton}Singleton}: treating a single data item
+  like a mappable, traversable container
+- {{!Travesty_containers.Zipper}Zipper}: list zippers
 
 {3 Related projects}
 
