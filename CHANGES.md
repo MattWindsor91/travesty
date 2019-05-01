@@ -7,9 +7,10 @@ Planned major release with incompatible name and library division changes.
 The main change in this release is that all 'extension' modules (`T_xyz`)
 have been renamed or moved into subpackages of `Travesty`:
 
+- `Singleton` now lives in `Travesty_containers`.
 - `T_monad` and `T_container` have changed to `Monad_exts` and `Container_exts`;
-- Every other `T_` module now lives in either `Travesty.Base_exts` or
-  `Travesty.Core_kernel_exts`, and no longer has the `T_` suffix.
+- Every other `T_` module now lives in either `Travesty_base_exts` or
+  `Travesty_core_kernel_exts`, and no longer has the `T_` suffix.
 - Modules in `Base_exts` depend on, and extend, the `Base` version of their
   namesake module.
 - Modules in `Core_kernel_exts` depend on, and extend, the `Core_kernel` version
@@ -22,6 +23,10 @@ Other breaking changes:
 
 ## New features
 
+- Submodule split: Travesty-unique containers are now in `Travesty_containers`
+  (dune: `travesty.containers`); extensions to Base containers are in
+  `Travesty_base_exts` (`travesty.base_exts`); similar extensions to
+  Core_kernel containers are in `Travesty_core_kernel_exts`.
 - Add `Monad_exts.tee`, which is a counterpart to `tee_m` that accepts a
   non-monadic function.  (This is somewhat less useful, but still helps in
   terms of slotting, say, debug printing into a monadic pipeline.)

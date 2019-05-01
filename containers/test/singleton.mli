@@ -1,6 +1,6 @@
 (* This file is part of 'travesty'.
 
-   Copyright (c) 2018 by Matt Windsor
+   Copyright (c) 2018, 2019 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
    copy of this software and associated documentation files (the
@@ -21,14 +21,4 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-open Base
-
-type 'a t = 'a [@@deriving sexp]
-
-include Traversable.Make_container1 (struct
-  type nonrec 'a t = 'a t
-
-  module On_monad (M : Monad.S) = struct
-    let map_m x ~f = f x
-  end
-end)
+(** This signature intentionally left blank. *)

@@ -1,6 +1,6 @@
 (* This file is part of 'travesty'.
 
-   Copyright (c) 2018 by Matt Windsor
+   Copyright (c) 2018, 2019 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
    copy of this software and associated documentation files (the
@@ -21,16 +21,20 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-(** Lifting a item to a singleton container.
+open Base
+open Base_quickcheck
+open Travesty_containers
 
-    [Singleton] lifts a single item to a traversable container, and is
-    useful for passing one item to functors and other contexts that expect a
-    container. *)
+let%expect_test "singleton map: example" =
+  Stdio.printf "%d\n" (Singleton.map ~f:Int.neg 90201);
+  [%expect {| -90201 |}]
 
-(** ['a t] is just ['a], but made to look like a container type. If its
-    inner type is sexpable, it is too. *)
-type 'a t = 'a [@@deriving sexp]
+module Int_and_function = struct
+  type t = int * (int -> int) [@@deriving quickcheck, sexp]
+end
 
-(** We implement {{!Traversable.S1_container} S1_container}, and, by
-    extension, the Core container interface. *)
-include Traversable.S1_container with type 'a t := 'a t
+let%test_unit "mapping f over a singleton of x is equivalent to (f x)" =
+  Base_quickcheck.Test.run_exn (module Int_and_function)
+    ~f:(fun (x, f) ->
+        [%test_result: int] ~here:[[%here]] ~equal:[%equal:int]
+           ~expect:(f x) (Singleton.map ~f x))
