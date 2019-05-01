@@ -26,7 +26,7 @@ open Base_quickcheck
 open Travesty_containers
 
 let%expect_test "singleton map: example" =
-  Stdio.printf "%d\n" (Singleton.map ~f:Int.neg 90201);
+  Stdio.printf "%d\n" (Singleton.map ~f:Int.neg 90201) ;
   [%expect {| -90201 |}]
 
 module Int_and_function = struct
@@ -34,7 +34,8 @@ module Int_and_function = struct
 end
 
 let%test_unit "mapping f over a singleton of x is equivalent to (f x)" =
-  Base_quickcheck.Test.run_exn (module Int_and_function)
+  Base_quickcheck.Test.run_exn
+    (module Int_and_function)
     ~f:(fun (x, f) ->
-        [%test_result: int] ~here:[[%here]] ~equal:[%equal:int]
-           ~expect:(f x) (Singleton.map ~f x))
+      [%test_result: int] ~here:[[%here]] ~equal:[%equal: int] ~expect:(f x)
+        (Singleton.map ~f x) )
