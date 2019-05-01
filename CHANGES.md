@@ -43,6 +43,9 @@ Other breaking changes:
   lists.
 - `Travesty_containers.Zipper`: implementations of list zippers (imported from
   `act`, and subject to change).
+- `List` extensions: added `replace` and `insert` functions (imported from
+  `act`, and subject to change).  Future versions may generalise `replace`
+  to act on any monad.
 
 ## Other
 

@@ -7,4 +7,4 @@
  (inline_tests)
  (preprocess
   (pps ppx_deriving.std ppx_expect ppx_jane))
- (libraries base travesty))
+ (libraries base travesty travesty.containers))

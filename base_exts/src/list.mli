@@ -42,6 +42,24 @@ module Extensions : sig
   (** We can also filter-map over them. *)
   include Travesty.Filter_mappable.S1 with type 'a t := 'a t
 
+  (** {3 Utility functions for modifying lists} *)
+
+  val replace :
+    'a list -> int -> f:('a -> 'a option Or_error.t) -> 'a list Or_error.t
+  (** [replace xs at ~f] tries to replace the value at index [at] in [xs]
+      using the possibly-failing function [f]. [f] may return [Ok None], in
+      which case the item is removed.
+
+      Examples:
+
+      {[
+        replace [1; 2; 3] 1 ~f:(fun _ -> Ok None) (* Ok [1; 3] *)
+        replace [1; 2; 3] 2 ~f:(fun x -> Some (x + 1)) (* Ok [1; 2; 4] *)
+      ]} *)
+
+  val insert : 'a list -> int -> 'a -> 'a list Or_error.t
+  (** [insert xs at value] tries to insert [value] at index [at] in [xs]. *)
+
   (** {3 Miscellaneous extension functions} *)
 
   val prefixes : 'a t -> 'a t t
@@ -50,6 +68,7 @@ module Extensions : sig
       Examples:
 
       {[
+        prefixes [] (* [] *)
         prefixes [1; 2; 3] (* [ [ 1 ]; [ 1; 2 ]; [ 1; 2; 3 ] *)
       ]} *)
 end
