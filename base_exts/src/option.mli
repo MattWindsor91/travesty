@@ -43,6 +43,18 @@ module Extensions : sig
       as monadic bind. *)
   include Travesty.Filter_mappable.S1 with type 'a t := 'a t
 
+  (** {3 Applying defaults non-eagerly} *)
+
+  val value_f : 'a option -> default_f:(unit -> 'a) -> 'a
+  (** [value_f opt ~default_f] behaves like
+      [value opt ~default:(default_f ())], but only evaluates the thunk
+      [default_f] if [value] is None. *)
+
+  val value_l : 'a option -> default_l:('a Lazy.t) -> 'a 
+  (** [value_f opt ~default_l] behaves like
+      [value opt ~default:(Lazy.force default_l)], but only forces
+      [default_l] if [value] is None. *)
+
   (** {3 Miscellaneous extension functions} *)
 
   val first_some_of_thunks : (unit -> 'a t) list -> 'a t

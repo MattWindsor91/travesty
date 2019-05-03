@@ -43,6 +43,16 @@ module Extensions = struct
     let filter_map = Base.Option.bind
   end)
 
+  let value_f (o : 'a option) ~(default_f:unit -> 'a) : 'a =
+    match o with
+    | Some a -> a
+    | None -> default_f ()
+
+  let value_l (o : 'a option) ~(default_l:'a Lazy.t) : 'a =
+    match o with
+    | Some a -> a
+    | None -> Lazy.force default_l
+
   let first_some_of_thunks thunks =
     Base.List.fold_until thunks ~init:()
       ~f:(fun () thunk ->
@@ -54,50 +64,3 @@ end
 
 include Extensions
 
-let%expect_test "generated option map behaves properly: Some" =
-  Stdio.print_s
-    Base.([%sexp (map ~f:(fun x -> x * x) (Some 12) : int option)]) ;
-  [%expect {| (144) |}]
-
-let%expect_test "generated option map behaves properly: None" =
-  Stdio.print_s Base.([%sexp (map ~f:(fun x -> x * x) None : int option)]) ;
-  [%expect {| () |}]
-
-let%expect_test "generated option count behaves properly: Some/yes" =
-  Stdio.print_s
-    Base.([%sexp (count ~f:Base.Int.is_positive (Some 42) : int)]) ;
-  [%expect {| 1 |}]
-
-let%expect_test "generated option count behaves properly: Some/no" =
-  Stdio.print_s Base.([%sexp (count ~f:Int.is_positive (Some (-42)) : int)]) ;
-  [%expect {| 0 |}]
-
-let%expect_test "map_m: returning identity on Some/Some" =
-  let module M = On_monad (Base.Option) in
-  Stdio.print_s
-    Base.(
-      [%sexp
-        (M.map_m ~f:Base.Option.some (Some "hello") : string option option)]) ;
-  [%expect {| ((hello)) |}]
-
-let%expect_test "exclude: Some -> None" =
-  Stdio.print_s
-    Base.([%sexp (exclude (Some 9) ~f:Int.is_positive : int option)]) ;
-  [%expect {| () |}]
-
-let%expect_test "exclude: Some -> Some" =
-  Stdio.print_s
-    Base.([%sexp (exclude (Some 0) ~f:Int.is_positive : int option)]) ;
-  [%expect {| (0) |}]
-
-let%expect_test "first_some_of_thunks: short-circuiting works" =
-  Stdio.print_s
-    Base.(
-      [%sexp
-        ( first_some_of_thunks
-            [ Fn.const None
-            ; Fn.const (Some "hello")
-            ; Fn.const (Some "world")
-            ; (fun () -> failwith "this shouldn't happen") ]
-          : string option )]) ;
-  [%expect {| (hello) |}]

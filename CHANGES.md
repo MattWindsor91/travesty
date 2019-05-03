@@ -23,6 +23,10 @@ Other breaking changes:
 
 ## New features
 
+This release contains a large amount of 'small' new features.  Most of these
+are of minor extensions and convenience functions on top of
+`Base` and `Core_kernel`
+
 - Submodule split: Travesty-unique containers are now in `Travesty_containers`
   (dune: `travesty.containers`); extensions to Base containers are in
   `Travesty_base_exts` (`travesty.base_exts`); similar extensions to
@@ -31,7 +35,7 @@ Other breaking changes:
   non-monadic function.  (This is somewhat less useful, but still helps in
   terms of slotting, say, debug printing into a monadic pipeline.)
 - Extensions: add `Or_error.combine_map[_unit]`, which are shorthand for
-  mapping followed by `combine_errors[_unit]`, and are recommended for use
+  mapping followed by `combine_errors[_unit]`.  These should be used 
   instead of `map_m` and `iter_m` when using lists and `Or_error`.
 - Extensions: add `Tuple2`, an extended `Core_kernel.Tuple2` adding bi-mappability.
 - Add chaining for arity-2 bi-mappable containers across arity-1 mappable
