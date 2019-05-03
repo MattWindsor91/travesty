@@ -66,16 +66,29 @@ let%test_module "value_f" = (module struct
 
   let%expect_test "option is Some" =
     printf "%d\n" (value_f ~default_f (Some 64));
-    [%expect {||}]
+    [%expect {| 64 |}]
 
   let%expect_test "option is None" =
     printf "%d\n" (value_f ~default_f None);
-    [%expect {||}]
+    [%expect {|
+      *** EVALUATED ***
+      42 |}]
 
   let%expect_test "multiple evaluations" =
     Base.List.iter [ Some 0; None; Some 118; Some 999; Some 88199; Some 911; Some 9725; None; Some 3 ]
       ~f:(fun x -> printf "%d\n" (value_f ~default_f x));
-    [%expect {||}]
+    [%expect {|
+      0
+      *** EVALUATED ***
+      42
+      118
+      999
+      88199
+      911
+      9725
+      *** EVALUATED ***
+      42
+      3 |}]
 end)
 
 let%test_module "value_l" = (module struct
@@ -88,16 +101,25 @@ let%test_module "value_l" = (module struct
   let%expect_test "option is Some" =
     let default_l = Lazy.from_fun default_f in
     printf "%s\n" (value_l ~default_l (Some "bar"));
-    [%expect {||}]
+    [%expect {| bar |}]
 
   let%expect_test "option is None" =
     let default_l = Lazy.from_fun default_f in
     printf "%s\n" (value_l ~default_l None);
-    [%expect {||}]
+    [%expect {|
+      *** EVALUATED ***
+      foo |}]
 
   let%expect_test "multiple evaluations" =
     let default_l = Lazy.from_fun default_f in
     Base.List.iter [ Some "bread"; Some "eggs"; None; Some "breaded eggs"; None; Some "ham" ]
       ~f:(fun x -> printf "%s\n" (value_l ~default_l (x)));
-    [%expect {||}]
+    [%expect {|
+      bread
+      eggs
+      *** EVALUATED ***
+      foo
+      breaded eggs
+      foo
+      ham |}]
 end)
