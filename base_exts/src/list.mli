@@ -26,8 +26,11 @@
     This module contains various extensions for [Base]'s [List] module,
     including adding monadic traversal. *)
 
-(** We re-export [Base.Option] for convenience. *)
-include module type of Base.List
+(** We replace [Base.List.Assoc] with our own {{!Alist} extended version}. *)
+module Assoc = Alist
+
+(** We then re-export the rest of [Base.List] for convenience. *)
+include module type of Base.List with module Assoc := Assoc
 
 (** {2 Extensions}
 

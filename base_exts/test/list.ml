@@ -320,3 +320,17 @@ let%expect_test "chained list/list traversal example" =
   in
   print_s [%sexp (result : int list)] ;
   [%expect {| (0 1 1 8 9 9 9 8 8 1 9 9 9 1 1 9 7 2 5 3) |}]
+
+let%test_module "making sure we re-export Alist as List.Assoc" =
+  ( module struct
+    let%expect_test "bi_map example" =
+      let sample = [("foo", 27); ("bar", 53); ("baz", 99)] in
+      let sample' =
+        Assoc.bi_map sample ~left:String.capitalize ~right:Int.neg
+      in
+      List.iter ~f:(fun (k, v) -> printf "%s -> %d\n" k v) sample' ;
+      [%expect {|
+      Foo -> -27
+      Bar -> -53
+      Baz -> -99 |}]
+  end )

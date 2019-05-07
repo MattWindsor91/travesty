@@ -43,15 +43,11 @@ module Extensions = struct
     let filter_map = Base.Option.bind
   end)
 
-  let value_f (o : 'a option) ~(default_f:unit -> 'a) : 'a =
-    match o with
-    | Some a -> a
-    | None -> default_f ()
+  let value_f (o : 'a option) ~(default_f : unit -> 'a) : 'a =
+    match o with Some a -> a | None -> default_f ()
 
-  let value_l (o : 'a option) ~(default_l:'a Lazy.t) : 'a =
-    match o with
-    | Some a -> a
-    | None -> Lazy.force default_l
+  let value_l (o : 'a option) ~(default_l : 'a Lazy.t) : 'a =
+    match o with Some a -> a | None -> Lazy.force default_l
 
   let first_some_of_thunks thunks =
     Base.List.fold_until thunks ~init:()
@@ -63,4 +59,3 @@ module Extensions = struct
 end
 
 include Extensions
-

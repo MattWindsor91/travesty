@@ -23,8 +23,10 @@
 
 open Base
 open Travesty
-include List
 module Zip = Travesty_containers.Zipper.Plain
+module Assoc = Alist
+
+include (List : module type of List with module Assoc := Assoc)
 
 module Extensions = struct
   module TC = Traversable.Extend_container1 (struct

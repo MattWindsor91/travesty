@@ -21,12 +21,14 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-open Base
+(* We can't use our extended [List] here, since it depends on [Alist] for
+   [List.Assoc]. *)
+
 open Travesty
 include Base.List.Assoc
 
 module Extensions = struct
-  module M = Bi_mappable.Chain_Bi2_Map1 (Tuple2) (List)
+  module M = Bi_mappable.Chain_Bi2_Map1 (Tuple2) (Base.List)
 
   include (M : module type of M with type ('k, 'v) t := ('k, 'v) t)
 
@@ -38,11 +40,12 @@ module Extensions = struct
 
   let compose_one (type a b c) (bc : (b, c) t) ((k, v) : a * b)
       ~(equal : b -> b -> bool) : (a * c) list =
-    List.filter_map bc ~f:(fun (k', v') -> compose_match k v k' v' ~equal)
+    Base.List.filter_map bc ~f:(fun (k', v') ->
+        compose_match k v k' v' ~equal )
 
   let compose (type a b c) (ab : (a, b) t) (bc : (b, c) t)
       ~(equal : b -> b -> bool) : (a, c) t =
-    List.concat_map ab ~f:(compose_one bc ~equal)
+    Base.List.concat_map ab ~f:(compose_one bc ~equal)
 end
 
 include Extensions

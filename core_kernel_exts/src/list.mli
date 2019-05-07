@@ -26,9 +26,13 @@
     This module expands and merges [Core_kernel.List] with
     {{!Travesty_base_exts.List} Travesty_base_exts.List}. *)
 
-(** It fully subsumes the equivalent module in [Core_kernel]. *)
-include module type of Core_kernel.List
+(** We replace [Core_kernel.List.Assoc] with our own
+    {{!Alist} extended version}. *)
+module Assoc = Alist
 
-(** It also includes all of the extensions in
+(** We then re-export the rest of [Core_kernel.List] for convenience. *)
+include module type of Core_kernel.List with module Assoc := Assoc
+
+(** We also include all of the extensions in
     {{!Travesty_base_exts.List} Travesty_base_exts.List}. *)
 include module type of Travesty_base_exts.List.Extensions

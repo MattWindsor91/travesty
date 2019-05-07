@@ -50,6 +50,8 @@ are of minor extensions and convenience functions on top of
 - `List` extensions: added `With_errors.replace_m`, `replace`, and `insert`
   functions (imported from `act`, and subject to change).
   Future versions may generalise `replace_m` to act on any monad.
+- `List.Assoc` in the extension modules is now an alias for `Alist`,
+  bringing the bifunctor extensions into scope there.
 
 ## Other
 

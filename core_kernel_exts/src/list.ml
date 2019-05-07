@@ -21,5 +21,10 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-include Core_kernel.List
+module Assoc = Alist
+
+include (
+  Core_kernel.List :
+    module type of Core_kernel.List with module Assoc := Assoc )
+
 include Travesty_base_exts.List.Extensions

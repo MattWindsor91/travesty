@@ -50,7 +50,7 @@ module Extensions : sig
       [value opt ~default:(default_f ())], but only evaluates the thunk
       [default_f] if [value] is None. *)
 
-  val value_l : 'a option -> default_l:('a Lazy.t) -> 'a 
+  val value_l : 'a option -> default_l:'a Lazy.t -> 'a
   (** [value_f opt ~default_l] behaves like
       [value opt ~default:(Lazy.force default_l)], but only forces
       [default_l] if [value] is None. *)
