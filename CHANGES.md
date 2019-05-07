@@ -1,6 +1,6 @@
-# v0.4.0 (TBA)
+# v0.4.0 (2019-05-07)
 
-Planned major release with incompatible name and library division changes.
+Major release with incompatible name and library division changes.
 
 ## Breaking changes
 
