@@ -54,14 +54,14 @@ module type Generic = sig
       Example:
 
       {[
-        (* T_list adds monadic traversals to a list;
+        (* Travesty_base_exts.List adds monadic traversals to a list;
            With_errors (in S1_container) implements them on the On_error
            monad. *)
 
         let f x =
           Or_error.(if 0 < x then error_string "negative!" else ok x)
         in
-        T_list.With_errors.map_m integers ~f
+        List.With_errors.map_m integers ~f
       ]} *)
 end
 

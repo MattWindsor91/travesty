@@ -34,7 +34,7 @@ open Base
     file. *)
 include module type of Monad_exts_intf
 
-(** [Extend] creates {{!Extensions} Extensions} for a [Monad.S]. *)
+(** [Extend] creates {{!S} extensions} for a [Monad.S]. *)
 module Extend (M : Monad.S) : S with type 'a t := 'a M.t
 
 (** {2:misc Miscellaneous} *)

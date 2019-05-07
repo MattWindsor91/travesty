@@ -49,37 +49,40 @@ module type Generic = sig
   (** [at_most_one xs] returns [Ok None] if [xs] is empty; [Ok Some(x)] if
       it contains only [x]; and an error otherwise.
 
-      Examples:
+      Examples (using
+      {{!Travesty_base_exts.List} an extended version of List}):
 
       {[
-        T_list.at_most_one []     (* ok None *)
-               at_most_one [1]    (* ok (Some 1) *)
-               at_most_one [1; 2] (* error -- too many *)
+        List.at_most_one []     (* ok None *)
+             at_most_one [1]    (* ok (Some 1) *)
+             at_most_one [1; 2] (* error -- too many *)
       ]} *)
 
   val one : 'a t -> 'a elt Or_error.t
   (** [one xs] returns [Ok x] if [xs] contains only [x], and an error
       otherwise.
 
-      Examples:
+      Examples (using
+      {{!Travesty_base_exts.List} an extended version of List}):
 
       {[
-        T_list.one []     (* error -- not enough *)
-               one [1]    (* ok 1 *)
-               one [1; 2] (* error -- too many *)
+        List.one []     (* error -- not enough *)
+             one [1]    (* ok 1 *)
+             one [1; 2] (* error -- too many *)
       ]} *)
 
   val two : 'a t -> ('a elt * 'a elt) Or_error.t
   (** [two xs] returns [Ok (x, y)] if [xs] is a list containing only [x] and
       [y] in that order, and an error otherwise.
 
-      Examples:
+      Examples (using
+      {{!Travesty_base_exts.List} an extended version of List}):
 
       {[
-        T_list.two []        (* error -- not enough *)
-               two [1]       (* error -- not enough *)
-               two [1; 2]    (* ok (1, 2) *)
-               two [1; 2; 3] (* error -- too many *)
+        List.two []        (* error -- not enough *)
+             two [1]       (* error -- not enough *)
+             two [1; 2]    (* ok (1, 2) *)
+             two [1; 2; 3] (* error -- too many *)
       ]} *)
 
   (** {3 Miscellaneous extensions} *)

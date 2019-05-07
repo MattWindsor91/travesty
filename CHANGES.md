@@ -1,6 +1,11 @@
+# v0.4.1 (2019-05-07)
+
+Minor documentation fixup release.  No other changes since v0.4.0.
+
 # v0.4.0 (2019-05-07)
 
 Major release with incompatible name and library division changes.
+(Not released on OPAM.)
 
 ## Breaking changes
 

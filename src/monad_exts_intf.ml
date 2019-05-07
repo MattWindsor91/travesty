@@ -40,22 +40,22 @@ module type S = sig
   (** [tee_m val ~f] executes [f val] for its monadic action, then returns
       [val].
 
-      Example:
+      Example (using an {{!Travesty_base_exts.Or_error} extended Or_error}):
 
       {[
         let fail_if_negative x =
-          T_on_error.when_m (Int.is_negative x)
+          On_error.when_m (Int.is_negative x)
             ~f:(fun () -> Or_error.error_string "value is negative!")
         in
         Or_error.(
-          42 |> T_on_error.tee_m ~f:fail_if_negative >>| (fun x -> x * x)
+          42 |> tee_m ~f:fail_if_negative >>| (fun x -> x * x)
         ) (* Ok (1764) *)
       ]} *)
 
   val tee : 'a -> f:('a -> unit) -> 'a t
   (** [tee val ~f] behaves as {{!tee_m} tee}, but takes a non-monadic [f].
 
-      Example:
+      Example (using an {{!Travesty_base_exts.Or_error} extended Or_error}):
 
       {[
         let print_if_negative x =
@@ -63,7 +63,7 @@ module type S = sig
         in
         Or_error.(
           try_get_value ()
-          >>= T_on_error.tee ~f:print_if_negative
+          >>= tee ~f:print_if_negative
           >>= try_use_value ()
         )
       ]} *)
