@@ -79,15 +79,15 @@ let%test_module "map_when_m, when_m, map_unless_m, and unless_m" =
 
         let%expect_test "active example returning Some" =
           print (map_when_m true 42 ~f:some) ;
-          [%expect {| |}]
+          [%expect {| 42 |}]
 
         let%expect_test "inactive example returning None" =
           print (map_when_m false 42 ~f:(Fn.const None)) ;
-          [%expect {| |}]
+          [%expect {| 42 |}]
 
         let%expect_test "inactive example returning Some" =
           print (map_when_m false 42 ~f:some) ;
-          [%expect {| |}]
+          [%expect {| 42 |}]
       end )
   end )
 
