@@ -28,6 +28,22 @@ module type S = sig
   (** The type of the extended monad. *)
   type 'a t
 
+  (** {3 Haskell-style operators} *)
+
+  val then_m : _ t -> 'a t -> 'a t
+  (** [then_m x y] sequentially composes the actions [x] and [y] as with
+      [>>=], but, rather than using the returned value of [x], it instead
+      just returns [y]. *)
+
+  val ( >> ) : _ t -> 'a t -> 'a t
+  (** [x >> y] is [then_m x y]. *)
+
+  val compose_m : ('a -> 'b t) -> ('b -> 'c t) -> 'a -> 'c t
+  (** [compose_m f g] is the Kleisli composition of [f] and [g]. *)
+
+  val ( >=> ) : ('a -> 'b t) -> ('b -> 'c t) -> 'a -> 'c t
+  (** [x >=> y] is [k_compose x y]. *)
+
   (** {3 Guarded monadic computations} *)
 
   val map_when_m :

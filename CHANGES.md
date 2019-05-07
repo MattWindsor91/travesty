@@ -20,6 +20,9 @@ which may cause breakage in rare situations.
   condition doesn't hold.
 - New functions `M.map_when_m` and `M.map_unless_m`, which generalise
   `when_m` and `unless_m` to take an arbitrary `'a` (and pass it to `~f`).
+- New functions `then_m` and `>>`, which act as Haskell's `>>` (then) operator.
+- New functions `compose_m` and `>=>`, which act as Haskell's `>=>` (Kleisli
+  composition) operator.
 
 # v0.4.1 (2019-05-07)
 

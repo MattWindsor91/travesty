@@ -1,6 +1,6 @@
 (* This file is part of 'travesty'.
 
-   Copyright (c) 2018 by Matt Windsor
+   Copyright (c) 2018, 2019 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
    copy of this software and associated documentation files (the
@@ -25,6 +25,15 @@ open Base
 include Monad_exts_intf
 
 module Extend (M : Monad.S) : S with type 'a t := 'a M.t = struct
+  let then_m (x : _ M.t) (y : 'a M.t) : 'a M.t = M.(x >>= fun _ -> y)
+
+  let compose_m (f : 'a -> 'b M.t) (g : 'b -> 'c M.t) (x : 'a) : 'c M.t =
+    M.(x |> f >>= g)
+
+  let ( >> ) = then_m
+
+  let ( >=> ) = compose_m
+
   let map_when_m ?(otherwise : 'a -> 'a M.t = M.return) (condition : bool)
       (a : 'a) ~(f : 'a -> 'a M.t) : 'a M.t =
     (if condition then f else otherwise) a

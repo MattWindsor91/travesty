@@ -172,3 +172,20 @@ let%test_module "value_l" =
       foo
       ham |}]
   end )
+
+let%test_module "Haskell-style operators" =
+  ( module struct
+    let print : int option -> unit = iter ~f:(printf "%d\n")
+
+    let%expect_test "None >> Some" =
+      print (None >> Some 42) ;
+      [%expect {| |}]
+
+    let%expect_test "Some >> None" =
+      print (Some 42 >> None) ;
+      [%expect {| |}]
+
+    let%expect_test "Some >> Some" =
+      print (Some 42 >> Some 1337) ;
+      [%expect {| 1337 |}]
+  end )
