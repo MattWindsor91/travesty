@@ -16,7 +16,7 @@ let%test_module "map" =
 let%test_module "count" =
   ( module struct
     let%expect_test "behaves properly: Some/yes" =
-      print_s Base.([%sexp (count ~f:Base.Int.is_positive (Some 42) : int)]) ;
+      print_s Base.([%sexp (count ~f:Int.is_positive (Some 42) : int)]) ;
       [%expect {| 1 |}]
 
     let%expect_test "behaves properly: Some/no" =
@@ -63,6 +63,32 @@ let%test_module "first_some_of_thunks" =
                 ; (fun () -> failwith "this shouldn't happen") ]
               : string option )]) ;
       [%expect {| (hello) |}]
+  end )
+
+let%test_module "map_when_m, when_m, map_unless_m, and unless_m" =
+  ( module struct
+    open Base
+
+    let print : int option -> unit = iter ~f:(printf "%d\n")
+
+    let%test_module "map_when_m" =
+      ( module struct
+        let%expect_test "active example returning None" =
+          print (map_when_m true 42 ~f:(Fn.const None)) ;
+          [%expect {| |}]
+
+        let%expect_test "active example returning Some" =
+          print (map_when_m true 42 ~f:some) ;
+          [%expect {| |}]
+
+        let%expect_test "inactive example returning None" =
+          print (map_when_m false 42 ~f:(Fn.const None)) ;
+          [%expect {| |}]
+
+        let%expect_test "inactive example returning Some" =
+          print (map_when_m false 42 ~f:some) ;
+          [%expect {| |}]
+      end )
   end )
 
 let%test_module "value_f" =

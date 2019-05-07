@@ -43,6 +43,8 @@ module Extensions = struct
     let filter_map = Base.Option.bind
   end)
 
+  include Travesty.Monad_exts.Extend (Base.Option)
+
   let value_f (o : 'a option) ~(default_f : unit -> 'a) : 'a =
     match o with Some a -> a | None -> default_f ()
 

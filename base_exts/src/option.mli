@@ -43,6 +43,9 @@ module Extensions : sig
       as monadic bind. *)
   include Travesty.Filter_mappable.S1 with type 'a t := 'a t
 
+  (** Finally, options are a monad, and take the various monad extensions. *)
+  include Travesty.Monad_exts.S with type 'a t := 'a t
+
   (** {3 Applying defaults non-eagerly} *)
 
   val value_f : 'a option -> default_f:(unit -> 'a) -> 'a

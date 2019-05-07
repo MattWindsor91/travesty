@@ -1,3 +1,26 @@
+# v0.4.2-dev (IN PROGRESS)
+
+Minor feature release.
+
+## Possibly breaking changes
+
+See `when_m` and `unless_m` below: these now have an optional argument,
+which may cause breakage in rare situations.
+
+## New features
+
+### Extended `Option`
+
+- Now includes `Monad_exts`.
+
+### `Monad_exts`
+
+- `M.when_m` and `M.unless_m` now take an optional parameter `?otherwise`,
+  which allows generalising the application of `M.return` when the
+  condition doesn't hold.
+- New functions `M.map_when_m` and `M.map_unless_m`, which generalise
+  `when_m` and `unless_m` to take an arbitrary `'a` (and pass it to `~f`).
+
 # v0.4.1 (2019-05-07)
 
 Minor documentation fixup release.  No other changes since v0.4.0.

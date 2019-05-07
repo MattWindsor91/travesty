@@ -25,9 +25,21 @@ open Base
 include Monad_exts_intf
 
 module Extend (M : Monad.S) : S with type 'a t := 'a M.t = struct
-  let when_m predicate ~f = if predicate then f () else M.return ()
+  let map_when_m ?(otherwise : 'a -> 'a M.t = M.return) (condition : bool)
+      (a : 'a) ~(f : 'a -> 'a M.t) : 'a M.t =
+    (if condition then f else otherwise) a
 
-  let unless_m predicate ~f = if predicate then M.return () else f ()
+  let when_m ?(otherwise : (unit -> unit M.t) option) (condition : bool)
+      ~(f : unit -> unit M.t) : unit M.t =
+    map_when_m ?otherwise condition ~f ()
+
+  let map_unless_m ?(otherwise : ('a -> 'a M.t) option) (condition : bool)
+      (a : 'a) ~(f : 'a -> 'a M.t) =
+    map_when_m ?otherwise (not condition) ~f a
+
+  let unless_m ?(otherwise : (unit -> unit M.t) option) (condition : bool)
+      ~(f : unit -> unit M.t) : 'a M.t =
+    map_unless_m ?otherwise condition ~f ()
 
   let tee_m (x : 'a) ~(f : 'a -> unit M.t) : 'a M.t = M.(f x >>| Fn.const x)
 

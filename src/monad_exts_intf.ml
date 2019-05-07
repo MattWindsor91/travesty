@@ -28,13 +28,29 @@ module type S = sig
   (** The type of the extended monad. *)
   type 'a t
 
-  val when_m : bool -> f:(unit -> unit t) -> unit t
-  (** [when_m predicate ~f] returns [f ()] when [predicate] is true, and
-      [return ()] otherwise. *)
+  (** {3 Guarded monadic computations} *)
 
-  val unless_m : bool -> f:(unit -> unit t) -> unit t
-  (** [unless_m predicate ~f] returns [f ()] when [predicate] is false, and
-      [return ()] otherwise. *)
+  val map_when_m :
+    ?otherwise:('a -> 'a t) -> bool -> 'a -> f:('a -> 'a t) -> 'a t
+  (** [map_when_m ?otherwise condition ~f a] is [f a] when [condition] is
+      true, and [otherwise a] (by default, [return]) otherwise. *)
+
+  val when_m :
+    ?otherwise:(unit -> unit t) -> bool -> f:(unit -> unit t) -> unit t
+  (** [when_m ?otherwise condition ~f] is [f ()] when [condition] is true,
+      and [otherwise ()] (by default, [return]) otherwise. *)
+
+  val map_unless_m :
+    ?otherwise:('a -> 'a t) -> bool -> 'a -> f:('a -> 'a t) -> 'a t
+  (** [map_unless_m ?otherwise condition ~f a] is [f a] when [condition] is
+      false, and [otherwise a] (by default, [return]) otherwise. *)
+
+  val unless_m :
+    ?otherwise:(unit -> unit t) -> bool -> f:(unit -> unit t) -> unit t
+  (** [unless_m ?otherwise condition ~f] is [f ()] when [condition] is
+      false, and [otherwise ()] (by default, [return]) otherwise. *)
+
+  (** {3 Executing monadic effects in the middle of pipelines} *)
 
   val tee_m : 'a -> f:('a -> unit t) -> 'a t
   (** [tee_m val ~f] executes [f val] for its monadic action, then returns
