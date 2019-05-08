@@ -21,15 +21,14 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-(** Signatures for (non-monadic) bi-mapping.
+(** The {{!sigs} main signatures} are {{!S2} S2}, {{!S1_left} S1_left},
+    {{!S1_right} S1_right}, and {{!S0} S0}.
 
-    The {{!sigs} main signatures} are {{!S2} S2}, {{!S1_left} S1_left},
-    {{!S1_right} S1_right}, and {{!S0} S0} We also define various
-    {{!exts} extension signatures}. *)
+    We also define various {{!exts} extension signatures}. *)
 
 open Base
 
-(** {2:generic The generic signature}
+(** {3:generic The generic signature}
 
     As with {{!Traversable} Traversable}, we define the signature of
     bi-mappable structures in an arity-generic way, then specialise it for
@@ -59,7 +58,7 @@ module type Generic = sig
       over every ['r1 right], in [c]. *)
 end
 
-(** {2:sigs Basic signatures}
+(** {3:sigs Basic signatures}
 
     The basic signatures are {{!S0} S0}, which defines mapping across an
     arity-0 type [t] (with a fixed, associated element type [elt]);
@@ -124,11 +123,10 @@ module type S2 = sig
      and type 'r right := 'r
 end
 
-(** {2:exts Extensions}
+(** {3:exts Extensions}
 
     The signatures below describe various functions we can derive from
-    bi-mappable types and mappable containers. To apply them to existing
-    types, use the functors in {{!Bi_mappable} Bi_mappable}. *)
+    bi-mappable types and mappable containers. *)
 
 (** [Generic_extensions] describes extensions that apply to all arities, in
     an arity-neutral manner. *)
@@ -151,12 +149,6 @@ module type Extensions0 = sig
     with type ('l, 'r) t := t
      and type 'l left := left
      and type 'r right := right
-
-  (** Permits mapping over the left type. *)
-  module Map_left : Mappable.S0 with type t := t
-
-  (** Permits mapping over the right type. *)
-  module Map_right : Mappable.S0 with type t := t
 end
 
 (** Combines {{!S0} S0} and {{!Extensions0} Extensions0}. *)
@@ -179,14 +171,6 @@ module type Extensions1_left = sig
     with type ('l, 'r) t := 'l t
      and type 'l left := 'l
      and type 'r right := right
-
-  (** Fixes the left type of this container to [Left.t]. *)
-  module Fix_left (Left : T) :
-    S0_with_extensions with type t = Left.t t and type left := Left.t
-
-  (** Bi-mappable types with a fixed right type are mappable over their
-      left. *)
-  include Mappable.S1 with type 'l t := 'l t
 end
 
 (** Combines {{!S1_left} S1_left} and
@@ -207,14 +191,6 @@ module type Extensions1_right = sig
     with type ('l, 'r) t := 'r t
      and type 'l left := left
      and type 'r right := 'r
-
-  (** Fixes the right type of this container to [Right.t]. *)
-  module Fix_right (Right : T) :
-    S0_with_extensions with type t = Right.t t and type right := Right.t
-
-  (** Bi-mappable types with a fixed left type are mappable over their
-      right. *)
-  include Mappable.S1 with type 'r t := 'r t
 end
 
 (** Combines {{!S1_right} S1_right} and
@@ -235,20 +211,6 @@ module type Extensions2 = sig
     with type ('l, 'r) t := ('l, 'r) t
      and type 'l left := 'l
      and type 'r right := 'r
-
-  (** To fix both types, use [T.Fix_left(Left).Fix_right(right)]. *)
-
-  (** Fixes the left type of this container to [Left.t]. *)
-  module Fix_left (Left : T) :
-    S1_right_with_extensions
-    with type 'r t = (Left.t, 'r) t
-     and type left := Left.t
-
-  (** Fixes the right type of this container to [Right.t]. *)
-  module Fix_right (Right : T) :
-    S1_left_with_extensions
-    with type 'l t = ('l, Right.t) t
-     and type right := Right.t
 end
 
 (** Combines {{!S2} S2} and {{!Extensions2} Extensions2}. *)

@@ -21,30 +21,15 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-open Travesty
-include Base.Or_error
+open Travesty_base_exts.Or_error
 
-module Extensions = struct
-  module On_ok = Traversable.Make_container1 (struct
-    type nonrec 'a t = 'a t
-
-    module On_monad (M : Base.Monad.S) = struct
-      let map_m err ~f =
-        match err with
-        | Ok v ->
-            M.(f v >>| Base.Or_error.return)
-        | Error x ->
-            M.return (Error x)
-    end
-  end)
-
-  include Monad_exts.Extend (Base.Or_error)
-
-  let combine_map (xs : 'a list) ~(f : 'a -> 'b t) : 'b list t =
-    xs |> Base.List.map ~f |> combine_errors
-
-  let combine_map_unit (xs : 'a list) ~(f : 'a -> unit t) : unit t =
-    xs |> Base.List.map ~f |> combine_errors_unit
-end
-
-include Extensions
+let%expect_test "tee_m example" =
+  let fail_if_negative x =
+    when_m (Base.Int.is_negative x) ~f:(fun () ->
+        Base.Or_error.error_string "value is negative!" )
+  in
+  Stdio.print_s
+    [%sexp
+      ( Base.Or_error.(42 |> tee_m ~f:fail_if_negative >>| fun x -> x * x)
+        : Base.Int.t t )] ;
+  [%expect {| (Ok 1764) |}]
