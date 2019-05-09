@@ -1,34 +1,39 @@
 {2:top Travesty}
 
-[Travesty] is a library for defining containers with monadic
-traversals, inspired by Haskell's Traversable typeclass.  It sits on
+{i Travesty} is a library for defining containers with monadic and otherwise
+'exotic' traversals, inspired by Haskell's
+{i Traversable} and related typeclasses.  It sits on
 top of Jane Street's Core library ecosystem.
 
-As well as monadic traversals, [Travesty] includes various other
+As well as monadic traversals, Travesty includes various other
 extensions on top of Core.  These focus on making a more 'purely
 functional', Haskell-esque style of programming easier, though with
 a focus on pragmatism over mathematical purity.
 
 {3 Traversal interfaces}
 
-[Travesty]'s main contribution is the
-{{!Travesty.Traversable}Traversable} module, which implements monadic
-traversal.
+Travesty contains a set of module signatures, functors,
+and extensions for dealing with various kinds of traversability.
+These include:
 
-It also includes several other, related concepts:
+- {{!Travesty.Mappable}Mappable}: mapping (in Haskell,
+    {{:http://hackage.haskell.org/package/base/docs/Data-Functor.html}functors});
+- {{!Travesty.Traversable}Traversable}: monadic traversal (in Haskell,
+    {{:http://hackage.haskell.org/package/base/docs/Data-Traversable.html}traversable functors});
+- {{!Travesty.Bi_mappable}Bi_mappable}: mapping on two types over the same
+  container (in Haskell,
+    {{:http://hackage.haskell.org/package/base/docs/Data-Bifunctor.html}bifunctors});
 
-- {{!Travesty.Mappable}Mappable}: various bits of support for mappable containers
-  (what Haskell would call 'functors');
-- {{!Travesty.Bi_mappable}Bi_mappable}: support for containers that can be mapped over in two ways
-  (often called 'bifunctors').
+Haskell's {{:http://hackage.haskell.org/package/base/docs/Data-Foldable.html}foldable functors}
+already exist in Base as {{:https://ocaml.janestreet.com/ocaml-core/latest/doc/base/Base/Container/index.html}Container}.
 
 {3 State monads}
 
 [Travesty] also contains implementations of state monads
 ({{!Travesty.State}State}) and transformers
-({{!Travesty.State_transform}State_transform}).  These are mainly used
+({{!Travesty.State_transform}State_transform}).  We use these
 to implement fold-mapping and folding on top of
-{{!Travesty.Traversable}Traversable}, but we expose them for general
+{{!Travesty.Traversable}Traversable}, but expose them for general
 consumption.
 
 {3 Extensions}
@@ -40,7 +45,7 @@ in sub-libraries of [Travesty].
 {4 Signature expansions}
 
 These are in the [Travesty] library, and always have the suffix [exts].
-Certain other Travesty signatures pull them in automatically.
+Some Travesty signatures pull them in automatically.
 
 - Containers ({{!Travesty.Container_exts}Container_exts})
 - Monads ({{!Travesty.Monad_exts}Monad_exts})
