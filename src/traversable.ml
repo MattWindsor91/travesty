@@ -1,6 +1,6 @@
 (* This file is part of 'travesty'.
 
-   Copyright (c) 2018 by Matt Windsor
+   Copyright (c) 2018, 2019 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
    copy of this software and associated documentation files (the
@@ -30,7 +30,7 @@ module type Derived_ops_maker = sig
   include Types_intf.Generic
 
   module On_monad (M : Monad.S) :
-    Generic
+    Basic_generic_on_monad
     with module M := M
      and type 'a t := 'a t
      and type 'a elt := 'a elt
@@ -130,8 +130,8 @@ end = struct
   let length = `Define_using_fold
 end
 
-module Extend_container0 (I : Basic_container0) :
-  S0_container with module Elt = I.Elt and type t := I.t = struct
+module Make0_container (I : Basic0_container) :
+  S0 with module Elt = I.Elt and type t = I.t = struct
   module Maker = Basic0_to_derived_ops_maker (I)
   module Elt = I.Elt
 
@@ -154,9 +154,8 @@ module Extend_container0 (I : Basic_container0) :
   module With_errors = On_monad (Or_error)
 end
 
-module Make_container0 (I : Basic0) :
-  S0_container with module Elt = I.Elt and type t := I.t =
-Extend_container0 (struct
+module Make0 (I : Basic0) : S0 with module Elt = I.Elt and type t = I.t =
+Make0_container (struct
   include I
 
   include Container.Make0 (struct
@@ -165,8 +164,10 @@ Extend_container0 (struct
   end)
 end)
 
-module Extend_container1 (I : Basic_container1) :
-  S1_container with type 'a t := 'a I.t = struct
+module Make1_container (I : Basic1_container) : S1 with type 'a t = 'a I.t =
+struct
+  type nonrec 'a t = 'a I.t
+
   (* [I] needs a bit of rearrangement to fit in the derived operation
      functors (as above, but slightly differently). *)
   module Maker = Basic1_to_derived_ops_maker (I)
@@ -197,20 +198,10 @@ module Extend_container1 (I : Basic_container1) :
   end
 
   module With_errors = On_monad (Base.Or_error)
-
-  module With_elt (Elt : Equal.S) = Make_container0 (struct
-    type nonrec t = Elt.t I.t
-
-    module Elt = Elt
-
-    (* The [S0] fold-map has a strictly narrower function type than the [S1]
-       one, so we can just supply the same [On_monad]. *)
-    module On_monad (M : Monad.S) = On_monad (M)
-  end)
 end
 
-module Make_container1 (I : Basic1) :
-  S1_container with type 'a t := 'a I.t = Extend_container1 (struct
+module Make1 (I : Basic1) : S1 with type 'a t = 'a I.t =
+Make1_container (struct
   include I
 
   include Container.Make (struct
@@ -220,11 +211,8 @@ module Make_container1 (I : Basic1) :
   end)
 end)
 
-module Chain0
-    (Outer : S0_container)
-    (Inner : S0_container with type t := Outer.Elt.t) :
-  S0_container with module Elt = Inner.Elt and type t := Outer.t =
-Make_container0 (struct
+module Chain0 (Outer : S0) (Inner : S0 with type t := Outer.Elt.t) :
+  S0 with module Elt = Inner.Elt and type t = Outer.t = Make0 (struct
   type t = Outer.t
 
   module Elt = Inner.Elt
@@ -235,6 +223,17 @@ Make_container0 (struct
 
     let map_m x ~f = OM.map_m x ~f:(IM.map_m ~f)
   end
+end)
+
+module Fix_elt (I : S1) (Elt : Equal.S) :
+  S0 with type t = Elt.t I.t and module Elt = Elt = Make0 (struct
+  type t = Elt.t I.t
+
+  module Elt = Elt
+
+  (* The [S0] fold-map has a strictly narrower function type than the [S1]
+     one, so we can just supply the same [On_monad]. *)
+  module On_monad (M : Monad.S) = I.On_monad (M)
 end)
 
 module Helpers (M : Monad.S) = struct

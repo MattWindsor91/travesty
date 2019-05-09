@@ -296,18 +296,21 @@ let%test_module "insert" =
   end )
 
 let%expect_test "chained list/list traversal example" =
-  let module C =
-    Travesty.Traversable.Chain0 (struct
-        type t = int list list
-
-        include With_elt (struct
-          type t = int list [@@deriving equal]
-        end)
+  let module L1 =
+    Travesty.Traversable.Fix_elt
+      (Travesty_base_exts.List)
+      (struct
+        type t = int list [@@deriving equal]
       end)
-      (With_elt (struct
-        type t = int [@@deriving equal]
-      end))
   in
+  let module L2 =
+    Travesty.Traversable.Fix_elt
+      (Travesty_base_exts.List)
+      (struct
+        type t = int [@@deriving equal]
+      end)
+  in
+  let module C = Travesty.Traversable.Chain0 (L1) (L2) in
   let result =
     C.to_list
       [ [0; 1; 1; 8]

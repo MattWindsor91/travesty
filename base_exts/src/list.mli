@@ -43,7 +43,7 @@ module Extensions : sig
       lists in an error-prone context. *)
   module With_errors : sig
     include
-      Travesty.Traversable.On_monad1
+      Travesty.Traversable.S1_on_monad
       with type 'a t := 'a t
        and module M := Or_error
 
@@ -66,7 +66,7 @@ module Extensions : sig
   (** Lists are traversable containers, but have an extended [With_errors]
       submodule. *)
   include
-    Travesty.Traversable.S1_container
+    Travesty.Traversable.S1
     with type 'a t := 'a t
      and module With_errors := With_errors
 

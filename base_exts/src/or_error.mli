@@ -40,7 +40,7 @@ module Extensions : sig
 
   (** [On_ok] treats an [Or_error] value as a traversable container,
       containing one value when it is [Ok] and none otherwise. *)
-  module On_ok : Travesty.Traversable.S1_container with type 'a t := 'a t
+  module On_ok : Travesty.Traversable.S1 with type 'a t := 'a t
 
   (** Monad extensions for [Or_error]. *)
   include Travesty.Monad_exts.S with type 'a t := 'a t

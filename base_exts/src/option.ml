@@ -24,7 +24,7 @@
 include Base.Option
 
 module Extensions = struct
-  include Travesty.Traversable.Extend_container1 (struct
+  include Travesty.Traversable.Make1_container (struct
     include Base.Option
 
     module On_monad (M : Base.Monad.S) = struct
@@ -60,4 +60,4 @@ module Extensions = struct
       ~finish:(Base.Fn.const None)
 end
 
-include Extensions
+include (Extensions : module type of Extensions with type 'a t := 'a t)

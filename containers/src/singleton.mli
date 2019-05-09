@@ -31,6 +31,6 @@
     inner type is sexpable, it is too. *)
 type 'a t = 'a [@@deriving sexp]
 
-(** We implement {{!Traversable.S1_container} S1_container}, and, by
-    extension, the Base container interface. *)
-include Travesty.Traversable.S1_container with type 'a t := 'a t
+(** We implement {{!Traversable.S1} S1}, and, by extension, the Base
+    container interface. *)
+include Travesty.Traversable.S1 with type 'a t := 'a t

@@ -1,9 +1,33 @@
 # v0.5.0-dev (IN PROGRESS)
 
-Major release with new features and breaking changes.
+Major release with new features and breaking changes, especially to module
+names and structures.
 
 ## Breaking changes
 
+### Traversable module renaming
+
+The functors, and signatures in `Traversable` have been renamed drastically
+to make them more consistent, and provide a better distinction between
+'in-monad' and 'out-of-monad' signatures:
+
+- `SX` is now `BasicX_on_monad`, to reflect that it
+  only refers to the basic inner `On_monad` part of a traversable;
+- `Generic` is now `Generic_basic_on_monad`, as per the above;
+- `On_monad1` is now `S1_on_monad`.  There is no `S0_on_monad` yet, but this
+   may change.
+- `SX_container` is now just `SX`, as it forms the main output of the
+  `Traversable` functors;
+- `BasicX` is unchanged;
+- `Basic_containerX` is now `BasicX_container`;
+- `Extend_containerX` is now `MakeX_container` (as it makes an `SX` from a
+  `BasicX_container`);
+- `Make_containerX` is now `MakeX` (as it transforms a `BasicX`).
+
+### Other
+
+- `Traversable.S1` no longer carries `With_elt`.  This is now a separate
+  functor in `Traversable` called `Fix_elt`.
 - The various `Bi_mappable.Extensions` signatures no longer carry
   `Fix_left`, `Fix_right`, `Map_left`, and `Map_right`.  These are now
   separate functors, and don't apply the extensions by default.
@@ -38,6 +62,7 @@ Major release with new features and breaking changes.
 # v0.4.1 (2019-05-07)
 
 Minor documentation fixup release.  No other changes since v0.4.0.
+(Not released on OPAM.)
 
 # v0.4.0 (2019-05-07)
 

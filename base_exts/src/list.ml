@@ -29,7 +29,7 @@ module Assoc = Alist
 include (List : module type of List with module Assoc := Assoc)
 
 module Extensions = struct
-  module TC = Traversable.Extend_container1 (struct
+  module TC = Traversable.Make1_container (struct
     include List
 
     module On_monad (M : Monad.S) = struct
@@ -100,4 +100,4 @@ module Extensions = struct
     Zip.to_list z_ins
 end
 
-include Extensions
+include (Extensions : module type of Extensions with type 'a t := 'a t)

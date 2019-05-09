@@ -74,7 +74,7 @@ module it shadows, so you can do the following:
 
 - [Tuple2]: pairs/2-tuples
   ({{!Travesty_base_exts.Tuple2}Base}, {{!Travesty_core_kernel_exts.Tuple2}Core_kernel})
-- [Alist] (not [List.Assoc]!): associative lists
+- [Alist] (also exported as [List.Assoc]): associative lists
   ({{!Travesty_base_exts.Alist}Base}, {{!Travesty_core_kernel_exts.Alist}Core_kernel})
 - [Or_error]: error monad
   ({{!Travesty_base_exts.Or_error}Base}, {{!Travesty_core_kernel_exts.Or_error}Core_kernel})
@@ -91,7 +91,7 @@ features some of its own.  These have various traversal and mapping features
 built in, but aren't necessarily optimised for heavy-duty use.
 
 Each is in the {{!Travesty_containers}Travesty_containers} subpackage
-(in Dune, use [travesty.containers]. *)
+(in Dune, use [travesty.containers].)
 
 - {{!Travesty_containers.Singleton}Singleton}: treating a single data item
   like a mappable, traversable container

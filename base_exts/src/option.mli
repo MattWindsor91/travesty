@@ -37,7 +37,7 @@ module Extensions : sig
   (** {3 Travesty instances} *)
 
   (** Options are traversable containers. *)
-  include Travesty.Traversable.S1_container with type 'a t := 'a t
+  include Travesty.Traversable.S1 with type 'a t := 'a t
 
   (** Options are also filter-mappable; filter-mapping effectively behaves
       as monadic bind. *)

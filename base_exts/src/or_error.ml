@@ -25,7 +25,7 @@ open Travesty
 include Base.Or_error
 
 module Extensions = struct
-  module On_ok = Traversable.Make_container1 (struct
+  module On_ok = Traversable.Make1 (struct
     type nonrec 'a t = 'a t
 
     module On_monad (M : Base.Monad.S) = struct

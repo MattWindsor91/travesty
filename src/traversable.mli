@@ -21,12 +21,11 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-(** Monadic traversal.
+(** Signatures and functors for containers and data structures that can be
+    mapped across with a monadic side-effect.
 
-    [Traversable] provides signatures and functors for containers and data
-    structures that can be 'traversed': mapped across with a monadic
-    side-effect. It resembles the Haskell Traversable typeclass, but with
-    two differences:
+    Modules based on this pattern resembles the Haskell Traversable
+    typeclass, but with two differences:
 
     - We currently define traversability in terms of monads, not applicative
       functors (this might change in the future, but monads are generally
@@ -37,48 +36,49 @@ open Base
 
 (** {2 Signatures} *)
 
-(** {{!Traversable_intf} Traversable_intf} contains the signatures for
-    [Traversable]. *)
+(** @inline *)
 include module type of Traversable_intf
 
-(** {2 Making containers}
+(** {2 Making traversable containers}
 
     Monadic traversal is sufficient to define [fold], and, therefore, all of
-    the key functionality for a Core-style container. As such, we expose
-    functors for building traversable Core-style containers. *)
+    the key functionality for a Base-style container. As such, our
+    signatures and functors subsume those for building containers. *)
 
-(** [Make_container0] makes a {{!S0_container} S0_container} from a
-    {{!Basic0} Basic0}. *)
-module Make_container0 (I : Basic0) :
-  S0_container with module Elt = I.Elt and type t := I.t
+(** {3 New containers} *)
 
-(** [Make_container1] makes a {{!S1_container} S1_container} from a
-    {{!Basic1} Basic1}. *)
-module Make_container1 (I : Basic1) : S1_container with type 'a t := 'a I.t
+(** [Make] makes an {{!S0} S0} from a {{!Basic0} Basic0}. *)
+module Make0 (I : Basic0) : S0 with module Elt = I.Elt and type t = I.t
 
-(** {2 Extending existing containers}
+(** [Make] makes an {{!S1} S1} from a {{!Basic1} Basic1}. *)
+module Make1 (I : Basic1) : S1 with type 'a t = 'a I.t
 
-    We also expose functors for adding monadic traversals to existing
-    containers. *)
+(** {3 Extending existing containers with monadic traversals} *)
 
-(** [Extend_container0] makes a {{!S0_container} S0_container} from a
-    {{!Basic_container0} Basic_container0}. *)
-module Extend_container0 (I : Basic_container0) :
-  S0_container with module Elt = I.Elt and type t := I.t
+(** [Make0_container] makes an {{!S0} S0} from a
+    {{!Basic0_container} Basic0_container}. *)
+module Make0_container (I : Basic0_container) :
+  S0 with module Elt = I.Elt and type t = I.t
 
-(** [Extend_container1] makes a {{!S1_container} S1_container} from a
-    {{!Basic_container1} Basic_container1}. *)
-module Extend_container1 (I : Basic_container1) :
-  S1_container with type 'a t := 'a I.t
+(** [Make1_container] makes an {{!S1} S1} from a
+    {{!Basic_container1} Basic1_container}. *)
+module Make1_container (I : Basic1_container) : S1 with type 'a t = 'a I.t
 
-(** {2 Chaining together traversables} *)
+(** {2 Combining and modifying traversable containers} *)
 
-(** [Chain0] chains two {{!S0_container} S0_container} instances together,
-    traversing each element of the outer instance with the inner instance. *)
-module Chain0
-    (Outer : S0_container)
-    (Inner : S0_container with type t := Outer.Elt.t) :
-  S0_container with module Elt = Inner.Elt and type t := Outer.t
+(** {3 Chaining} *)
+
+(** [Chain0] chains two {{!S0} S0} instances together, traversing each
+    element of the outer instance with the inner instance. *)
+module Chain0 (Outer : S0) (Inner : S0 with type t := Outer.Elt.t) :
+  S0 with module Elt = Inner.Elt and type t = Outer.t
+
+(** {3 Fixing the element type} *)
+
+(** [Fix_elt (I) (Elt)] demotes an {{!S1} S1} [S] to an {{!S0} S0} by fixing
+    the element type to that mentioned in [Elt]. *)
+module Fix_elt (I : S1) (Elt : Equal.S) :
+  S0 with module Elt = Elt and type t = Elt.t I.t
 
 (** {2 Helper functions} *)
 

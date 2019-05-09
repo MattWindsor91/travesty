@@ -26,10 +26,12 @@ open Travesty
 
 type 'a t = 'a [@@deriving sexp]
 
-include Traversable.Make_container1 (struct
+module M = Traversable.Make1 (struct
   type nonrec 'a t = 'a t
 
   module On_monad (M : Monad.S) = struct
     let map_m x ~f = f x
   end
 end)
+
+include (M : module type of M with type 'a t := 'a t)
