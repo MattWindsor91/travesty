@@ -12,9 +12,8 @@ a focus on pragmatism over mathematical purity.
 
 {3 Traversal interfaces}
 
-Travesty contains a set of module signatures, functors,
-and extensions for dealing with various kinds of traversability.
-These include:
+Travesty contains module signatures, functors,
+and extensions for dealing with various kinds of traversability:
 
 - {{!Travesty.Mappable}Mappable}: mapping (in Haskell,
     {{:http://hackage.haskell.org/package/base/docs/Data-Functor.html}functors});
@@ -23,6 +22,10 @@ These include:
 - {{!Travesty.Bi_mappable}Bi_mappable}: mapping on two types over the same
   container (in Haskell,
     {{:http://hackage.haskell.org/package/base/docs/Data-Bifunctor.html}bifunctors});
+- {{!Travesty.Filter_mappable}Filter_mappable}: mapping that can discard
+  elements (similar to the
+    {{:https://hackage.haskell.org/package/filtrable-0.1.1.0}filtrable}
+    Haskell library).
 
 Haskell's {{:http://hackage.haskell.org/package/base/docs/Data-Foldable.html}foldable functors}
 already exist in Base as {{:https://ocaml.janestreet.com/ocaml-core/latest/doc/base/Base/Container/index.html}Container}.
