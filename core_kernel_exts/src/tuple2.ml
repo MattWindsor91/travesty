@@ -21,8 +21,4 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-include Core_kernel.Tuple2
-module T = Travesty_base_exts
-
-include (
-  T.Tuple2 : module type of T.Tuple2 with type ('x, 'y) t := ('x, 'y) t )
+include Travesty_base_exts.Tuple2

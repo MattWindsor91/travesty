@@ -21,16 +21,9 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-(** An expanded version of [Core_kernel]'s pair (2-tuple) module.
+(** 2-tuple extensions for [Core_kernel].
 
-    This module expands and merges both [Core_kernel.Tuple2] and
-    {{!Travesty.Base_exts.Tuple2} Base_exts.Tuple2}. *)
-
-(** It fully subsumes the equivalent module in [Core_kernel]. *)
-include module type of Core_kernel.Tuple2
-
-(** It also includes all of the extensions in
-    {{!Base_exts.Tuple2} Base_exts.Tuple2}. *)
-include
-  module type of Travesty_base_exts.Tuple2
-  with type ('l, 'r) t := ('l, 'r) t
+    This just re-exports
+    {{!Travesty_base_exts.Tuple2} Travesty_base_exts.Tuple2}, but may
+    contain [Core_kernel]-specific extensions in future. *)
+include module type of Travesty_base_exts.Tuple2

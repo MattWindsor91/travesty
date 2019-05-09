@@ -1,7 +1,5 @@
 # Travesty
 
-[![Build Status](https://travis-ci.com/MattWindsor91/travesty.svg?branch=master)](https://travis-ci.com/MattWindsor91/travesty)
-
 _Travesty_ is a library for defining containers with monadic traversals,
 inspired by Haskell's
 [Traversable](http://hackage.haskell.org/package/base/docs/Data-Traversable.html)
@@ -13,7 +11,8 @@ Travesty also contains several other bits of Haskell-style monad functionality:
 - state monads (`Travesty.State`);
 - state transformers (`Travesty.State_transform`);
 - miscellaneous extensions on monads (`Travesty.Monad_exts`) and containers (`Travesty.Containers_exts`);
-- pre-extended forms of various `Base` (`Travesty_base_exts`) and `Core_kernel` (`Travesty_core_kernel_exts`)
+- extensions and implementations of Travesty signatures for `Base`
+  (`Travesty_base_exts`) and `Core_kernel` (`Travesty_core_kernel_exts`)
   containers;
 - extra function combinators (`Travesty_base_exts.Fn` and `Travesty_core_kernel_exts.Fn`).
 
@@ -23,6 +22,8 @@ respectively).
 
 Travesty is licenced under the MIT licence, and is a spin-off from the
 [act](https://github.com/MattWindsor91/act) project.
+
+[![Build Status](https://travis-ci.com/MattWindsor91/travesty.svg?branch=master)](https://travis-ci.com/MattWindsor91/travesty)
 
 ## Usage
 

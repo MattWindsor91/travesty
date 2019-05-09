@@ -21,33 +21,24 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-(** An expanded version of Base's associative list module. *)
+(** Associative-list extensions. *)
 
-(** This module completely subsumes the equivalent module in [Base]. *)
-include module type of Base.List.Assoc
+(** Defined to let this module be used directly in chaining operations etc. *)
+type ('k, 'v) t = ('k, 'v) Base.List.Assoc.t
 
-(** {2 Extensions}
+(** Associative lists are bi-mappable; the left type is keys, and the right
+    type is values. For example:
 
-    We keep these in a separate module to make it easier to import them
-    without pulling in the entirety of [Base.Assoc]. *)
-module Extensions : sig
-  (** Associative lists are bi-mappable; the left type is keys, and the
-      right type is values. For example:
-
-      {[
+    {[
         bi_map [("foo", 27); ("bar", 53); ("baz", 99)]
           ~left:String.capitalize ~right:Int.neg
         (* returns: [("Foo", -27); ("Bar", -53); ("Baz", -99)] *)
-      ]} *)
-  include
-    Travesty.Bi_mappable.S2_with_extensions
-    with type ('l, 'r) t := ('l, 'r) t
+    ]} *)
+include
+  Travesty.Bi_mappable.S2_with_extensions with type ('l, 'r) t := ('l, 'r) t
 
-  val compose :
-    ('a, 'b) t -> ('b, 'c) t -> equal:('b -> 'b -> bool) -> ('a, 'c) t
-  (** [compose a b ~equal] produces an associative list that returns
-      [(x, z)] for each [(x, y)] in [a] such that a [(y', z)] exists in [b],
-      and [equal y y'] is true. *)
-end
-
-include module type of Extensions
+val compose :
+  ('a, 'b) t -> ('b, 'c) t -> equal:('b -> 'b -> bool) -> ('a, 'c) t
+(** [compose a b ~equal] produces an associative list that returns [(x, z)]
+    for each [(x, y)] in [a] such that a [(y', z)] exists in [b], and
+    [equal y y'] is true. *)

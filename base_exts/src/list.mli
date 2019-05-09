@@ -26,81 +26,70 @@
     This module contains various extensions for [Base]'s [List] module,
     including adding monadic traversal. *)
 
-(** We replace [Base.List.Assoc] with our own {{!Alist} extended version}. *)
-module Assoc = Alist
+(** Defined to let this module be used directly in chaining operations etc. *)
+type 'a t = 'a list
 
-(** We then re-export the rest of [Base.List] for convenience. *)
-include module type of Base.List with module Assoc := Assoc
+(** {2 Travesty instances} *)
 
-(** {2 Extensions}
-
-    We keep these in a separate module to make it easier to import them
-    without pulling in the entirety of [Base.List]. *)
-module Extensions : sig
-  (** {3 Travesty instances} *)
-
-  (** Extended [With_errors], adding functions specific to working with
-      lists in an error-prone context. *)
-  module With_errors : sig
-    include
-      Travesty.Traversable.S1_on_monad
-      with type 'a t := 'a t
-       and module M := Or_error
-
-    (** {4 Utility functions for modifying lists with error-prone functions} *)
-
-    val replace_m :
-      'a list -> int -> f:('a -> 'a option Or_error.t) -> 'a list Or_error.t
-    (** [replace_m xs at ~f] tries to replace the value at index [at] in
-        [xs] using the possibly-failing function [f]. [f] may return
-        [Ok None], in which case the item is removed
-
-        Examples:
-
-        {[
-          replace [1; 2; 3] 1 ~f:(fun _ -> Ok None) (* Ok [1; 3] *)
-          replace [1; 2; 3] 2 ~f:(fun x -> Ok (Some (x + 1))) (* Ok [1; 2; 4] *)
-        ]} *)
-  end
-
-  (** Lists are traversable containers, but have an extended [With_errors]
-      submodule. *)
+(** Extended [With_errors], adding functions specific to working with lists
+    in an error-prone context. *)
+module With_errors : sig
   include
-    Travesty.Traversable.S1
-    with type 'a t := 'a t
-     and module With_errors := With_errors
+    Travesty.Traversable.S1_on_monad
+    with type 'a t := 'a list
+     and module M := Base.Or_error
 
-  (** We can also filter-map over them. *)
-  include Travesty.Filter_mappable.S1 with type 'a t := 'a t
+  (** {3 Utility functions for modifying lists with error-prone functions} *)
 
-  (** {3 Utility functions for modifying lists} *)
-
-  val replace : 'a list -> int -> f:('a -> 'a option) -> 'a list Or_error.t
-  (** [replace xs at ~f] tries to replace the value at index [at] in [xs]
-      using the function [f]. [f] may return [None], in which case the item
-      is removed.
+  val replace_m :
+    'a list -> int -> f:('a -> 'a option Or_error.t) -> 'a list Or_error.t
+  (** [replace_m xs at ~f] tries to replace the value at index [at] in [xs]
+      using the possibly-failing function [f]. [f] may return [Ok None], in
+      which case the item is removed
 
       Examples:
 
       {[
-        replace [1; 2; 3] 1 ~f:(fun _ -> None) (* Ok [1; 3] *)
-        replace [1; 2; 3] 2 ~f:(fun x -> Some (x + 1)) (* Ok [1; 2; 4] *)
-      ]} *)
-
-  val insert : 'a list -> int -> 'a -> 'a list Or_error.t
-  (** [insert xs at value] tries to insert [value] at index [at] in [xs]. *)
-
-  (** {3 Miscellaneous extension functions} *)
-
-  val prefixes : 'a t -> 'a t t
-  (** [prefixes xs] returns all non-empty prefixes of [xs].
-
-      Examples:
-
-      {[
-        prefixes [] (* [] *)
-        prefixes [1; 2; 3] (* [ [ 1 ]; [ 1; 2 ]; [ 1; 2; 3 ] *)
+        replace [1; 2; 3] 1 ~f:(fun _ -> Ok None) (* Ok [1; 3] *)
+        replace [1; 2; 3] 2 ~f:(fun x -> Ok (Some (x + 1))) (* Ok [1; 2; 4] *)
       ]} *)
 end
 
-include module type of Extensions
+(** Lists are traversable containers, but have an extended [With_errors]
+    submodule. *)
+include
+  Travesty.Traversable.S1
+  with type 'a t := 'a t
+   and module With_errors := With_errors
+
+(** We can also filter-map over them. *)
+include Travesty.Filter_mappable.S1 with type 'a t := 'a t
+
+(** {2 Utility functions for modifying lists} *)
+
+val replace : 'a list -> int -> f:('a -> 'a option) -> 'a list Or_error.t
+(** [replace xs at ~f] tries to replace the value at index [at] in [xs]
+    using the function [f]. [f] may return [None], in which case the item is
+    removed.
+
+    Examples:
+
+    {[
+      replace [1; 2; 3] 1 ~f:(fun _ -> None) (* Ok [1; 3] *)
+      replace [1; 2; 3] 2 ~f:(fun x -> Some (x + 1)) (* Ok [1; 2; 4] *)
+    ]} *)
+
+val insert : 'a list -> int -> 'a -> 'a list Or_error.t
+(** [insert xs at value] tries to insert [value] at index [at] in [xs]. *)
+
+(** {2 Miscellaneous extension functions} *)
+
+val prefixes : 'a list -> 'a list list
+(** [prefixes xs] returns all non-empty prefixes of [xs].
+
+    Examples:
+
+    {[
+      prefixes [] (* [] *)
+      prefixes [1; 2; 3] (* [ [ 1 ]; [ 1; 2 ]; [ 1; 2; 3 ] *)
+    ]} *)

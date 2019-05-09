@@ -24,82 +24,74 @@
 (** Miscellaneous function combinators.
 
     [Fn] contains various higher-order functions in the style of Base's [Fn]
-    module. It re-exports that module for convenience. *)
+    module. *)
 
-(** This module completely subsumes the equivalent module in [Base]. *)
-include module type of Base.Fn
+(** {2 Constant predicates}
 
-(** {2 Extensions}
+    These are convenience shorthands for [Base.Fn.const]. *)
 
-    We keep these in a separate module to make it easier to import them
-    without pulling in the entirety of [Base.Fn]. *)
-module Extensions : sig
-  (** {3 Constant predicates}
+val always : 'a -> bool
+(** [always x] is [true]. *)
 
-      These are convenience shorthands for [Base.Fn.const]. *)
+val never : 'a -> bool
+(** [never x] is [false]. *)
 
-  val always : 'a -> bool
-  (** [always x] is [true]. *)
+(** {2 Pointwise liftings of operators}
 
-  val never : 'a -> bool
-  (** [never x] is [false]. *)
+    These complement [Base.Fn.non]. *)
 
-  (** {3 Pointwise liftings of operators}
+val conj : ('a -> bool) -> ('a -> bool) -> 'a -> bool
+(** [conj f g] lifts [&&] over predicates [f] and [g]. It is
+    short-circuiting: [g] is never called if [f] returns false.
 
-      These complement [Base.Fn.non]. *)
+    Examples:
 
-  val conj : ('a -> bool) -> ('a -> bool) -> 'a -> bool
-  (** [conj f g] lifts [&&] over predicates [f] and [g]. It is
-      short-circuiting: [g] is never called if [f] returns false.
+    {[
+      let is_zero = Int.(conj is_non_negative is_non_positive)
+    ]}
 
-      Examples:
+    {[
+      (* Short-circuiting: *)
+      conj always (fun () -> failwith "oops") (); (* --> exception *)
+      conj never  (fun () -> failwith "oops") (); (* --> false *)
+    ]} *)
 
-      {[
-        let is_zero = Int.(conj is_non_negative is_non_positive)
-      ]}
+val disj : ('a -> bool) -> ('a -> bool) -> 'a -> bool
+(** [disj f g] lifts [||] over predicates [f] and [g]. It is
+    short-circuiting: [g] is never called if [f] returns true.
 
-      {[
-        (* Short-circuiting: *)
-        conj always (fun () -> failwith "oops") (); (* --> exception *)
-        conj never  (fun () -> failwith "oops") (); (* --> false *)
-      ]} *)
+    Examples:
 
-  val disj : ('a -> bool) -> ('a -> bool) -> 'a -> bool
-  (** [disj f g] lifts [||] over predicates [f] and [g]. It is
-      short-circuiting: [g] is never called if [f] returns true.
+    {[
+      let is_not_zero = Int.(disj is_negative is_positive)
+    ]}
 
-      Examples:
+    {[
+      (* Short-circuiting: *)
+      disj never  (fun () -> failwith "oops") (); (* --> exception *)
+      disj always (fun () -> failwith "oops") (); (* --> false *)
+    ]} *)
 
-      {[
-        let is_not_zero = Int.(disj is_negative is_positive)
-      ]}
+val ( &&& ) : ('a -> bool) -> ('a -> bool) -> 'a -> bool
+(** [f &&& g] is [conj f g]. *)
 
-      {[
-        (* Short-circuiting: *)
-        disj never  (fun () -> failwith "oops") (); (* --> exception *)
-        disj always (fun () -> failwith "oops") (); (* --> false *)
-      ]} *)
+val ( ||| ) : ('a -> bool) -> ('a -> bool) -> 'a -> bool
+(** [f ||| g] is [disj f g]. *)
 
-  val ( &&& ) : ('a -> bool) -> ('a -> bool) -> 'a -> bool
-  (** [f &&& g] is [conj f g]. *)
+(** {2 Miscellaneous combinators} *)
 
-  val ( ||| ) : ('a -> bool) -> ('a -> bool) -> 'a -> bool
-  (** [f ||| g] is [disj f g]. *)
+val on : ('a -> 'b) -> 'a -> 'a -> f:('b -> 'b -> 'r) -> 'r
+(** [on lift x y ~f] lifts a binary function [f] using the lifter [lift]. It
+    does the same thing as the `on` function from Haskell, but with
+    arguments flipped to make sense without infixing.
 
-  (** {3 Miscellaneous combinators} *)
+    Effectively, it's [Base.Comparable.lift], but with a slightly different
+    signature.
 
-  val on : ('a -> 'b) -> 'a -> 'a -> f:('b -> 'b -> 'r) -> 'r
-  (** [on lift x y ~f] lifts a binary function [f] using the lifter [lift].
-      It does the same thing as the `on` function from Haskell, but with
-      arguments flipped to make sense without infixing.
+    Example:
 
-      Example:
-
-      {[
-        let ints = on fst    ~f:Int.equal (42, "banana") (42, "apple") in
-        let strs = on snd ~f:String.equal (42, "banana") (42, "apple") in
-        ints, strs (* --> true, false *)
-      ]} *)
-end
-
-include module type of Extensions
+    {[
+      let ints = on fst    ~f:Int.equal (42, "banana") (42, "apple") in
+      let strs = on snd ~f:String.equal (42, "banana") (42, "apple") in
+      ints, strs (* --> true, false *)
+    ]} *)

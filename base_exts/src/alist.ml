@@ -21,31 +21,19 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-(* We can't use our extended [List] here, since it depends on [Alist] for
-   [List.Assoc]. *)
-
 open Travesty
-include Base.List.Assoc
+module M = Bi_mappable.Chain_Bi2_Map1 (Tuple2) (Base.List)
+include M
+include Bi_mappable.Extend2 (M)
 
-module Extensions = struct
-  module M = Bi_mappable.Chain_Bi2_Map1 (Tuple2) (Base.List)
+let compose_match (type a b c) (k : a) (v : b) (k' : b) (v' : c)
+    ~(equal : b -> b -> bool) : (a * c) option =
+  Base.Option.some_if (equal v k') (k, v')
 
-  include (M : module type of M with type ('k, 'v) t := ('k, 'v) t)
+let compose_one (type a b c) (bc : (b, c) t) ((k, v) : a * b)
+    ~(equal : b -> b -> bool) : (a * c) list =
+  Base.List.filter_map bc ~f:(fun (k', v') -> compose_match k v k' v' ~equal)
 
-  include Bi_mappable.Extend2 (M)
-
-  let compose_match (type a b c) (k : a) (v : b) (k' : b) (v' : c)
-      ~(equal : b -> b -> bool) : (a * c) option =
-    Option.some_if (equal v k') (k, v')
-
-  let compose_one (type a b c) (bc : (b, c) t) ((k, v) : a * b)
-      ~(equal : b -> b -> bool) : (a * c) list =
-    Base.List.filter_map bc ~f:(fun (k', v') ->
-        compose_match k v k' v' ~equal )
-
-  let compose (type a b c) (ab : (a, b) t) (bc : (b, c) t)
-      ~(equal : b -> b -> bool) : (a, c) t =
-    Base.List.concat_map ab ~f:(compose_one bc ~equal)
-end
-
-include Extensions
+let compose (type a b c) (ab : (a, b) t) (bc : (b, c) t)
+    ~(equal : b -> b -> bool) : (a, c) t =
+  Base.List.concat_map ab ~f:(compose_one bc ~equal)

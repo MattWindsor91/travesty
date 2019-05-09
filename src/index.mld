@@ -58,23 +58,25 @@ Some Travesty signatures pull them in automatically.
 These are in the {{!Travesty_base_exts}Travesty_base_exts} library (expanding the [Base]
 versions) and the {{!Travesty_core_kernel_exts}Travesty_core_kernel_exts} library
 (expanding the [Core_kernel] versions).  Each usually has the same name as the
-module it shadows, so you can do the following:
+module it extends (except `Alist`), but {i doesn't} re-export that module.
+The intended mode of use is:
 
 {[
-  open Core_kernel
-  module T = Travesty_core_kernel_exts
-  type foo = (bar, baz) T.Tuple2.t
-
-  (* or *)
-
+  (* Base *)
   open Base
-  open! Travesty_base_exts
-  type foo = (bar, baz) Tuple2.t
+  module Tx = Travesty_base_Exts
+
+  (* Core_kernel *) 
+  open Core_kernel
+  module Tx = Travesty_core_kernel_exts
+
+  let example (foo : ('k, 'v) List.Assoc.t) =
+    Tx.Alist.bi_map ~left:foo ~right:bar foo
 ]}
 
 - [Tuple2]: pairs/2-tuples
   ({{!Travesty_base_exts.Tuple2}Base}, {{!Travesty_core_kernel_exts.Tuple2}Core_kernel})
-- [Alist] (also exported as [List.Assoc]): associative lists
+- [Alist]: associative lists
   ({{!Travesty_base_exts.Alist}Base}, {{!Travesty_core_kernel_exts.Alist}Core_kernel})
 - [Or_error]: error monad
   ({{!Travesty_base_exts.Or_error}Base}, {{!Travesty_core_kernel_exts.Or_error}Core_kernel})

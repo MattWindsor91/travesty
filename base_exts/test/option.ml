@@ -1,4 +1,5 @@
 open Stdio
+open Base.Option
 open Travesty_base_exts.Option
 
 let%test_module "map" =

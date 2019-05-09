@@ -5,6 +5,20 @@ names and structures.
 
 ## Breaking changes
 
+### Extension modules
+
+In a partial reversal of changes done in `v0.4.x`, the `Travesty_base_exts`
+and `Travesty_core_kernel_exts` modules no longer re-export the `Base` and
+`Core_kernel` modules on which they are based.
+
+This means that any code using these extensions will need to open both
+original and extension modules (for example, by opening `Travesty_base_exts`
+as `Tx` and using `Tx.List` when Travesty extensions are needed.
+
+This change avoids a large amount of coupling, inefficiency,
+and possible legal issues caused by including swathes of third
+party libraries.
+
 ### Traversable module renaming
 
 The functors, and signatures in `Traversable` have been renamed drastically

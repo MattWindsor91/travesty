@@ -21,11 +21,9 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-(** An expanded version of Core_kernel's associative list module. *)
+(** Associative list extensions for [Core_kernel].
 
-(** This module completely subsumes the equivalent module in [Core_kernel]. *)
-include module type of Core_kernel.List.Assoc
-
-(** It also contains all of the extensions in
-    {{!Travesty_base_exts.Alist} Travesty_base_exts.Alist}. *)
-include module type of Travesty_base_exts.Alist.Extensions
+    This just re-exports
+    {{!Travesty_base_exts.Alist} Travesty_base_exts.Alist}, but may contain
+    [Core_kernel]-specific extensions in future. *)
+include module type of Travesty_base_exts.Alist

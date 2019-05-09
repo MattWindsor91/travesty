@@ -21,5 +21,4 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-include Core_kernel.Or_error
-include Travesty_base_exts.Or_error.Extensions
+include Travesty_base_exts.Or_error

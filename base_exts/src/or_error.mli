@@ -27,40 +27,31 @@
     including monadic traversal over successful values and
     {{!Monad_exts} monad extensions}. *)
 
-(** This module completely subsumes the equivalent module in [Base]. *)
-include module type of Base.Or_error
+(** Defined to let this module be used directly in chaining operations etc. *)
+type 'a t = 'a Base.Or_error.t
 
-(** {2 Extensions}
+(** {2 Travesty signatures} *)
 
-    We keep these in a separate module to make it easier to import them
-    without pulling in the entirety of [Base.Or_error]. *)
+(** [On_ok] treats an [Or_error] value as a traversable container,
+    containing one value when it is [Ok] and none otherwise. *)
+module On_ok : Travesty.Traversable.S1 with type 'a t = 'a t
 
-module Extensions : sig
-  (** {2 Travesty signatures} *)
+(** Monad extensions for [Or_error]. *)
+include Travesty.Monad_exts.S with type 'a t := 'a t
 
-  (** [On_ok] treats an [Or_error] value as a traversable container,
-      containing one value when it is [Ok] and none otherwise. *)
-  module On_ok : Travesty.Traversable.S1 with type 'a t := 'a t
+(** {2 Shortcuts for combining errors}
 
-  (** Monad extensions for [Or_error]. *)
-  include Travesty.Monad_exts.S with type 'a t := 'a t
+    These functions are just shorthand for mapping over a list, then using
+    the various [combine_errors] functions in Base.
 
-  (** {2 Shortcuts for combining errors}
+    Prefer using these, where possible, over the analogous functions in
+    {{!T_list.With_errors} T_list.With_errors}; these ones correctly merge
+    errors. *)
 
-      These functions are just shorthand for mapping over a list, then using
-      the various [combine_errors] functions in Core.
+val combine_map : 'a list -> f:('a -> 'b t) -> 'b list t
+(** [combine_map xs ~f] is short for [map xs ~f] followed by
+    [combine_errors]. *)
 
-      Prefer using these, where possible, over the analogous functions in
-      {{!T_list.With_errors} T_list.With_errors}; these ones correctly merge
-      errors. *)
-
-  val combine_map : 'a list -> f:('a -> 'b t) -> 'b list t
-  (** [combine_map xs ~f] is short for [map xs ~f] followed by
-      [combine_errors]. *)
-
-  val combine_map_unit : 'a list -> f:('a -> unit t) -> unit t
-  (** [combine_map_unit xs ~f] is short for [map xs ~f] followed by
-      [combine_errors_unit]. *)
-end
-
-include module type of Extensions
+val combine_map_unit : 'a list -> f:('a -> unit t) -> unit t
+(** [combine_map_unit xs ~f] is short for [map xs ~f] followed by
+    [combine_errors_unit]. *)

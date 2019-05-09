@@ -23,9 +23,7 @@
 
 (** Option extensions for [Core_kernel].
 
-    This module expands and merges [Core_kernel.Option] with
-    {{!Travesty_base_exts.Option} Travesty_base_exts.Option}. *)
-
-include module type of Core_kernel.Option
-
-include module type of Travesty_base_exts.Option.Extensions
+    This just re-exports
+    {{!Travesty_base_exts.Option} Travesty_base_exts.Option}, but may
+    contain [Core_kernel]-specific extensions in future. *)
+include module type of Travesty_base_exts.Option

@@ -21,5 +21,4 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-include Core_kernel.Fn
-include Travesty_base_exts.Fn.Extensions
+include Travesty_base_exts.Fn
