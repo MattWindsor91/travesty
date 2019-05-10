@@ -32,7 +32,7 @@ module M = struct
 end
 
 include M
-include Travesty.Bi_mappable.Extend2 (M)
+include Travesty.Bi_mappable.Make2 (M)
 
 let%expect_test "bi_map (base) example" =
   let sample = ("foo", 27) in

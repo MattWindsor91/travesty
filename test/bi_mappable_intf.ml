@@ -21,22 +21,20 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-(** An expanded version of [Core_kernel]'s pair (2-tuple) module.
+(** Arity-0 input for generating bi-mappable law tests. *) 
+module type Basic0 = sig
+  (** Should point to where the law tests were generated. *)
+  val here : Lexing.position
 
-    This module expands and merges both [Core_kernel.Tuple2] and
-    {{!Travesty.Base_exts.Tuple2} Base_exts.Tuple2}.
+  type t [@@deriving sexp, compare, quickcheck]
 
-    This expanded overlay contains a {{!Travesty.Bi_mappable} bi-mappable}
-    implementation for pairs *)
+  module Left : sig
+    type t [@@deriving quickcheck]
+  end
+  module Right : sig
+    type t [@@deriving quickcheck]
+  end
 
-(** Type of 2-tuples. *)
-type ('l, 'r) t = 'l * 'r
-
-(** Pairs are trivially bi-mappable; the left type is [fst], and the right
-    type is [snd]. For example:
-
-    {[
-      bi_map ("foo", 27) ~left:String.capitalize ~right:Int.neg
-      (* returns: ("Foo", -27) *)
-    ]} *)
-include Travesty.Bi_mappable.S2 with type ('l, 'r) t := ('l, 'r) t
+  include Travesty.Bi_mappable.S0
+    with type t := t and type left := Left.t and type right := Right.t
+end

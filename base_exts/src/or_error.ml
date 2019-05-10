@@ -21,9 +21,10 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
+open Base
 open Travesty
 
-type 'a t = 'a Base.Or_error.t
+type 'a t = 'a Or_error.t
 
 module On_ok = Traversable.Make1 (struct
   type nonrec 'a t = 'a t
@@ -37,6 +38,16 @@ module On_ok = Traversable.Make1 (struct
           M.return (Error x)
   end
 end)
+
+module BM = Bi_mappable.Make1_left (struct
+    type 'l t = 'l Or_error.t
+    type right = Error.t
+
+    let bi_map (e : 'l1 Or_error.t) ~(left : 'l1 -> 'l2) ~(right : Error.t -> Error.t)
+      : 'l2 Or_error.t =
+      e |> Result.map_error ~f:right |> Result.map ~f:left
+end)
+include (BM : module type of BM with type 'l t := 'l t)
 
 include Monad_exts.Extend (Base.Or_error)
 

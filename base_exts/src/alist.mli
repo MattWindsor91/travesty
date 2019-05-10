@@ -34,8 +34,7 @@ type ('k, 'v) t = ('k, 'v) Base.List.Assoc.t
           ~left:String.capitalize ~right:Int.neg
         (* returns: [("Foo", -27); ("Bar", -53); ("Baz", -99)] *)
     ]} *)
-include
-  Travesty.Bi_mappable.S2_with_extensions with type ('l, 'r) t := ('l, 'r) t
+include Travesty.Bi_mappable.S2 with type ('l, 'r) t := ('l, 'r) t
 
 val compose :
   ('a, 'b) t -> ('b, 'c) t -> equal:('b -> 'b -> bool) -> ('a, 'c) t

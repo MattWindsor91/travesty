@@ -39,30 +39,30 @@ open Base
 (** @inline *)
 include module type of Bi_mappable_intf
 
-(** {2 Extending bi-mappable containers}
+(** {2 Making full bi-mappable type modules}
 
-    We define several derived functions for bi-mappable containers
-    {{!section:exts} above}; here, we define functors to generate them. *)
+    These functors build full implementations of bi-mappability given the
+    basic minimal definitions above. *)
 
-(** [Extend2] implements [Extensions2] for an arity-2 bi-mappable container. *)
-module Extend2 (S : S2) : Extensions2 with type ('l, 'r) t := ('l, 'r) S.t
+(** [Make2] implements [S2] for an arity-2 bi-mappable container. *)
+module Make2 (I : Basic2) : S2 with type ('l, 'r) t := ('l, 'r) I.t
 
-(** [Extend1_left] implements [Extensions1_left] for an arity-1 bi-mappable
+(** [Make1_left] implements [S1_left] for an arity-1 bi-mappable
     container with floating left type. *)
-module Extend1_left (S : S1_left) :
-  Extensions1_left with type 'l t := 'l S.t and type right := S.right
+module Make1_left (I : Basic1_left) :
+  S1_left with type 'l t = 'l I.t and type right = I.right
 
-(** [Extend1_right] implements [Extensions1_right] for an arity-1
+(** [Make1_right] implements [S1_right] for an arity-1
     bi-mappable container with floating right type. *)
-module Extend1_right (S : S1_right) :
-  Extensions1_right with type 'r t := 'r S.t and type left := S.left
+module Make1_right (I : Basic1_right) :
+  S1_right with type 'r t = 'r I.t and type left = I.left
 
-(** [Extend0] implements [Extensions0] for an arity-0 bi-mappable container. *)
-module Extend0 (S : S0) :
-  Extensions0
-  with type t := S.t
-   and type left := S.left
-   and type right := S.right
+(** [Make0] implements [S0] for an arity-0 bi-mappable container. *)
+module Make0 (I : Basic0) :
+  S0
+  with type t = I.t
+   and type left = I.left
+   and type right = I.right
 
 (** {2:fix Fixing types}
 
@@ -72,21 +72,21 @@ module Extend0 (S : S0) :
 
 (** {3 Arity-2} *)
 
-(** [Fix2_left (S) (Left)] fixes the left type of [S] to [Left], making it
+(** [Fix2_left (I) (Left)] fixes the left type of [I] to [Left], making it
     an {{!S1_right} S1_right}. *)
-module Fix2_left (S : S2) (Left : T) :
-  S1_right with type 'r t = (Left.t, 'r) S.t and type left = Left.t
+module Fix2_left (I : Basic2) (Left : T) :
+  S1_right with type 'r t = (Left.t, 'r) I.t and type left = Left.t
 
 (** [Fix2_right (S) (Left)] fixes the right type of [S] to [Right], making
     it an {{!S1_left} S1_left}. *)
-module Fix2_right (S : S2) (Right : T) :
-  S1_left with type 'l t = ('l, Right.t) S.t and type right = Right.t
+module Fix2_right (I : Basic2) (Right : T) :
+  S1_left with type 'l t = ('l, Right.t) I.t and type right = Right.t
 
 (** [Fix2_both (S) (Left) (Right)] fixes the types of [S] to [Left] and
     [Right], making it an {{!S0} S0}. *)
-module Fix2_both (S : S2) (Left : T) (Right : T) :
+module Fix2_both (I : Basic2) (Left : T) (Right : T) :
   S0
-  with type t = (Left.t, Right.t) S.t
+  with type t = (Left.t, Right.t) I.t
    and type left = Left.t
    and type right = Right.t
 
@@ -94,24 +94,27 @@ module Fix2_both (S : S2) (Left : T) (Right : T) :
 
 (** [Fix1_left (S) (Left)] fixes the floating left type of [S] to [Left],
     making it an {{!S0} S0}. *)
-module Fix1_left (S : S1_left) (Left : T) :
+module Fix1_left (I : Basic1_left) (Left : T) :
   S0
-  with type t = Left.t S.t
+  with type t = Left.t I.t
    and type left = Left.t
-   and type right = S.right
+   and type right = I.right
 
-(** [Fix1_right (S) (Right)] fixes the floating right type of [S] to
+(** [Fix1_right (I) (Right)] fixes the floating right type of [S] to
     [Right], making it an {{!S0} S0}. *)
-module Fix1_right (S : S1_right) (Right : T) :
+module Fix1_right (I : Basic1_right) (Right : T) :
   S0
-  with type t = Right.t S.t
-   and type left = S.left
+  with type t = Right.t I.t
+   and type left = I.left
    and type right = Right.t
 
 (** {2 Converting bi-mappable modules to mappable modules}
 
     By ignoring values of either the left or the right type, we can derive
-    {{!Mappable} mappable} modules from bi-mappable ones.
+    {{!Mappable} mappable} modules from bi-mappable ones.  Since the
+    various [S]{i n} signatures contain functions for doing this on an
+    ad-hoc basis, the functors below are mainly for use when one needs actual
+    {{!Mappable} Mappable} instances.
 
     This reflects the 'clowns to the left of me, jokers to the right' (the
     technical term!) set-up in Haskell; each [Map_leftX] functor implements

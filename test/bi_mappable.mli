@@ -21,22 +21,10 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-(** An expanded version of [Core_kernel]'s pair (2-tuple) module.
+(** Parametric tests for bi-mappable types *)
 
-    This module expands and merges both [Core_kernel.Tuple2] and
-    {{!Travesty.Base_exts.Tuple2} Base_exts.Tuple2}.
+include module type of Bi_mappable_intf
 
-    This expanded overlay contains a {{!Travesty.Bi_mappable} bi-mappable}
-    implementation for pairs *)
+(** [Make0] builds a module of test laws for an arity-0 account. *)
+module Make0 (I : Basic0) : sig end
 
-(** Type of 2-tuples. *)
-type ('l, 'r) t = 'l * 'r
-
-(** Pairs are trivially bi-mappable; the left type is [fst], and the right
-    type is [snd]. For example:
-
-    {[
-      bi_map ("foo", 27) ~left:String.capitalize ~right:Int.neg
-      (* returns: ("Foo", -27) *)
-    ]} *)
-include Travesty.Bi_mappable.S2 with type ('l, 'r) t := ('l, 'r) t

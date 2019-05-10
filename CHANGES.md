@@ -5,6 +5,8 @@ names and structures.
 
 ## Breaking changes
 
+See also the changes for `v0.4.x`, as that version didn't reach OPAM.
+
 ### Extension modules
 
 In a partial reversal of changes done in `v0.4.x`, the `Travesty_base_exts`
@@ -32,11 +34,20 @@ to make them more consistent, and provide a better distinction between
    may change.
 - `SX_container` is now just `SX`, as it forms the main output of the
   `Traversable` functors;
+- `GenericX_container` is now just `GenericX`, to follow suit;
 - `BasicX` is unchanged;
 - `Basic_containerX` is now `BasicX_container`;
 - `Extend_containerX` is now `MakeX_container` (as it makes an `SX` from a
   `BasicX_container`);
 - `Make_containerX` is now `MakeX` (as it transforms a `BasicX`).
+
+### Bi_mappable module renaming
+
+Similarly, `Bi_mappable`'s functors and signatures have been renamed:
+
+- `SX_with_extensions` is now just `SX`;
+- The various `Extensions` modules no longer exist;
+- The `Extend` functors are now `Make` functors.
 
 ### Other
 
@@ -47,6 +58,11 @@ to make them more consistent, and provide a better distinction between
   separate functors, and don't apply the extensions by default.
 - See `when_m` and `unless_m` below: these now have an optional argument,
   which may cause breakage in rare situations.
+- Various modules and functor targets that previously substituted destructively
+  now output sharing constraints.  This means that, this side of OCaml 4.08,
+  you may need to wrap some functor results in a
+  `module type of X with type t := t` stanza.  This is to make it easier to
+  chain together such modules.
 
 ## New features
 
@@ -61,6 +77,10 @@ to make them more consistent, and provide a better distinction between
 ### Extended `Option`
 
 - Now includes `Monad_exts`.
+
+## Extended `Or_error`
+
+- Now a bi-mappable type.
 
 ### `Monad_exts`
 

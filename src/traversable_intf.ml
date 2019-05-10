@@ -214,9 +214,11 @@ module type Basic1_container = sig
   include Container.S1 with type 'a t := 'a t
 end
 
-(** [Generic_container] is a generic interface for traversable containers,
-    used to build [Container0] (arity-0) and [Container1] (arity-1). *)
-module type Generic_container = sig
+(** {3:s Signatures for traversable containers} *)
+
+(** [Generic] is a generic interface for traversable containers,
+    used to build [S0] (arity-0) and [S1] (arity-1). *)
+module type Generic = sig
   include Types_intf.Generic
 
   (** [On_monad] implements monadic traversal operators for a given monad
@@ -250,21 +252,18 @@ module type Generic_container = sig
      and module M := Or_error
 end
 
-(** {3:s Signatures for traversable containers} *)
-
 (** [S0] is a generic interface for arity-0 traversable containers. *)
 module type S0 = sig
   (** Elements must have equality. While this is an extra restriction on top
       of the Core equivalent, it is required by
-      {{!Traversable.Make_container0} Make_container0}, and helps us define
-      chaining operations. *)
+      {{!Traversable.Make0} Make0}, and helps us define chaining operations. *)
   module Elt : Equal.S
 
   (** We export [Elt.t] as [elt] for compatibility with Core-style
       containers. *)
   include Types_intf.S0 with type elt = Elt.t
 
-  include Generic_container with type 'a t := t and type 'a elt := Elt.t
+  include Generic with type 'a t := t and type 'a elt := Elt.t
 
   include Mappable.S0_container with type t := t and type elt := Elt.t
 end
@@ -286,7 +285,7 @@ module type S1 = sig
     S1_on_monad with type 'a t := 'a t and module M := Or_error
 
   include
-    Generic_container
+    Generic
     with type 'a t := 'a t
      and type 'a elt := 'a
      and module On_monad := On_monad
