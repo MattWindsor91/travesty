@@ -1,4 +1,4 @@
-# v0.5.0-dev (IN PROGRESS)
+# v0.5.0 (2019-05-10)
 
 Major release with new features and breaking changes, especially to module
 names and structures.
