@@ -25,63 +25,78 @@ open Base
 include Bi_mappable_intf
 
 module Derived_ops_gen (I : Basic_generic) = struct
-  let map_left (c : ('l1, 'r) I.t) ~(f : 'l1 I.left -> 'l2 I.left) : ('l2, 'r) I.t =
+  let map_left (c : ('l1, 'r) I.t) ~(f : 'l1 I.left -> 'l2 I.left) :
+      ('l2, 'r) I.t =
     I.bi_map c ~left:f ~right:Fn.id
 
-  let map_right (c : ('l, 'r1) I.t) ~(f : 'r1 I.right -> 'r2 I.right) : ('l, 'r2) I.t =
+  let map_right (c : ('l, 'r1) I.t) ~(f : 'r1 I.right -> 'r2 I.right) :
+      ('l, 'r2) I.t =
     I.bi_map c ~left:Fn.id ~right:f
 end
 
-module Make0 (I : Basic0) : S0
-  with type t = I.t
-   and type left = I.left
-   and type right = I.right = struct
+module Make0 (I : Basic0) :
+  S0 with type t = I.t and type left = I.left and type right = I.right =
+struct
   include I
+
   include Derived_ops_gen (struct
     type ('l, 'r) t = I.t
+
     type 'l left = I.left
+
     type 'r right = I.right
+
     let bi_map = I.bi_map
   end)
 end
 
 module Make1_left (I : Basic1_left) :
-  S1_left with type 'l t = 'l I.t and type right = I.right =
-struct
+  S1_left with type 'l t = 'l I.t and type right = I.right = struct
   include I
+
   include Derived_ops_gen (struct
     type ('l, 'r) t = 'l I.t
+
     type 'l left = 'l
+
     type 'r right = I.right
+
     let bi_map = I.bi_map
   end)
 end
 
 module Make1_right (I : Basic1_right) :
-  S1_right with type 'r t = 'r I.t and type left = I.left =
-struct
+  S1_right with type 'r t = 'r I.t and type left = I.left = struct
   include I
+
   include Derived_ops_gen (struct
     type ('l, 'r) t = 'r I.t
+
     type 'l left = I.left
+
     type 'r right = 'r
+
     let bi_map = I.bi_map
   end)
 end
 
-module Make2 (I : Basic2) : S2 with type ('l, 'r) t = ('l, 'r) I.t =
-struct
+module Make2 (I : Basic2) : S2 with type ('l, 'r) t = ('l, 'r) I.t = struct
   include I
+
   include Derived_ops_gen (struct
     type ('l, 'r) t = ('l, 'r) I.t
+
     type 'l left = 'l
+
     type 'r right = 'r
+
     let bi_map = I.bi_map
   end)
 end
 
 module Fix2_left (I : Basic2) (Left : T) :
-  S1_right with type 'r t = (Left.t, 'r) I.t and type left = Left.t = Make1_right (struct
+  S1_right with type 'r t = (Left.t, 'r) I.t and type left = Left.t =
+Make1_right (struct
   type 'r t = (Left.t, 'r) I.t
 
   type left = Left.t
@@ -90,7 +105,8 @@ module Fix2_left (I : Basic2) (Left : T) :
 end)
 
 module Fix2_right (I : Basic2) (Right : T) :
-  S1_left with type 'l t = ('l, Right.t) I.t and type right = Right.t = Make1_left (struct
+  S1_left with type 'l t = ('l, Right.t) I.t and type right = Right.t =
+Make1_left (struct
   type 'l t = ('l, Right.t) I.t
 
   type right = Right.t
@@ -118,7 +134,9 @@ module Fix1_left (I : Basic1_left) (Left : T) :
    and type left = Left.t
    and type right = I.right = Make0 (struct
   type t = Left.t I.t
+
   type left = Left.t
+
   type right = I.right
 
   let bi_map = I.bi_map
@@ -128,9 +146,11 @@ module Fix1_right (I : Basic1_right) (Right : T) :
   S0
   with type t = Right.t I.t
    and type left = I.left
-   and type right = Right.t = Make0(struct
+   and type right = Right.t = Make0 (struct
   type t = Right.t I.t
+
   type left = I.left
+
   type right = Right.t
 
   let bi_map = I.bi_map
@@ -139,18 +159,21 @@ end)
 module Map1_left (I : S1_left) : Mappable.S1 with type 'l t = 'l I.t =
 struct
   type 'l t = 'l I.t
+
   let map = I.map_left
 end
 
 module Map1_right (I : S1_right) : Mappable.S1 with type 'r t = 'r I.t =
 struct
   type 'r t = 'r I.t
+
   let map = I.map_right
 end
 
 module Map0_left (I : S0) :
   Mappable.S0 with type t = I.t and type elt = I.left = struct
   type t = I.t
+
   type elt = I.left
 
   let map = I.map_left
@@ -200,7 +223,7 @@ module Chain_Bi0_Map1 (Bi : Basic0) (Map : Mappable.S1) :
   S0
   with type t = Bi.t Map.t
    and type left = Bi.left
-   and type right = Bi.right = Make0(struct
+   and type right = Bi.right = Make0 (struct
   type t = Bi.t Map.t
 
   type left = Bi.left

@@ -47,22 +47,19 @@ include module type of Bi_mappable_intf
 (** [Make2] implements [S2] for an arity-2 bi-mappable container. *)
 module Make2 (I : Basic2) : S2 with type ('l, 'r) t := ('l, 'r) I.t
 
-(** [Make1_left] implements [S1_left] for an arity-1 bi-mappable
-    container with floating left type. *)
+(** [Make1_left] implements [S1_left] for an arity-1 bi-mappable container
+    with floating left type. *)
 module Make1_left (I : Basic1_left) :
   S1_left with type 'l t = 'l I.t and type right = I.right
 
-(** [Make1_right] implements [S1_right] for an arity-1
-    bi-mappable container with floating right type. *)
+(** [Make1_right] implements [S1_right] for an arity-1 bi-mappable container
+    with floating right type. *)
 module Make1_right (I : Basic1_right) :
   S1_right with type 'r t = 'r I.t and type left = I.left
 
 (** [Make0] implements [S0] for an arity-0 bi-mappable container. *)
 module Make0 (I : Basic0) :
-  S0
-  with type t = I.t
-   and type left = I.left
-   and type right = I.right
+  S0 with type t = I.t and type left = I.left and type right = I.right
 
 (** {2:fix Fixing types}
 
@@ -111,9 +108,9 @@ module Fix1_right (I : Basic1_right) (Right : T) :
 (** {2 Converting bi-mappable modules to mappable modules}
 
     By ignoring values of either the left or the right type, we can derive
-    {{!Mappable} mappable} modules from bi-mappable ones.  Since the
-    various [S]{i n} signatures contain functions for doing this on an
-    ad-hoc basis, the functors below are mainly for use when one needs actual
+    {{!Mappable} mappable} modules from bi-mappable ones. Since the various
+    [S] {i n} signatures contain functions for doing this on an ad-hoc
+    basis, the functors below are mainly for use when one needs actual
     {{!Mappable} Mappable} instances.
 
     This reflects the 'clowns to the left of me, jokers to the right' (the

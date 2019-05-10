@@ -39,10 +39,13 @@ module On_ok : Travesty.Traversable.S1 with type 'a t = 'a t
 (** Monad extensions for [Or_error]. *)
 include Travesty.Monad_exts.S with type 'a t := 'a t
 
-(** [Or_error] is a bi-mappable type, with the right type fixed to [Error.t].
-    (This is backwards from Haskell conventions, but matches the
+(** [Or_error] is a bi-mappable type, with the right type fixed to
+    [Error.t]. (This is backwards from Haskell conventions, but matches the
     position [Error.t] takes in [Result] in [Base]. *)
-include Travesty.Bi_mappable.S1_left with type 'l t := 'l t and type right = Base.Error.t
+include
+  Travesty.Bi_mappable.S1_left
+  with type 'l t := 'l t
+   and type right = Base.Error.t
 
 (** {2 Shortcuts for combining errors}
 

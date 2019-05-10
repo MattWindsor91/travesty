@@ -21,20 +21,24 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-(** Arity-0 input for generating bi-mappable law tests. *) 
+(** Arity-0 input for generating bi-mappable law tests. *)
 module type Basic0 = sig
-  (** Should point to where the law tests were generated. *)
   val here : Lexing.position
+  (** Should point to where the law tests were generated. *)
 
   type t [@@deriving sexp, compare, quickcheck]
 
   module Left : sig
     type t [@@deriving quickcheck]
   end
+
   module Right : sig
     type t [@@deriving quickcheck]
   end
 
-  include Travesty.Bi_mappable.S0
-    with type t := t and type left := Left.t and type right := Right.t
+  include
+    Travesty.Bi_mappable.S0
+    with type t := t
+     and type left := Left.t
+     and type right := Right.t
 end

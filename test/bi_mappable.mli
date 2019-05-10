@@ -27,4 +27,3 @@ include module type of Bi_mappable_intf
 
 (** [Make0] builds a module of test laws for an arity-0 account. *)
 module Make0 (I : Basic0) : sig end
-

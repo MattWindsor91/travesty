@@ -216,8 +216,8 @@ end
 
 (** {3:s Signatures for traversable containers} *)
 
-(** [Generic] is a generic interface for traversable containers,
-    used to build [S0] (arity-0) and [S1] (arity-1). *)
+(** [Generic] is a generic interface for traversable containers, used to
+    build [S0] (arity-0) and [S1] (arity-1). *)
 module type Generic = sig
   include Types_intf.Generic
 

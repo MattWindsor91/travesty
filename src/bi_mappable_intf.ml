@@ -33,7 +33,7 @@
 
 open Base
 
-(** {3!basic Basic signatures} *)
+(** {3 !basic Basic signatures} *)
 
 (** {4:generic The generic signature}
 
@@ -67,12 +67,13 @@ end
 
 (** {4:sigs Arity-specific basic signatures}
 
-    The basic signatures are {{!Basic0} Basic0}, which defines mapping across
-    an arity-0 type [t] (with a fixed, associated element type [elt]);
-    {{!Basic1_left} Basic1_left} and {{!Basic1_right} Basic1_right}, which fix
-    the right and left element type respectively (leaving the named type
-    floating); and {{!Basic2} Basic2}, which defines mapping across an arity-2
-    type [('l, 'r) t] with left element type ['l] and right element type ['r]. *)
+    The basic signatures are {{!Basic0} Basic0}, which defines mapping
+    across an arity-0 type [t] (with a fixed, associated element type
+    [elt]); {{!Basic1_left} Basic1_left} and {{!Basic1_right} Basic1_right},
+    which fix the right and left element type respectively (leaving the
+    named type floating); and {{!Basic2} Basic2}, which defines mapping
+    across an arity-2 type [('l, 'r) t] with left element type ['l] and
+    right element type ['r]. *)
 
 (** [Basic0] is the basic signature of an arity-0 bi-mappable type.
 
@@ -87,8 +88,8 @@ module type Basic0 = sig
      and type 'r right := right
 end
 
-(** [Basic1_left] is the basic signature of an arity-1 bi-mappable type with a
-    floating left type and fixed right type.
+(** [Basic1_left] is the basic signature of an arity-1 bi-mappable type with
+    a floating left type and fixed right type.
 
     Functions mapped over arity-1 types may change the left element type,
     but not the right. *)
@@ -117,8 +118,8 @@ module type Basic1_right = sig
      and type 'r right := 'r
 end
 
-(** [Basic2] is the signature of an arity-2 bi-mappable type with floating left
-    and right types. *)
+(** [Basic2] is the signature of an arity-2 bi-mappable type with floating
+    left and right types. *)
 module type Basic2 = sig
   (** Type of containers. *)
   include T2
@@ -135,8 +136,8 @@ end
     The signatures below include various functions we can derive from
     bi-mappable types. *)
 
-(** [Generic] is a generic interface for bi-mappable types,
-    used to build [S0] (arity-0) and [S1] (arity-1). *)
+(** [Generic] is a generic interface for bi-mappable types, used to build
+    [S0] (arity-0) and [S1] (arity-1). *)
 module type Generic = sig
   include Basic_generic
 
@@ -190,8 +191,8 @@ module type S1_right = sig
      and type 'r right := 'r
 end
 
-(** [S2] is the full signature of an arity-2 bi-mappable type with floating left
-    and right types. *)
+(** [S2] is the full signature of an arity-2 bi-mappable type with floating
+    left and right types. *)
 module type S2 = sig
   (** Type of containers. *)
   include T2
@@ -202,4 +203,3 @@ module type S2 = sig
      and type 'l left := 'l
      and type 'r right := 'r
 end
-

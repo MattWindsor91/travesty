@@ -32,40 +32,56 @@ let%expect_test "tee_m example" =
   in
   Stdio.print_s
     [%sexp
-      ( Base.Or_error.(42 |> Tx.Or_error.tee_m ~f:fail_if_negative >>| fun x -> x * x)
+      ( Base.Or_error.(
+          42 |> Tx.Or_error.tee_m ~f:fail_if_negative >>| fun x -> x * x)
         : Base.Int.t Or_error.t )] ;
   [%expect {| (Ok 1764) |}]
 
-let%test_module "general bi-mappable tests" = (module struct 
-  module T = struct
-    type t = int Or_error.t [@@deriving sexp, compare]
-    let here = [%here]
+let%test_module "general bi-mappable tests" =
+  ( module struct
+    module T = struct
+      type t = int Or_error.t [@@deriving sexp, compare]
 
-    module Error = struct
-      type t = Error.t
+      let here = [%here]
+
+      module Error = struct
+        type t = Error.t
+
+        let quickcheck_generator =
+          Generator.map Generator.string ~f:Error.of_string
+
+        let quickcheck_observer =
+          Observer.unmap Observer.string ~f:Error.to_string_mach
+
+        let quickcheck_shrinker =
+          Shrinker.map Shrinker.string ~f:Error.of_string
+            ~f_inverse:Error.to_string_mach
+      end
+
       let quickcheck_generator =
-        Generator.map Generator.string ~f:(Error.of_string)
+        Generator.result [%quickcheck.generator: int]
+          [%quickcheck.generator: Error.t]
+
       let quickcheck_observer =
-        Observer.unmap Observer.string ~f:(Error.to_string_mach)
+        Observer.result [%quickcheck.observer: int]
+          [%quickcheck.observer: Error.t]
+
       let quickcheck_shrinker =
-        Shrinker.map Shrinker.string ~f:(Error.of_string) ~f_inverse:(Error.to_string_mach)
+        Shrinker.result [%quickcheck.shrinker: int]
+          [%quickcheck.shrinker: Error.t]
+
+      module Left = struct
+        type t = int [@@deriving quickcheck]
+      end
+
+      module Right = struct
+        type t = Error.t [@@deriving quickcheck]
+      end
+
+      module B = Travesty.Bi_mappable.Fix1_left (Tx.Or_error) (Int)
+
+      include (B : module type of B with type t := t)
     end
 
-    let quickcheck_generator =
-      Generator.result [%quickcheck.generator: int] [%quickcheck.generator: Error.t]
-    let quickcheck_observer =
-      Observer.result [%quickcheck.observer: int] [%quickcheck.observer: Error.t]
-    let quickcheck_shrinker =
-      Shrinker.result [%quickcheck.shrinker: int] [%quickcheck.shrinker: Error.t]
-
-    module Left = struct 
-      type t = int [@@deriving quickcheck]
-    end
-    module Right = struct
-      type t = Error.t [@@deriving quickcheck]
-    end
-    module B = Travesty.Bi_mappable.Fix1_left (Tx.Or_error) (Int)
-    include (B : module type of B with type t := t)
-  end
-  include Travesty_test.Bi_mappable.Make0(T)
-end)
+    include Travesty_test.Bi_mappable.Make0 (T)
+  end )
