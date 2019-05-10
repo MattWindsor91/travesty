@@ -33,7 +33,7 @@
 
 open Base
 
-(** {3 !basic Basic signatures} *)
+(** {3:basic Basic signatures} *)
 
 (** {4:generic The generic signature}
 

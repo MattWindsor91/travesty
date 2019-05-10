@@ -1,3 +1,9 @@
+# v0.5.1 (2019-05-10)
+
+As is becoming tradition, fixes a minor documentation comment caught
+between tagging on GitHub and publishing on OPAM.  See the main changelog
+for details about what changed in v0.5.0.
+
 # v0.5.0 (2019-05-10)
 
 Major release with new features and breaking changes, especially to module
