@@ -64,7 +64,7 @@ The intended mode of use is:
 {[
   (* Base *)
   open Base
-  module Tx = Travesty_base_Exts
+  module Tx = Travesty_base_exts
 
   (* Core_kernel *) 
   open Core_kernel
