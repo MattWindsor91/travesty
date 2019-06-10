@@ -1,3 +1,8 @@
+# Proposed v0.6.0
+
+- Removed `Travesty_core_kernel_exts`.  Use `Travesty_base_exts`
+  instead.
+
 # v0.5.1 (2019-05-10)
 
 As is becoming tradition, fixes a minor documentation comment caught
