@@ -5,4 +5,4 @@
  (inline_tests)
  (preprocess
   (pps ppx_jane))
- (libraries base travesty))
+ (libraries ppx_inline_test.config ppx_expect.config ppx_expect.common sexplib0 stdio base travesty))

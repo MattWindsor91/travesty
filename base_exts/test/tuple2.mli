@@ -21,14 +21,4 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-module M = struct
-  type ('l, 'r) t = 'l * 'r
-
-  let bi_map ((l, r) : ('l1, 'r1) t) ~(left : 'l1 -> 'l2)
-      ~(right : 'r1 -> 'r2) : ('l2, 'r2) t =
-    (left l, right r)
-end
-
-include M
-include Travesty.Bi_mappable.Make2 (M)
-
+(** Signature deliberately left blank. *)
