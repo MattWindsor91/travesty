@@ -4,6 +4,6 @@ install: wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.t
 script: bash -ex .travis-opam.sh
 env:
   - OCAML_VERSION=4.07 PACKAGE=travesty
+  - OCAML_VERSION=4.08 PACKAGE=travesty
 os:
   - linux
-  - osx
