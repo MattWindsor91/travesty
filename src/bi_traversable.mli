@@ -181,4 +181,4 @@ module Chain_Bi1_right_Traverse1 (Bi : S1_right) (Trav : Traversable.S1) :
     inner arity-0 container over a traversal [Trav] over an outer arity-1
     container. *)
 module Chain_Bi0_Traverse1 (Bi : S0) (Trav : Traversable.S1) :
-  S0 with type t = Bi.t Trav.t
+  S0 with type t = Bi.t Trav.t and type left = Bi.left and type right = Bi.right

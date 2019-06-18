@@ -182,4 +182,4 @@ module Chain_Bi1_right_Map1 (Bi : S1_right) (Map : Mappable.S1) :
 (** [Chain_Bi0_Map1 (Bi) (Map)] composes a bi-map [Bi] on an inner arity-0
     container over a map [Map] over an outer arity-1 container. *)
 module Chain_Bi0_Map1 (Bi : S0) (Map : Mappable.S1) :
-  S0 with type t = Bi.t Map.t
+  S0 with type t = Bi.t Map.t and type left = Bi.left and type right = Bi.right
