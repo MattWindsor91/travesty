@@ -26,15 +26,17 @@
 (** Defined to let this module be used directly in chaining operations etc. *)
 type ('k, 'v) t = ('k, 'v) Base.List.Assoc.t
 
-(** Associative lists are bi-mappable; the left type is keys, and the right
-    type is values. For example:
+(** Associative lists are bi-traversable (and therefore bi-mappable); the
+    left type is keys, and the right type is values.
+
+    Here is an example of bi-mapping:
 
     {[
         bi_map [("foo", 27); ("bar", 53); ("baz", 99)]
           ~left:String.capitalize ~right:Int.neg
         (* returns: [("Foo", -27); ("Bar", -53); ("Baz", -99)] *)
     ]} *)
-include Travesty.Bi_mappable.S2 with type ('l, 'r) t := ('l, 'r) t
+include Travesty.Bi_traversable.S2 with type ('l, 'r) t := ('l, 'r) t
 
 val compose :
   ('a, 'b) t -> ('b, 'c) t -> equal:('b -> 'b -> bool) -> ('a, 'c) t
