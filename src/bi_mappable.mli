@@ -45,7 +45,7 @@ include module type of Bi_mappable_intf
     basic minimal definitions above. *)
 
 (** [Make2] implements [S2] for an arity-2 bi-mappable container. *)
-module Make2 (I : Basic2) : S2 with type ('l, 'r) t := ('l, 'r) I.t
+module Make2 (I : Basic2) : S2 with type ('l, 'r) t = ('l, 'r) I.t
 
 (** [Make1_left] implements [S1_left] for an arity-1 bi-mappable container
     with floating left type. *)

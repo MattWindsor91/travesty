@@ -1,7 +1,25 @@
 # Proposed v0.6.0
 
+## Breaking changes
+
 - Removed `Travesty_core_kernel_exts`.  Use `Travesty_base_exts`
   instead.
+- Made `Bi_mappable.Make2`'s return module type use sharing constraints
+  instead of destructive substitutions.  This may cause shadowing where there
+  previously wasn't any.
+
+## Bi_traversable
+
+This release adds a `Bi_traversable` module---effectively being to
+`Traversable` as `Bi_mappable` is to `Mappable`.
+
+`Alist` and `Tuple2` now expose `Bi_traversable.S2`, which subsumes their
+previous interface.
+
+## Minor improvements
+
+- Removed spurious dependencies that caused travesty to be unavailable on
+  OCaml 4.08.
 
 # v0.5.1 (2019-05-10)
 

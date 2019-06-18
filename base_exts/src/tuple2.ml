@@ -21,14 +21,16 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-module M = struct
-  type ('l, 'r) t = 'l * 'r
+open Base
 
-  let bi_map ((l, r) : ('l1, 'r1) t) ~(left : 'l1 -> 'l2)
-      ~(right : 'r1 -> 'r2) : ('l2, 'r2) t =
-    (left l, right r)
-end
+include Travesty.Bi_traversable.Make2 (struct
+    type ('l, 'r) t = 'l * 'r
 
-include M
-include Travesty.Bi_mappable.Make2 (M)
-
+    module On_monad (M : Monad.S) = struct
+      let bi_map_m ((l, r) : ('l1, 'r1) t) ~(left : 'l1 -> 'l2 M.t)
+          ~(right : 'r1 -> 'r2 M.t) : ('l2, 'r2) t M.t =
+        M.Let_syntax.(
+          let%map l' = left l and r' = right r in (l', r')
+        )
+    end
+  end)

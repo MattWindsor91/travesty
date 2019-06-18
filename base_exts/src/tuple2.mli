@@ -21,22 +21,18 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-(** An expanded version of [Core_kernel]'s pair (2-tuple) module.
-
-    This module expands and merges both [Core_kernel.Tuple2] and
-    {{!Travesty.Base_exts.Tuple2} Base_exts.Tuple2}.
-
-    This expanded overlay contains a {{!Travesty.Bi_mappable} bi-mappable}
-    implementation for pairs *)
+(** Bi-traversability for pairs (2-tuples). *)
 
 (** Type of 2-tuples. *)
 type ('l, 'r) t = 'l * 'r
 
-(** Pairs are trivially bi-mappable; the left type is [fst], and the right
-    type is [snd]. For example:
+(** Pairs are trivially bi-traversable; for a pair ['l * 'r], the left type is
+    ['l], and the right type is ['r].
+
+    For example, we can bi-map as follows:
 
     {[
       bi_map ("foo", 27) ~left:String.capitalize ~right:Int.neg
       (* returns: ("Foo", -27) *)
     ]} *)
-include Travesty.Bi_mappable.S2 with type ('l, 'r) t := ('l, 'r) t
+include Travesty.Bi_traversable.S2 with type ('l, 'r) t := ('l, 'r) t

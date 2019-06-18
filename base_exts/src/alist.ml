@@ -22,9 +22,7 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 open Travesty
-module M = Bi_mappable.Chain_Bi2_Map1 (Tuple2) (Base.List)
-include M
-include Bi_mappable.Make2 (M)
+include Bi_traversable.Chain_Bi2_Traverse1 (Tuple2) (List)
 
 let compose_match (type a b c) (k : a) (v : b) (k' : b) (v' : c)
     ~(equal : b -> b -> bool) : (a * c) option =
