@@ -23,10 +23,9 @@
 
 (** The main groups of signatures provided by this module are:
 
-    {ul
-     {- {{!basic} Basic{i n}}: minimal definition of bi-traversable modules;}
-     {- {{!s} S{i n}}: full bi-traversable containers, produced by applying
-        functors to the above.}}
+    - {{!basic} Basic{i n}}: minimal definition of bi-traversable modules;
+    - {{!s} S{i n}}: full bi-traversable containers, produced by applying
+      functors to the above.
 
     We also define other signatures, mostly for internal book-keeping. They
     may be useful elsewhere, however. *)
@@ -46,22 +45,21 @@ open Base
 (** {4:omgeneric The generic signatures}
 
     Here, wee define some signatures for bi-traversable structures in an
-    arity-generic way.  We then specialise them for arity-0 and arity-1 types.
-*)
+    arity-generic way. We then specialise them for arity-0 and arity-1
+    types. *)
 
-(** [Basic_generic_on_monad] describes monadic bi-traversal on types of
-    any arity.
+(** [Basic_generic_on_monad] describes monadic bi-traversal on types of any
+    arity.
 
-    - For arity-0 types, [('l, 'r) t] becomes [t], ['l left]
-      becomes [left], and ['r right] becomes [right].
-    - For arity-1 types with a fixed right type,
-      [('l, 'r) t] becomes ['l t], ['l left] becomes ['l], and ['r right]
-      becomes [right].
-    - For arity-1 types with a fixed left type,
-      [('l, 'r) t] becomes ['l t], ['l left] becomes [left], and ['r right]
-      becomes ['r].
-    - For arity-2 types, [('l, 'r) t] becomes [('l, 'r) t],
-      ['l left] becomes ['l], and ['r right] becomes ['r]. *)
+    {ul
+     {- For arity-0 types, [('l, 'r) t] becomes [t], ['l left] becomes
+        [left], and ['r right] becomes [right].}
+     {- For arity-1 types with a fixed right type, [('l, 'r) t] becomes
+        ['l t], ['l left] becomes ['l], and ['r right] becomes [right].}
+     {- For arity-1 types with a fixed left type, [('l, 'r) t] becomes
+        ['l t], ['l left] becomes [left], and ['r right] becomes ['r].}
+     {- For arity-2 types, [('l, 'r) t] becomes [('l, 'r) t], ['l left]
+        becomes ['l], and ['r right] becomes ['r].}} *)
 module type Basic_generic_on_monad = sig
   include Types_intf.Bi_generic
 
@@ -81,26 +79,27 @@ end
     operators; we use it to derive the signatures of the various [On_monad]
     modules.
 
-    - For arity-0 types, [('l, 'r) t] becomes [t], ['l left]
-      becomes [left], and ['r right] becomes [right].
-    - For arity-1 types with a fixed right type,
-      [('l, 'r) t] becomes ['l t], ['l left] becomes ['l], and ['r right]
-      becomes [right].
-    - For arity-1 types with a fixed left type,
-      [('l, 'r) t] becomes ['l t], ['l left] becomes [left], and ['r right]
-      becomes ['r].
-    - For arity-2 types, [('l, 'r) t] becomes [('l, 'r) t],
-      ['l left] becomes ['l], and ['r right] becomes ['r]. *)
+    {ul
+     {- For arity-0 types, [('l, 'r) t] becomes [t], ['l left] becomes
+        [left], and ['r right] becomes [right].}
+     {- For arity-1 types with a fixed right type, [('l, 'r) t] becomes
+        ['l t], ['l left] becomes ['l], and ['r right] becomes [right].}
+     {- For arity-1 types with a fixed left type, [('l, 'r) t] becomes
+        ['l t], ['l left] becomes [left], and ['r right] becomes ['r].}
+     {- For arity-2 types, [('l, 'r) t] becomes [('l, 'r) t], ['l left]
+        becomes ['l], and ['r right] becomes ['r].}} *)
 module type Generic_on_monad = sig
   include Basic_generic_on_monad
 
-  val map_left_m : ('l1, 'r) t -> f:('l1 left -> 'l2 left M.t) -> ('l2, 'r) t M.t
-  (** [map_left_m c ~f] monadically traverses over the left type of [c] only,
-      using [f]. *)
+  val map_left_m :
+    ('l1, 'r) t -> f:('l1 left -> 'l2 left M.t) -> ('l2, 'r) t M.t
+  (** [map_left_m c ~f] monadically traverses over the left type of [c]
+      only, using [f]. *)
 
-  val map_right_m : ('l, 'r1) t -> f:('r1 right -> 'r2 right M.t) -> ('l, 'r2) t M.t
-  (** [map_right_m c ~f] monadically traverses [f] over the right type of [c]
-      only, using [f].  *)
+  val map_right_m :
+    ('l, 'r1) t -> f:('r1 right -> 'r2 right M.t) -> ('l, 'r2) t M.t
+  (** [map_right_m c ~f] monadically traverses [f] over the right type of
+      [c] only, using [f]. *)
 end
 
 (** {4:ombasic Basic signatures} *)
@@ -110,14 +109,15 @@ end
 module type Basic0_on_monad = sig
   include Types_intf.Bi0
 
-  include Basic_generic_on_monad
+  include
+    Basic_generic_on_monad
     with type ('l, 'r) t := t
      and type 'l left := left
      and type 'r right := right
 end
 
-(** [Basic1_left_on_monad] is the inner signature of a monadic bi-traversal over
-    arity-1 types with a floating left type and fixed right type. *)
+(** [Basic1_left_on_monad] is the inner signature of a monadic bi-traversal
+    over arity-1 types with a floating left type and fixed right type. *)
 module type Basic1_left_on_monad = sig
   include Types_intf.Bi_left
 
@@ -128,8 +128,8 @@ module type Basic1_left_on_monad = sig
      and type 'r right := right
 end
 
-(** [Basic1_right_on_monad] is the inner signature of a monadic bi-traversal over
-    arity-1 types with a floating right type and fixed left type. *)
+(** [Basic1_right_on_monad] is the inner signature of a monadic bi-traversal
+    over arity-1 types with a floating right type and fixed left type. *)
 module type Basic1_right_on_monad = sig
   include Types_intf.Bi_right
 
@@ -152,14 +152,14 @@ module type Basic2_on_monad = sig
      and type 'r right := 'r
 end
 
-(** {3:basic Basic signatures} 
+(** {3:basic Basic signatures}
 
-    We now define basic signatures that
-    generalise the above signatures over all monads.
+    We now define basic signatures that generalise the above signatures over
+    all monads.
 
-    These signatures form the input to functors that provide derived operations,
-    chaining, type-fixing, and conversion to bi-mappable and regular traversable
-    containers.
+    These signatures form the input to functors that provide derived
+    operations, chaining, type-fixing, and conversion to bi-mappable and
+    regular traversable containers.
 
     The basic signatures are {{!Basic0} Basic0}, which defines traversal
     across an arity-0 type [t] (with a fixed, associated element type
@@ -171,43 +171,54 @@ end
 
 (** [Basic0] is the basic signature of an arity-0 bi-traversable type.
 
-    Functions traversing over arity-0 types must preserve both element types. *)
+    Functions traversing over arity-0 types must preserve both element
+    types. *)
 module type Basic0 = sig
   include Types_intf.Bi0
 
   (** [On_monad] implements monadic bi-traversal for a given monad. *)
   module On_monad (M : Monad.S) :
-    Basic0_on_monad with type t := t and type left := left and type right := right and module M := M
+    Basic0_on_monad
+    with type t := t
+     and type left := left
+     and type right := right
+     and module M := M
 end
 
-(** [Basic1_left] is the basic signature of an arity-1 bi-traversable type with
-    a floating left type and fixed right type.
+(** [Basic1_left] is the basic signature of an arity-1 bi-traversable type
+    with a floating left type and fixed right type.
 
-    Functions traversing over arity-1 types may change the left element type,
-    but not the right. *)
+    Functions traversing over arity-1 types may change the left element
+    type, but not the right. *)
 module type Basic1_left = sig
   include Types_intf.Bi_left
 
   (** [On_monad] implements monadic bi-traversal for a given monad. *)
   module On_monad (M : Monad.S) :
-    Basic1_left_on_monad with type 'r t := 'r t and type right := right and module M := M
+    Basic1_left_on_monad
+    with type 'r t := 'r t
+     and type right := right
+     and module M := M
 end
 
-(** [Basic1_right] is the basic signature of an arity-1 bi-traversable type with
-    a floating right type and fixed left type.
+(** [Basic1_right] is the basic signature of an arity-1 bi-traversable type
+    with a floating right type and fixed left type.
 
-    Functions traversing over arity-1 types may change the right element type,
-    but not the left. *)
+    Functions traversing over arity-1 types may change the right element
+    type, but not the left. *)
 module type Basic1_right = sig
   include Types_intf.Bi_right
 
   (** [On_monad] implements monadic bi-traversal for a given monad. *)
   module On_monad (M : Monad.S) :
-    Basic1_right_on_monad with type 'l t := 'l t and type left := left and module M := M
+    Basic1_right_on_monad
+    with type 'l t := 'l t
+     and type left := left
+     and module M := M
 end
 
-(** [Basic2] is the signature of an arity-2 bi-traversable type with floating
-    left and right types. *)
+(** [Basic2] is the signature of an arity-2 bi-traversable type with
+    floating left and right types. *)
 module type Basic2 = sig
   include T2
 
@@ -227,7 +238,8 @@ module type Generic = sig
   include Types_intf.Bi_generic
 
   (** We can do non-monadic bi-mapping operations. *)
-  include Bi_mappable.Generic
+  include
+    Bi_mappable.Generic
     with type ('l, 'r) t := ('l, 'r) t
      and type 'l left := 'l left
      and type 'r right := 'r right
@@ -244,7 +256,8 @@ end
 
 (** [S0] is the full signature of an arity-0 bi-traversable type.
 
-    Functions traversing over arity-0 types must preserve both element types. *)
+    Functions traversing over arity-0 types must preserve both element
+    types. *)
 module type S0 = sig
   include Types_intf.Bi0
 
@@ -258,8 +271,8 @@ end
 (** [S1_left] is the full signature of an arity-1 bi-traversable type with a
     floating left type and fixed right type.
 
-    Functions traversing over arity-1 types may change the left element type,
-    but not the right. *)
+    Functions traversing over arity-1 types may change the left element
+    type, but not the right. *)
 module type S1_left = sig
   include Types_intf.Bi_left
 
@@ -270,11 +283,11 @@ module type S1_left = sig
      and type 'r right := right
 end
 
-(** [S1_right] is the full signature of an arity-1 bi-traversable type with a
-    floating right type and fixed left type.
+(** [S1_right] is the full signature of an arity-1 bi-traversable type with
+    a floating right type and fixed left type.
 
-    Functions traversing over arity-1 types may change the right element type,
-    but not the left. *)
+    Functions traversing over arity-1 types may change the right element
+    type, but not the left. *)
 module type S1_right = sig
   include Types_intf.Bi_right
 
@@ -285,8 +298,8 @@ module type S1_right = sig
      and type 'r right := 'r
 end
 
-(** [S2] is the full signature of an arity-2 bi-traversable type with floating
-    left and right types. *)
+(** [S2] is the full signature of an arity-2 bi-traversable type with
+    floating left and right types. *)
 module type S2 = sig
   include T2
 

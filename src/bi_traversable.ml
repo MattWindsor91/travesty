@@ -44,10 +44,12 @@ module Derived_ops_monadic_gen (I : Derived_ops_maker) (M : Monad.S) =
 struct
   module IM = I.On_monad (M)
 
-  let map_left_m (c : ('l1, 'r) I.t) ~(f:'l1 I.left -> 'l2 I.left M.t) : ('l2, 'r) I.t M.t = 
+  let map_left_m (c : ('l1, 'r) I.t) ~(f : 'l1 I.left -> 'l2 I.left M.t) :
+      ('l2, 'r) I.t M.t =
     IM.bi_map_m c ~left:f ~right:M.return
 
-  let map_right_m (c : ('l, 'r1) I.t) ~(f:'r1 I.right -> 'r2 I.right M.t) : ('l, 'r2) I.t M.t =
+  let map_right_m (c : ('l, 'r1) I.t) ~(f : 'r1 I.right -> 'r2 I.right M.t)
+      : ('l, 'r2) I.t M.t =
     IM.bi_map_m c ~left:M.return ~right:f
 end
 
@@ -56,90 +58,115 @@ module Make0 (I : Basic0) :
 struct
   module On_monad (MS : Monad.S) = struct
     include I.On_monad (MS)
+
     include Derived_ops_monadic_gen (struct
-        type ('l, 'r) t = I.t
-        type 'l left = I.left
-        type 'r right = I.right
+                type ('l, 'r) t = I.t
 
-        module On_monad = I.On_monad
-      end) (MS)
+                type 'l left = I.left
+
+                type 'r right = I.right
+
+                module On_monad = I.On_monad
+              end)
+              (MS)
   end
+
   module With_errors = On_monad (Or_error)
-
   module Ident = I.On_monad (Monad.Ident)
-  include Bi_mappable.Make0 (struct
-      type t = I.t
-      type left = I.left
-      type right = I.right
 
-      let bi_map = Ident.bi_map_m
-    end)
+  include Bi_mappable.Make0 (struct
+    type t = I.t
+
+    type left = I.left
+
+    type right = I.right
+
+    let bi_map = Ident.bi_map_m
+  end)
 end
 
 module Make1_left (I : Basic1_left) :
   S1_left with type 'l t = 'l I.t and type right = I.right = struct
   module On_monad (MS : Monad.S) = struct
     include I.On_monad (MS)
+
     include Derived_ops_monadic_gen (struct
-        type ('l, 'r) t = 'l I.t
-        type 'l left = 'l
-        type 'r right = I.right
+                type ('l, 'r) t = 'l I.t
 
-        module On_monad = I.On_monad
-      end) (MS)
+                type 'l left = 'l
+
+                type 'r right = I.right
+
+                module On_monad = I.On_monad
+              end)
+              (MS)
   end
+
   module With_errors = On_monad (Or_error)
-
   module Ident = I.On_monad (Monad.Ident)
-  include Bi_mappable.Make1_left (struct
-      type 'l t = 'l I.t
-      type right = I.right
 
-      let bi_map = Ident.bi_map_m
-    end)
+  include Bi_mappable.Make1_left (struct
+    type 'l t = 'l I.t
+
+    type right = I.right
+
+    let bi_map = Ident.bi_map_m
+  end)
 end
 
 module Make1_right (I : Basic1_right) :
   S1_right with type 'r t = 'r I.t and type left = I.left = struct
   module On_monad (MS : Monad.S) = struct
     include I.On_monad (MS)
+
     include Derived_ops_monadic_gen (struct
-        type ('l, 'r) t = 'r I.t
-        type 'l left = I.left
-        type 'r right = 'r
+                type ('l, 'r) t = 'r I.t
 
-        module On_monad = I.On_monad
-      end) (MS)
+                type 'l left = I.left
+
+                type 'r right = 'r
+
+                module On_monad = I.On_monad
+              end)
+              (MS)
   end
+
   module With_errors = On_monad (Or_error)
-
   module Ident = I.On_monad (Monad.Ident)
-  include Bi_mappable.Make1_right (struct
-      type 'r t = 'r I.t
-      type left = I.left
 
-      let bi_map = Ident.bi_map_m
-    end)
+  include Bi_mappable.Make1_right (struct
+    type 'r t = 'r I.t
+
+    type left = I.left
+
+    let bi_map = Ident.bi_map_m
+  end)
 end
 
 module Make2 (I : Basic2) : S2 with type ('l, 'r) t = ('l, 'r) I.t = struct
   module On_monad (MS : Monad.S) = struct
     include I.On_monad (MS)
+
     include Derived_ops_monadic_gen (struct
-        type ('l, 'r) t = ('l, 'r) I.t
-        type 'l left = 'l
-        type 'r right = 'r
+                type ('l, 'r) t = ('l, 'r) I.t
 
-        module On_monad = I.On_monad
-      end) (MS)
+                type 'l left = 'l
+
+                type 'r right = 'r
+
+                module On_monad = I.On_monad
+              end)
+              (MS)
   end
-  module With_errors = On_monad (Or_error)
 
+  module With_errors = On_monad (Or_error)
   module Ident = I.On_monad (Monad.Ident)
+
   include Bi_mappable.Make2 (struct
-      type ('l, 'r) t = ('l, 'r) I.t
-      let bi_map = Ident.bi_map_m
-    end)
+    type ('l, 'r) t = ('l, 'r) I.t
+
+    let bi_map = Ident.bi_map_m
+  end)
 end
 
 module Fix2_left (I : Basic2) (Left : T) :
@@ -204,21 +231,24 @@ module Fix1_right (I : Basic1_right) (Right : T) :
   module On_monad = I.On_monad
 end)
 
-module Traverse1_left (I : S1_left) : Traversable.S1 with type 'l t = 'l I.t =
-Traversable.Make1 (struct
+module Traverse1_left (I : S1_left) :
+  Traversable.S1 with type 'l t = 'l I.t = Traversable.Make1 (struct
   type 'l t = 'l I.t
+
   module On_monad (M : Monad.S) = struct
-    module IM = I.On_monad(M)
+    module IM = I.On_monad (M)
+
     let map_m = IM.map_left_m
   end
 end)
 
-module Traverse1_right (I : S1_right) : Traversable.S1 with type 'r t = 'r I.t =
-Traversable.Make1 (struct
+module Traverse1_right (I : S1_right) :
+  Traversable.S1 with type 'r t = 'r I.t = Traversable.Make1 (struct
   type 'r t = 'r I.t
 
   module On_monad (M : Monad.S) = struct
-    module IM = I.On_monad(M)
+    module IM = I.On_monad (M)
+
     let map_m = IM.map_right_m
   end
 end)
@@ -227,10 +257,12 @@ module Traverse0_left (L : Equal.S) (I : S0 with type left := L.t) :
   Traversable.S0 with type t = I.t and module Elt = L =
 Traversable.Make0 (struct
   type t = I.t
+
   module Elt = L
 
   module On_monad (M : Monad.S) = struct
-    module IM = I.On_monad(M)
+    module IM = I.On_monad (M)
+
     let map_m = IM.map_left_m
   end
 end)
@@ -239,10 +271,12 @@ module Traverse0_right (R : Equal.S) (I : S0 with type right := R.t) :
   Traversable.S0 with type t = I.t and module Elt = R =
 Traversable.Make0 (struct
   type t = I.t
+
   module Elt = R
 
   module On_monad (M : Monad.S) = struct
-    module IM = I.On_monad(M)
+    module IM = I.On_monad (M)
+
     let map_m = IM.map_right_m
   end
 end)
@@ -254,8 +288,9 @@ module Chain_Bi2_Traverse1 (Bi : Basic2) (Trav : Traversable.S1) :
   module On_monad (M : Monad.S) = struct
     module MBi = Bi.On_monad (M)
     module MTrav = Trav.On_monad (M)
-    let bi_map_m (x : ('l1, 'r1) t) ~(left : 'l1 -> 'l2 M.t) ~(right : 'r1 -> 'r2 M.t) :
-      ('l2, 'r2) t M.t =
+
+    let bi_map_m (x : ('l1, 'r1) t) ~(left : 'l1 -> 'l2 M.t)
+        ~(right : 'r1 -> 'r2 M.t) : ('l2, 'r2) t M.t =
       MTrav.map_m x ~f:(MBi.bi_map_m ~left ~right)
   end
 end)
@@ -269,8 +304,9 @@ module Chain_Bi1_left_Traverse1 (Bi : Basic1_left) (Trav : Traversable.S1) :
   module On_monad (M : Monad.S) = struct
     module MBi = Bi.On_monad (M)
     module MTrav = Trav.On_monad (M)
-    let bi_map_m (x : 'l1 t) ~(left : 'l1 -> 'l2 M.t) ~(right : right -> right M.t) :
-      'l2 t M.t =
+
+    let bi_map_m (x : 'l1 t) ~(left : 'l1 -> 'l2 M.t)
+        ~(right : right -> right M.t) : 'l2 t M.t =
       MTrav.map_m x ~f:(MBi.bi_map_m ~left ~right)
   end
 end)
@@ -284,8 +320,9 @@ module Chain_Bi1_right_Traverse1 (Bi : Basic1_right) (Trav : Traversable.S1) :
   module On_monad (M : Monad.S) = struct
     module MBi = Bi.On_monad (M)
     module MTrav = Trav.On_monad (M)
-    let bi_map_m (x : 'r1 t) ~(left : left -> left M.t) ~(right : 'r1 -> 'r2 M.t) :
-      'r2 t M.t =
+
+    let bi_map_m (x : 'r1 t) ~(left : left -> left M.t)
+        ~(right : 'r1 -> 'r2 M.t) : 'r2 t M.t =
       MTrav.map_m x ~f:(MBi.bi_map_m ~left ~right)
   end
 end)
@@ -304,8 +341,9 @@ module Chain_Bi0_Traverse1 (Bi : Basic0) (Trav : Traversable.S1) :
   module On_monad (M : Monad.S) = struct
     module MBi = Bi.On_monad (M)
     module MTrav = Trav.On_monad (M)
-    let bi_map_m (x : t) ~(left : left -> left M.t) ~(right : right -> right M.t) :
-      t M.t =
+
+    let bi_map_m (x : t) ~(left : left -> left M.t)
+        ~(right : right -> right M.t) : t M.t =
       MTrav.map_m x ~f:(MBi.bi_map_m ~left ~right)
   end
 end)

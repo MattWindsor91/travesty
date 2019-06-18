@@ -26,8 +26,8 @@
 (** Type of 2-tuples. *)
 type ('l, 'r) t = 'l * 'r
 
-(** Pairs are trivially bi-traversable; for a pair ['l * 'r], the left type is
-    ['l], and the right type is ['r].
+(** Pairs are trivially bi-traversable; for a pair ['l * 'r], the left type
+    is ['l], and the right type is ['r].
 
     For example, we can bi-map as follows:
 

@@ -24,13 +24,13 @@
 open Base
 
 include Travesty.Bi_traversable.Make2 (struct
-    type ('l, 'r) t = 'l * 'r
+  type ('l, 'r) t = 'l * 'r
 
-    module On_monad (M : Monad.S) = struct
-      let bi_map_m ((l, r) : ('l1, 'r1) t) ~(left : 'l1 -> 'l2 M.t)
-          ~(right : 'r1 -> 'r2 M.t) : ('l2, 'r2) t M.t =
-        M.Let_syntax.(
-          let%map l' = left l and r' = right r in (l', r')
-        )
-    end
-  end)
+  module On_monad (M : Monad.S) = struct
+    let bi_map_m ((l, r) : ('l1, 'r1) t) ~(left : 'l1 -> 'l2 M.t)
+        ~(right : 'r1 -> 'r2 M.t) : ('l2, 'r2) t M.t =
+      M.Let_syntax.(
+        let%map l' = left l and r' = right r in
+        (l', r'))
+  end
+end)

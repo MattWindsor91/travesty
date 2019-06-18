@@ -2,7 +2,8 @@
 
 (library
  (public_name travesty)
- (preprocess (pps ppx_jane))
+ (preprocess
+  (pps ppx_jane))
  (libraries base))
 
 (documentation
