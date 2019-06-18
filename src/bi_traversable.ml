@@ -296,7 +296,8 @@ module Chain_Bi2_Traverse1 (Bi : Basic2) (Trav : Traversable.S1) :
 end)
 
 module Chain_Bi1_left_Traverse1 (Bi : Basic1_left) (Trav : Traversable.S1) :
-  S1_left with type 'l t = 'l Bi.t Trav.t = Make1_left (struct
+  S1_left with type 'l t = 'l Bi.t Trav.t and type right = Bi.right =
+Make1_left (struct
   type 'l t = 'l Bi.t Trav.t
 
   type right = Bi.right
@@ -312,7 +313,8 @@ module Chain_Bi1_left_Traverse1 (Bi : Basic1_left) (Trav : Traversable.S1) :
 end)
 
 module Chain_Bi1_right_Traverse1 (Bi : Basic1_right) (Trav : Traversable.S1) :
-  S1_right with type 'r t = 'r Bi.t Trav.t = Make1_right (struct
+  S1_right with type 'r t = 'r Bi.t Trav.t and type left = Bi.left =
+Make1_right (struct
   type 'r t = 'r Bi.t Trav.t
 
   type left = Bi.left

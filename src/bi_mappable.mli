@@ -171,13 +171,13 @@ module Chain_Bi2_Map1 (Bi : S2) (Map : Mappable.S1) :
     arity-1 container with floating left type over a map [Map] over an outer
     arity-1 container. *)
 module Chain_Bi1_left_Map1 (Bi : S1_left) (Map : Mappable.S1) :
-  S1_left with type 'l t = 'l Bi.t Map.t
+  S1_left with type 'l t = 'l Bi.t Map.t and type right = Bi.right
 
 (** [Chain_Bi1_right_Map1 (Bi) (Map)] composes a bi-map [Bi] on an inner
     arity-1 container with floating right type over a map [Map] over an
     outer arity-1 container. *)
 module Chain_Bi1_right_Map1 (Bi : S1_right) (Map : Mappable.S1) :
-  S1_right with type 'r t = 'r Bi.t Map.t
+  S1_right with type 'r t = 'r Bi.t Map.t and type left = Bi.left
 
 (** [Chain_Bi0_Map1 (Bi) (Map)] composes a bi-map [Bi] on an inner arity-0
     container over a map [Map] over an outer arity-1 container. *)

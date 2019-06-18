@@ -20,6 +20,9 @@ previous interface.
 
 - Removed spurious dependencies that caused travesty to be unavailable on
   OCaml 4.08.
+- `Bi_mappable` arity-1 chaining functors now carry previously-missing
+  sharing constraints equating their fixed types with those of their
+  bi-mappable ancestor.
 
 # v0.5.1 (2019-05-10)
 

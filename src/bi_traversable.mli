@@ -169,13 +169,13 @@ module Chain_Bi2_Traverse1 (Bi : S2) (Trav : Traversable.S1) :
     an inner arity-1 container with floating left type over a traversal
     [Trav] over an outer arity-1 container. *)
 module Chain_Bi1_left_Traverse1 (Bi : S1_left) (Trav : Traversable.S1) :
-  S1_left with type 'l t = 'l Bi.t Trav.t
+  S1_left with type 'l t = 'l Bi.t Trav.t and type right = Bi.right
 
 (** [Chain_Bi1_right_Traverse1 (Bi) (Trav)] composes a bi-traversal [Bi] on
     an inner arity-1 container with floating right type over a traversal
     [Trav] over an outer arity-1 container. *)
 module Chain_Bi1_right_Traverse1 (Bi : S1_right) (Trav : Traversable.S1) :
-  S1_right with type 'r t = 'r Bi.t Trav.t
+  S1_right with type 'r t = 'r Bi.t Trav.t and type left = Bi.left
 
 (** [Chain_Bi0_Traverse1 (Bi) (Trav)] composes a bi-traversal [Bi] on an
     inner arity-0 container over a traversal [Trav] over an outer arity-1

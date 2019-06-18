@@ -198,7 +198,8 @@ module Chain_Bi2_Map1 (Bi : Basic2) (Map : Mappable.S1) :
 end)
 
 module Chain_Bi1_left_Map1 (Bi : Basic1_left) (Map : Mappable.S1) :
-  S1_left with type 'l t = 'l Bi.t Map.t = Make1_left (struct
+  S1_left with type 'l t = 'l Bi.t Map.t and type right = Bi.right =
+Make1_left (struct
   type 'l t = 'l Bi.t Map.t
 
   type right = Bi.right
@@ -209,7 +210,8 @@ module Chain_Bi1_left_Map1 (Bi : Basic1_left) (Map : Mappable.S1) :
 end)
 
 module Chain_Bi1_right_Map1 (Bi : Basic1_right) (Map : Mappable.S1) :
-  S1_right with type 'r t = 'r Bi.t Map.t = Make1_right (struct
+  S1_right with type 'r t = 'r Bi.t Map.t and type left = Bi.left =
+Make1_right (struct
   type 'r t = 'r Bi.t Map.t
 
   type left = Bi.left
