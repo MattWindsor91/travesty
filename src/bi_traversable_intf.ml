@@ -252,6 +252,14 @@ module type Generic = sig
      and type 'l left := 'l left
      and type 'r right := 'r right
      and module M := M
+
+  (** [With_errors] specialises [On_monad] to the error_monad. *)
+  module With_errors :
+    Generic_on_monad
+    with type ('l, 'r) t := ('l, 'r) t
+     and type 'l left := 'l left
+     and type 'r right := 'r right
+     and module M := Or_error
 end
 
 (** [S0] is the full signature of an arity-0 bi-traversable type.
