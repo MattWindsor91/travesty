@@ -6,7 +6,7 @@ being bi-traversables.
 ## Breaking changes
 
 - Most module signatures have moved from `XYZ` to `XYZ_types`.  For example,
-  `Bi_mappable.S2` is now `Bi_mappable.S2`.  This is to eliminate
+  `Bi_mappable.S2` is now `Bi_mappable_types.S2`.  This is to eliminate
   the 'intf pattern' previously used in Travesty.
 - Removed `Travesty_core_kernel_exts`.  Use `Travesty_base_exts`
   instead.
@@ -14,7 +14,7 @@ being bi-traversables.
   instead of destructive substitutions.  This may cause shadowing where there
   previously wasn't any.
 
-## Bi_traversable
+## Bi_traversable
 
 This release adds a `Bi_traversable` module---effectively being to
 `Traversable` as `Bi_mappable` is to `Mappable`.
