@@ -353,3 +353,54 @@ module Chain_Bi0_Traverse1 (Bi : Basic0) (Trav : Traversable_types.S1) :
       MTrav.map_m x ~f:(MBi.bi_map_m ~left ~right)
   end
 end)
+
+module Chain_Traverse1_Bi2 (LTrav : Traversable_types.S1) (RTrav : Traversable_types.S1) (Bi : Basic2) :
+  S2 with type ('l, 'r) t = ('l LTrav.t, 'r RTrav.t) Bi.t = Make2 (struct
+  type ('l, 'r) t = ('l LTrav.t, 'r RTrav.t) Bi.t
+
+  module On_monad (M : Monad.S) = struct
+    module MBi = Bi.On_monad (M)
+    module MTrav1 = LTrav.On_monad (M)
+    module MTrav2 = RTrav.On_monad (M)
+
+    let bi_map_m (x : ('l1, 'r1) t) ~(left : 'l1 -> 'l2 M.t)
+        ~(right : 'r1 -> 'r2 M.t) : ('l2, 'r2) t M.t =
+      MBi.bi_map_m x ~left:(MTrav1.map_m ~f:left) ~right:(MTrav2.map_m ~f:right)
+  end
+end)
+
+module Chain_Traverse1_Bi1_left
+    (LTrav : Traversable_types.S1)
+    (Bi : Basic1_left) :
+  S1_left with type 'l t = 'l LTrav.t Bi.t and type right = Bi.right =
+Make1_left (struct
+  type 'l t = 'l LTrav.t Bi.t
+  type right = Bi.right
+
+  module On_monad (M : Monad.S) = struct
+    module MBi = Bi.On_monad (M)
+    module MTrav = LTrav.On_monad (M)
+
+    let bi_map_m (x : 'l1 t) ~(left : 'l1 -> 'l2 M.t)
+        ~(right : right -> right M.t) : 'l2 t M.t =
+      MBi.bi_map_m x ~left:(MTrav.map_m ~f:left) ~right
+  end
+end)
+
+module Chain_Traverse1_Bi1_right
+    (RTrav : Traversable_types.S1)
+    (Bi : Basic1_right) :
+  S1_right with type 'r t = 'r RTrav.t Bi.t and type left = Bi.left =
+Make1_right (struct
+  type 'r t = 'r RTrav.t Bi.t
+  type left = Bi.left
+
+  module On_monad (M : Monad.S) = struct
+    module MBi = Bi.On_monad (M)
+    module MTrav = RTrav.On_monad (M)
+
+    let bi_map_m (x : 'r1 t) ~(left : left -> left M.t)
+        ~(right : 'r1 -> 'r2 M.t) : 'r2 t M.t =
+      MBi.bi_map_m x ~left ~right:(MTrav.map_m ~f:right)
+  end
+end)

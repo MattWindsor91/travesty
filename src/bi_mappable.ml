@@ -235,3 +235,38 @@ module Chain_Bi0_Map1 (Bi : Basic0) (Map : Mappable_types.S1) :
   let bi_map (x : t) ~(left : left -> left) ~(right : right -> right) : t =
     Map.map x ~f:(Bi.bi_map ~left ~right)
 end)
+
+module Chain_Map1_Bi2 (LMap : Mappable_types.S1) (RMap : Mappable_types.S1) (Bi : Basic2) :
+  S2 with type ('l, 'r) t = ('l LMap.t, 'r RMap.t) Bi.t = Make2 (struct
+  type ('l, 'r) t = ('l LMap.t, 'r RMap.t) Bi.t
+
+  let bi_map (x : ('l1, 'r1) t) ~(left : 'l1 -> 'l2)
+        ~(right : 'r1 -> 'r2) : ('l2, 'r2) t =
+      Bi.bi_map x ~left:(LMap.map ~f:left) ~right:(RMap.map ~f:right)
+end)
+
+module Chain_Map1_Bi1_left
+    (LMap : Mappable_types.S1)
+    (Bi : Basic1_left) :
+  S1_left with type 'l t = 'l LMap.t Bi.t and type right = Bi.right =
+Make1_left (struct
+  type 'l t = 'l LMap.t Bi.t
+  type right = Bi.right
+
+  let bi_map (x : 'l1 t) ~(left : 'l1 -> 'l2)
+      ~(right : right -> right) : 'l2 t =
+    Bi.bi_map x ~left:(LMap.map ~f:left) ~right
+end)
+
+module Chain_Map1_Bi1_right
+    (RMap : Mappable_types.S1)
+    (Bi : Basic1_right) :
+  S1_right with type 'r t = 'r RMap.t Bi.t and type left = Bi.left =
+Make1_right (struct
+  type 'r t = 'r RMap.t Bi.t
+  type left = Bi.left
+
+  let bi_map (x : 'r1 t) ~(left : left -> left)
+      ~(right : 'r1 -> 'r2) : 'r2 t =
+    Bi.bi_map x ~left ~right:(RMap.map ~f:right)
+end)

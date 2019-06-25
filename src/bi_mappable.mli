@@ -206,3 +206,32 @@ module Chain_Bi0_Map1 (Bi : Bi_mappable_types.S0) (Map : Mappable_types.S1) :
   with type t = Bi.t Map.t
    and type left = Bi.left
    and type right = Bi.right
+
+(** {3 Chaining mappables on the inside of a bi-mappable}
+
+    These functors let us compose one or two inner mappable containers with an
+    outer bi-mappable container, producing a bi-mappable.
+
+    In Haskell terms, this is a
+    {{:http://hackage.haskell.org/package/bifunctors/docs/Data-Bifunctor-Biff.html}
+    Biff}. *)
+
+(** [Chain_Map1_Bi2 (LMap) (RMap) (Bi)] composes an inner arity-1 map
+    [LMap] on the left, and another such map [RMap] on the right, of an
+    arity-2 bi-traversal [Bi]. *)
+module Chain_Map1_Bi2 (LMap : Mappable_types.S1) (RMap : Mappable_types.S1) (Bi : Bi_mappable_types.Basic2) :
+  Bi_mappable_types.S2 with type ('l, 'r) t = ('l LMap.t, 'r RMap.t) Bi.t
+
+(** [Chain_Map1_Bi1_left (LMap) (Bi)] composes an inner arity-1 map
+    [LMap] on the left of an arity-1 bi-map [Bi] with floating left type. *)
+module Chain_Map1_Bi1_left
+    (LMap : Mappable_types.S1)
+    (Bi : Bi_mappable_types.Basic1_left) :
+  Bi_mappable_types.S1_left with type 'l t = 'l LMap.t Bi.t and type right = Bi.right
+
+(** [Chain_Map1_Bi1_right (RMap) (Bi)] composes an inner arity-1 map
+    [LMap] on the right of an arity-1 bi-map [Bi] with floating right type. *)
+module Chain_Map1_Bi1_right
+    (RMap : Mappable_types.S1)
+    (Bi : Bi_mappable_types.Basic1_right) :
+  Bi_mappable_types.S1_right with type 'r t = 'r RMap.t Bi.t and type left = Bi.left

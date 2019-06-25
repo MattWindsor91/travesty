@@ -216,3 +216,28 @@ module Chain_Bi0_Traverse1
   with type t = Bi.t Trav.t
    and type left = Bi.left
    and type right = Bi.right
+
+(** {3 Chaining traversables on the inside of a bi-traversable}
+
+    These functors let us compose one or two inner traversable containers with an
+    outer bi-traversable container, producing a bi-traversable.  *)
+
+(** [Chain_Traverse1_Bi2 (LTrav) (RTrav) (Bi)] composes an inner arity-1 traversal
+    [LTrav] on the left, and another such traversal [RTrav] on the right, of an
+    arity-2 bi-traversal [Bi]. *)
+module Chain_Traverse1_Bi2 (LTrav : Traversable_types.S1) (RTrav : Traversable_types.S1) (Bi : Bi_traversable_types.Basic2) :
+  Bi_traversable_types.S2 with type ('l, 'r) t = ('l LTrav.t, 'r RTrav.t) Bi.t
+
+(** [Chain_Traverse1_Bi1_left (LTrav) (Bi)] composes an inner arity-1 traversal
+    [LTrav] on the left of an arity-1 bi-traversal [Bi] with floating left type. *)
+module Chain_Traverse1_Bi1_left
+    (LTrav : Traversable_types.S1)
+    (Bi : Bi_traversable_types.Basic1_left) :
+  Bi_traversable_types.S1_left with type 'l t = 'l LTrav.t Bi.t and type right = Bi.right
+
+(** [Chain_Traverse1_Bi1_right (RTrav) (Bi)] composes an inner arity-1 traversal
+    [LTrav] on the right of an arity-1 bi-traversal [Bi] with floating right type. *)
+module Chain_Traverse1_Bi1_right
+    (RTrav : Traversable_types.S1)
+    (Bi : Bi_traversable_types.Basic1_right) :
+  Bi_traversable_types.S1_right with type 'r t = 'r RTrav.t Bi.t and type left = Bi.left

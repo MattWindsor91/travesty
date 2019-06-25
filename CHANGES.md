@@ -19,6 +19,13 @@ This release adds a `Bi_traversable` module---effectively being to
 `Alist`, `Tuple2`, and `Or_error` now expose `Bi_traversable.S2`, which
 subsumes their previous interface.
 
+## Biffs
+
+This release also adds the ability to compose `Mappable`s on the inside of
+`Bi_mappable`s (and `Traversables` on the inside of `Bi_traversables`): what
+is often referred to as a 'biff' in the quirky world of Haskell.  This
+complements the ability to compose them on the outside (a 'tannen').
+
 ## Minor improvements
 
 - Removed spurious dependencies that caused travesty to be unavailable on
