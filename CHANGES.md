@@ -1,4 +1,7 @@
-# Proposed v0.6.0
+# v0.6.0 (2019-06-25)
+
+Major release with various breaking changes and new features, the main one
+being bi-traversables.
 
 ## Breaking changes
 
