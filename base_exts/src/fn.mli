@@ -106,6 +106,8 @@ module Compose_syntax : sig
 
       Example:
 
-      {| let f = String.(Compose_syntax.(strip >> lowercase >> equal "test")
-      in f " TEST " (* --> true *) |} *)
+      {[
+        let f = String.(Compose_syntax.(strip >> lowercase >> equal "test")
+        in f " TEST " (* --> true *)
+      ]} *)
 end

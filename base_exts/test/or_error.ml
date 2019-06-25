@@ -87,22 +87,27 @@ let%test_module "general bi-mappable tests" =
     include Travesty_test.Bi_mappable.Make0 (T)
   end )
 
-let%test_module "composed bi-map" = (module struct
-  module O = Travesty.Bi_mappable.Chain_Map1_Bi1_left (Tx.Option) (Tx.Or_error)
+let%test_module "composed bi-map" =
+  ( module struct
+    module O =
+      Travesty.Bi_mappable.Chain_Map1_Bi1_left (Tx.Option) (Tx.Or_error)
 
-  let test (input : string option Or_error.t) : unit =
-    let output = O.bi_map input ~left:String.capitalize ~right:(Error.tag ~tag:"tagged") in
-    print_s [%sexp (output : string option Or_error.t)]
+    let test (input : string option Or_error.t) : unit =
+      let output =
+        O.bi_map input ~left:String.capitalize
+          ~right:(Error.tag ~tag:"tagged")
+      in
+      print_s [%sexp (output : string option Or_error.t)]
 
-  let%expect_test "present success" =
-    test (Or_error.return (Some "kappa"));
-    [%expect {| (Ok (Kappa)) |}]
+    let%expect_test "present success" =
+      test (Or_error.return (Some "kappa")) ;
+      [%expect {| (Ok (Kappa)) |}]
 
-  let%expect_test "empty success" =
-    test (Or_error.return None);
-    [%expect {| (Ok ()) |}]
+    let%expect_test "empty success" =
+      test (Or_error.return None) ;
+      [%expect {| (Ok ()) |}]
 
-  let%expect_test "failure" =
-    test (Or_error.error_string "the miracle never happen");
-    [%expect {| (Error (tagged "the miracle never happen")) |}]
-end)
+    let%expect_test "failure" =
+      test (Or_error.error_string "the miracle never happen") ;
+      [%expect {| (Error (tagged "the miracle never happen")) |}]
+  end )
