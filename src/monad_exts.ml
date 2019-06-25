@@ -22,7 +22,7 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 open Base
-include Monad_exts_intf
+open Monad_exts_types
 
 module Extend (M : Monad.S) : S with type 'a t := 'a M.t = struct
   let then_m (x : _ M.t) (y : 'a M.t) : 'a M.t = M.(x >>= fun _ -> y)
@@ -55,8 +55,8 @@ module Extend (M : Monad.S) : S with type 'a t := 'a M.t = struct
   let tee (x : 'a) ~(f : 'a -> unit) : 'a M.t = f x ; M.return x
 end
 
-module To_mappable (M : Monad.S) : Mappable.S1 with type 'a t := 'a M.t =
-struct
+module To_mappable (M : Monad.S) :
+  Mappable_types.S1 with type 'a t := 'a M.t = struct
   let map = M.map
 end
 

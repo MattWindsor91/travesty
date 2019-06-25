@@ -46,7 +46,7 @@ module type Generic = sig
   (** [Generic] refers to the container type as ['a t], and the element type
       as ['a elt]; substitute [t]/[elt] (arity-0) or ['a t]/['a] (arity-1)
       accordingly below. *)
-  include Types_intf.Generic
+  include Generic_types.Generic
 
   val map : 'a t -> f:('a elt -> 'b elt) -> 'b t
   (** [map c ~f] maps [f] over every [t] in [c]. *)
@@ -63,7 +63,7 @@ end
 
     Functions mapped over arity-0 types must preserve the element type. *)
 module type S0 = sig
-  include Types_intf.S0
+  include Generic_types.S0
 
   include Generic with type 'a t := t and type 'a elt := elt
 end
@@ -115,7 +115,7 @@ module type Extensions1 = sig
   (** [Extensions1] includes the container extensions from
       {{!Container_exts} Container_exts}, as they work with any arity-1
       container. *)
-  include Container_exts.S1 with type 'a t := 'a t
+  include Container_exts_types.S1 with type 'a t := 'a t
 
   val right_pad : padding:'a -> 'a list t -> 'a list t
   (** [right_pad ~padding xs] pads every list in xs with [padding], ensuring

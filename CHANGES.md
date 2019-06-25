@@ -2,6 +2,9 @@
 
 ## Breaking changes
 
+- Most module signatures have moved from `XYZ` to `XYZ_types`.  For example,
+  `Bi_mappable.S2` is now `Bi_mappable.S2`.  This is to eliminate
+  the 'intf pattern' previously used in Travesty.
 - Removed `Travesty_core_kernel_exts`.  Use `Travesty_base_exts`
   instead.
 - Made `Bi_mappable.Make2`'s return module type use sharing constraints

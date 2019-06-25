@@ -35,4 +35,4 @@ type ('l, 'r) t = 'l * 'r
       bi_map ("foo", 27) ~left:String.capitalize ~right:Int.neg
       (* returns: ("Foo", -27) *)
     ]} *)
-include Travesty.Bi_traversable.S2 with type ('l, 'r) t := ('l, 'r) t
+include Travesty.Bi_traversable_types.S2 with type ('l, 'r) t := ('l, 'r) t

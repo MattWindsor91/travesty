@@ -37,7 +37,7 @@ module type Generic = sig
   (** [Generic_extensions] refers to the container type as ['a t], and the
       element type as ['a elt]; substitute [t]/[elt] (arity-0) or
       ['a t]/['a] (arity-1) accordingly below. *)
-  include Types_intf.Generic
+  include Generic_types.Generic
 
   (** {3 Testing for a specific number of elements}
 
@@ -132,7 +132,7 @@ end
     This signature contains the generic extensions outlined in
     {{!Generic_extensions} Generic_extensions}. *)
 module type S0 = sig
-  include Types_intf.S0
+  include Generic_types.S0
 
   include Generic with type 'a t := t and type 'a elt := elt
 end

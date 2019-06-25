@@ -23,7 +23,7 @@
 
 (** Generic type signatures.
 
-    [Types_intf] contains several signatures that contain types for
+    This module contains several signatures that contain types for
     container-like structures. These are intended for inclusion in other
     signatures. *)
 

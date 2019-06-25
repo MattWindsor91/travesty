@@ -22,7 +22,7 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 open Base
-include Mappable_intf
+open Mappable_types
 
 module Extend1 (S : S1_container) : Extensions1 with type 'a t := 'a S.t =
 struct

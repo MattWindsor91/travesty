@@ -46,24 +46,24 @@
     If you need to run stateful computations that can fail, or are partial,
     or non-deterministic, and so on, use state transformers instead. *)
 
-(** {2 Signatures} *)
+(** {2 Signatures}
 
-(** {{!State_intf} State_intf} contains the signatures for [State]. *)
-include module type of State_intf
+    For input and output module signatures for this module's functors, see
+    {{!State_types} State_types}. *)
 
 (** {2 Manipulating state monads} *)
 
-(** [To_S] flattens a {{!S2} S2} into an {{!S} S} by fixing the state type
-    to [B.t]. *)
-module To_S (M : S2) (B : Base.T) :
-  S with type state = B.t and type 'a t = ('a, B.t) M.t
+(** [To_S] flattens a {{!State_types.S2} S2} into an {{!State_types.S} S} by
+    fixing the state type to [B.t]. *)
+module To_S (M : State_types.S2) (B : Base.T) :
+  State_types.S with type state = B.t and type 'a t = ('a, B.t) M.t
 
 (** {2 Implementations and functors} *)
 
-(** [Make] makes an [S] (state monad with fixed state type) from a single
-    state type. *)
-module Make (B : Base.T) : S with type state = B.t
+(** [Make] makes an {{!State_types.S} S} (state monad with fixed state type)
+    from a single state type. *)
+module Make (B : Base.T) : State_types.S with type state = B.t
 
-(** [M2] is a basic implementation of {{!S2} S2} (state monad with variable
-    state type). *)
-module M2 : S2
+(** [M2] is a basic implementation of {{!State_types.S2} S2} (state monad
+    with variable state type). *)
+module M2 : State_types.S2

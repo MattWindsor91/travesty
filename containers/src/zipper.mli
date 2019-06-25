@@ -45,19 +45,21 @@
 
 open Base
 
-(** For documentation on the signatures of both zippers and the parameters
-    of the functors below, see also {{!Zipper_intf} Zipper_intf}. *)
-include module type of Zipper_intf
+(** {2 Signatures}
+
+    For input and output signatures for this module's functors, see
+    {{!Zipper_types} Zipper_types}. *)
 
 (** {2 Plain zippers} *)
 
 (** [Plain] is a basic list zipper, without specialised functionality. *)
-module Plain : S
+module Plain : Zipper_types.S
 
 (** {2 Marked zippers} *)
 
 (** [Make_marked] makes a marked zipper from a [Basic_mark]. *)
-module Make_marked (Mark : Basic_mark) : S_marked with type mark := Mark.t
+module Make_marked (Mark : Zipper_types.Basic_mark) :
+  Zipper_types.S_marked with type mark := Mark.t
 
 (** [Int_mark_zipper] is a marked zipper whose marks are integers. *)
-module Int_mark_zipper : S_marked with type mark := int
+module Int_mark_zipper : Zipper_types.S_marked with type mark := int

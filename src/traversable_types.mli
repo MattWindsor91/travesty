@@ -61,7 +61,7 @@ module type Basic_generic_on_monad = sig
   (** [Generic] refers to the container type as ['a t], and the element type
       as ['a elt]; substitute [t]/[elt] (arity-0) or ['a t]/['a] (arity-1)
       accordingly below. *)
-  include Types_intf.Generic
+  include Generic_types.Generic
 
   (** [M] is the monad over which we're fold-mapping. *)
   module M : Monad.S
@@ -122,7 +122,7 @@ end
 (** [Basic0_on_monad] is the inner signature of a monadic traversal over
     arity-0 types. *)
 module type Basic0_on_monad = sig
-  include Types_intf.S0
+  include Generic_types.S0
 
   include Basic_generic_on_monad with type 'a t := t and type 'a elt := elt
 end
@@ -219,7 +219,7 @@ end
 (** [Generic] is a generic interface for traversable containers, used to
     build [S0] (arity-0) and [S1] (arity-1). *)
 module type Generic = sig
-  include Types_intf.Generic
+  include Generic_types.Generic
 
   (** [On_monad] implements monadic traversal operators for a given monad
       [M]. *)
@@ -233,7 +233,8 @@ module type Generic = sig
   include Container.Generic with type 'a t := 'a t and type 'a elt := 'a elt
 
   (** We can do non-monadic mapping operations. *)
-  include Mappable.Generic with type 'a t := 'a t and type 'a elt := 'a elt
+  include
+    Mappable_types.Generic with type 'a t := 'a t and type 'a elt := 'a elt
 
   val fold_map :
     'a t -> f:('acc -> 'a elt -> 'acc * 'b elt) -> init:'acc -> 'acc * 'b t
@@ -261,11 +262,11 @@ module type S0 = sig
 
   (** We export [Elt.t] as [elt] for compatibility with Core-style
       containers. *)
-  include Types_intf.S0 with type elt = Elt.t
+  include Generic_types.S0 with type elt = Elt.t
 
   include Generic with type 'a t := t and type 'a elt := Elt.t
 
-  include Mappable.S0_container with type t := t and type elt := Elt.t
+  include Mappable_types.S0_container with type t := t and type elt := Elt.t
 end
 
 (** [S1] is a generic interface for arity-1 traversable containers. It also
@@ -291,7 +292,7 @@ module type S1 = sig
      and module On_monad := On_monad
      and module With_errors := With_errors
 
-  include Mappable.S1_container with type 'a t := 'a t
+  include Mappable_types.S1_container with type 'a t := 'a t
 
-  include Mappable.Extensions1 with type 'a t := 'a t
+  include Mappable_types.Extensions1 with type 'a t := 'a t
 end

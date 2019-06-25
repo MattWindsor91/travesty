@@ -31,32 +31,42 @@
 
 open Base
 
-(** {2 Signatures} *)
+(** {2 Signatures}
 
-(** @inline *)
-include module type of Bi_traversable_intf
+    For input and output signatures for this module's functors, see
+    {{!Bi_traversable_types} Bi_traversable_types}. *)
 
 (** {2 Making full bi-traversable type modules}
 
     These functors build full implementations of bi-traversability given the
     basic minimal definitions above. *)
 
-(** [Make2] implements [S2] for an arity-2 bi-traversable container. *)
-module Make2 (I : Basic2) : S2 with type ('l, 'r) t = ('l, 'r) I.t
+(** [Make2] implements {{!Bi_traversable_types.S2} S2} for an arity-2
+    bi-traversable container. *)
+module Make2 (I : Bi_traversable_types.Basic2) :
+  Bi_traversable_types.S2 with type ('l, 'r) t = ('l, 'r) I.t
 
-(** [Make1_left] implements [S1_left] for an arity-1 bi-traversable
-    container with floating left type. *)
-module Make1_left (I : Basic1_left) :
-  S1_left with type 'l t = 'l I.t and type right = I.right
+(** [Make1_left] implements {{!Bi_traversable_types.S1_left} S1_left} for an
+    arity-1 bi-traversable container with floating left type. *)
+module Make1_left (I : Bi_traversable_types.Basic1_left) :
+  Bi_traversable_types.S1_left
+  with type 'l t = 'l I.t
+   and type right = I.right
 
-(** [Make1_right] implements [S1_right] for an arity-1 bi-traversable
-    container with floating right type. *)
-module Make1_right (I : Basic1_right) :
-  S1_right with type 'r t = 'r I.t and type left = I.left
+(** [Make1_right] implements {{!Bi_traversable_types.S1_right} S1_right} for
+    an arity-1 bi-traversable container with floating right type. *)
+module Make1_right (I : Bi_traversable_types.Basic1_right) :
+  Bi_traversable_types.S1_right
+  with type 'r t = 'r I.t
+   and type left = I.left
 
-(** [Make0] implements [S0] for an arity-0 bi-traversable container. *)
-module Make0 (I : Basic0) :
-  S0 with type t = I.t and type left = I.left and type right = I.right
+(** [Make0] implements {{!Bi_traversable_types.S0} S0} for an arity-0
+    bi-traversable container. *)
+module Make0 (I : Bi_traversable_types.Basic0) :
+  Bi_traversable_types.S0
+  with type t = I.t
+   and type left = I.left
+   and type right = I.right
 
 (** {2:fix Fixing types}
 
@@ -67,19 +77,23 @@ module Make0 (I : Basic0) :
 (** {3 Arity-2} *)
 
 (** [Fix2_left (I) (Left)] fixes the left type of [I] to [Left], making it
-    an {{!S1_right} S1_right}. *)
-module Fix2_left (I : Basic2) (Left : T) :
-  S1_right with type 'r t = (Left.t, 'r) I.t and type left = Left.t
+    an {{!Bi_traversable_types.S1_right} S1_right}. *)
+module Fix2_left (I : Bi_traversable_types.Basic2) (Left : T) :
+  Bi_traversable_types.S1_right
+  with type 'r t = (Left.t, 'r) I.t
+   and type left = Left.t
 
 (** [Fix2_right (S) (Left)] fixes the right type of [S] to [Right], making
-    it an {{!S1_left} S1_left}. *)
-module Fix2_right (I : Basic2) (Right : T) :
-  S1_left with type 'l t = ('l, Right.t) I.t and type right = Right.t
+    it an {{!Bi_traversable_types.S1_left} S1_left}. *)
+module Fix2_right (I : Bi_traversable_types.Basic2) (Right : T) :
+  Bi_traversable_types.S1_left
+  with type 'l t = ('l, Right.t) I.t
+   and type right = Right.t
 
 (** [Fix2_both (S) (Left) (Right)] fixes the types of [S] to [Left] and
-    [Right], making it an {{!S0} S0}. *)
-module Fix2_both (I : Basic2) (Left : T) (Right : T) :
-  S0
+    [Right], making it an {{!Bi_traversable_types.S0} S0}. *)
+module Fix2_both (I : Bi_traversable_types.Basic2) (Left : T) (Right : T) :
+  Bi_traversable_types.S0
   with type t = (Left.t, Right.t) I.t
    and type left = Left.t
    and type right = Right.t
@@ -87,17 +101,17 @@ module Fix2_both (I : Basic2) (Left : T) (Right : T) :
 (** {3 Arity-1} *)
 
 (** [Fix1_left (S) (Left)] fixes the floating left type of [S] to [Left],
-    making it an {{!S0} S0}. *)
-module Fix1_left (I : Basic1_left) (Left : T) :
-  S0
+    making it an {{!Bi_traversable_types.S0} S0}. *)
+module Fix1_left (I : Bi_traversable_types.Basic1_left) (Left : T) :
+  Bi_traversable_types.S0
   with type t = Left.t I.t
    and type left = Left.t
    and type right = I.right
 
 (** [Fix1_right (I) (Right)] fixes the floating right type of [S] to
-    [Right], making it an {{!S0} S0}. *)
-module Fix1_right (I : Basic1_right) (Right : T) :
-  S0
+    [Right], making it an {{!Bi_traversable_types.S0} S0}. *)
+module Fix1_right (I : Bi_traversable_types.Basic1_right) (Right : T) :
+  Bi_traversable_types.S0
   with type t = Right.t I.t
    and type left = I.left
    and type right = Right.t
@@ -118,12 +132,13 @@ module Fix1_right (I : Basic1_right) (Right : T) :
 
 (** Traversing over the left type of an arity-1 bi-traversable container
     with a floating left type. *)
-module Traverse1_left (S : S1_left) : Traversable.S1 with type 'l t = 'l S.t
+module Traverse1_left (S : Bi_traversable_types.S1_left) :
+  Traversable_types.S1 with type 'l t = 'l S.t
 
 (** Traversing over the right type of an arity-1 bi-traversable container
     with a floating right type. *)
-module Traverse1_right (S : S1_right) :
-  Traversable.S1 with type 'r t = 'r S.t
+module Traverse1_right (S : Bi_traversable_types.S1_right) :
+  Traversable_types.S1 with type 'r t = 'r S.t
 
 (** {3 Arity-0}
 
@@ -135,17 +150,21 @@ module Traverse1_right (S : S1_right) :
     As {{!Mappable} mappables} don't have this restriction, if one requires
     only non-monadic mappable functionality down one side of an arity 0
     bi-traversable, one can use the [Map0] functors in
-    {{!Bi_mappable} Bi_mappable} with an {{!S0} S0}. *)
+    {{!Bi_mappable} Bi_mappable} with an {{!Bi_mappable_types.S0} S0}. *)
 
 (** Traversing over the left type of an arity-0 bi-traversable container,
     which must have equality as witnessed by an [Equal.S] module. *)
-module Traverse0_left (L : Equal.S) (S : S0 with type left := L.t) :
-  Traversable.S0 with type t = S.t and module Elt = L
+module Traverse0_left
+    (L : Equal.S)
+    (S : Bi_traversable_types.S0 with type left := L.t) :
+  Traversable_types.S0 with type t = S.t and module Elt = L
 
 (** Traversing over the right type. of an arity-0 bi-traversable container,
     which must have equality as witnessed by an [Equal.S] module. *)
-module Traverse0_right (R : Equal.S) (S : S0 with type right := R.t) :
-  Traversable.S0 with type t = S.t and module Elt = R
+module Traverse0_right
+    (R : Equal.S)
+    (S : Bi_traversable_types.S0 with type right := R.t) :
+  Traversable_types.S0 with type t = S.t and module Elt = R
 
 (** {2 Chaining containers} *)
 
@@ -162,26 +181,38 @@ module Traverse0_right (R : Equal.S) (S : S0 with type right := R.t) :
 (** [Chain_Bi2_Traverse1 (Bi) (Trav)] composes a bi-traversal [Bi] on an
     inner arity-2 container over a traversal [Trav] over an outer arity-1
     container. *)
-module Chain_Bi2_Traverse1 (Bi : S2) (Trav : Traversable.S1) :
-  S2 with type ('l, 'r) t = ('l, 'r) Bi.t Trav.t
+module Chain_Bi2_Traverse1
+    (Bi : Bi_traversable_types.S2)
+    (Trav : Traversable_types.S1) :
+  Bi_traversable_types.S2 with type ('l, 'r) t = ('l, 'r) Bi.t Trav.t
 
 (** [Chain_Bi1_left_Traverse1 (Bi) (Trav)] composes a bi-traversal [Bi] on
     an inner arity-1 container with floating left type over a traversal
     [Trav] over an outer arity-1 container. *)
-module Chain_Bi1_left_Traverse1 (Bi : S1_left) (Trav : Traversable.S1) :
-  S1_left with type 'l t = 'l Bi.t Trav.t and type right = Bi.right
+module Chain_Bi1_left_Traverse1
+    (Bi : Bi_traversable_types.S1_left)
+    (Trav : Traversable_types.S1) :
+  Bi_traversable_types.S1_left
+  with type 'l t = 'l Bi.t Trav.t
+   and type right = Bi.right
 
 (** [Chain_Bi1_right_Traverse1 (Bi) (Trav)] composes a bi-traversal [Bi] on
     an inner arity-1 container with floating right type over a traversal
     [Trav] over an outer arity-1 container. *)
-module Chain_Bi1_right_Traverse1 (Bi : S1_right) (Trav : Traversable.S1) :
-  S1_right with type 'r t = 'r Bi.t Trav.t and type left = Bi.left
+module Chain_Bi1_right_Traverse1
+    (Bi : Bi_traversable_types.S1_right)
+    (Trav : Traversable_types.S1) :
+  Bi_traversable_types.S1_right
+  with type 'r t = 'r Bi.t Trav.t
+   and type left = Bi.left
 
 (** [Chain_Bi0_Traverse1 (Bi) (Trav)] composes a bi-traversal [Bi] on an
     inner arity-0 container over a traversal [Trav] over an outer arity-1
     container. *)
-module Chain_Bi0_Traverse1 (Bi : S0) (Trav : Traversable.S1) :
-  S0
+module Chain_Bi0_Traverse1
+    (Bi : Bi_traversable_types.S0)
+    (Trav : Traversable_types.S1) :
+  Bi_traversable_types.S0
   with type t = Bi.t Trav.t
    and type left = Bi.left
    and type right = Bi.right

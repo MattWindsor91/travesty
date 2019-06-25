@@ -22,7 +22,7 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 open Base
-include Filter_mappable_intf
+open Filter_mappable_types
 
 module Make_generic (F : Generic_basic) :
   Generic with type 'a t := 'a F.t and type 'a elt := 'a F.elt = struct
@@ -52,15 +52,16 @@ Make_generic (struct
 end)
 
 module To_mappable_generic (F : Generic_basic) :
-  Mappable.Generic with type 'a t := 'a F.t and type 'a elt := 'a F.elt =
-struct
+  Mappable_types.Generic
+  with type 'a t := 'a F.t
+   and type 'a elt := 'a F.elt = struct
   include F
 
   let map xs ~f = filter_map xs ~f:(fun x -> Some (f x))
 end
 
 module To_mappable0 (F : Basic0) :
-  Mappable.S0 with type t := F.t and type elt := F.elt =
+  Mappable_types.S0 with type t := F.t and type elt := F.elt =
 To_mappable_generic (struct
   type 'a t = F.t
 
@@ -69,8 +70,8 @@ To_mappable_generic (struct
   let filter_map = F.filter_map
 end)
 
-module To_mappable1 (F : Basic1) : Mappable.S1 with type 'a t := 'a F.t =
-To_mappable_generic (struct
+module To_mappable1 (F : Basic1) :
+  Mappable_types.S1 with type 'a t := 'a F.t = To_mappable_generic (struct
   type 'a t = 'a F.t
 
   type 'a elt = 'a

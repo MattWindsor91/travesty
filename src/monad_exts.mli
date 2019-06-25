@@ -28,14 +28,15 @@
 
 open Base
 
-(** {2:exts Extensions} *)
+(** {2 Signatures}
 
-(** As is often the case, we define the extension signatures in a separate
-    file. *)
-include module type of Monad_exts_intf
+    For input and output module signatures for this module's functors, see
+    {{!Filter_mappable_types} Filter_mappable_types}. *)
 
-(** [Extend] creates {{!S} extensions} for a [Monad.S]. *)
-module Extend (M : Monad.S) : S with type 'a t := 'a M.t
+(** {2:exts Extensions functors} *)
+
+(** [Extend] creates {{!Monad_exts_types.S} extensions} for a [Monad.S]. *)
+module Extend (M : Monad.S) : Monad_exts_types.S with type 'a t := 'a M.t
 
 (** {2:misc Miscellaneous} *)
 
@@ -47,6 +48,8 @@ module S2_to_S (M : Monad.S2) (B : T) :
 (** Converts a monad to a mappable over [M.map].
 
     At time of writing, [M] satisfies
-    {{!Mappable.S1} the mappable interface} in its own right; this functor
-    mainly exists as insurance in case the two interfaces ever diverge. *)
-module To_mappable (M : Monad.S) : Mappable.S1 with type 'a t := 'a M.t
+    {{!Mappable_types.S1} the mappable interface} in its own right; this
+    functor mainly exists as insurance in case the two interfaces ever
+    diverge. *)
+module To_mappable (M : Monad.S) :
+  Mappable_types.S1 with type 'a t := 'a M.t

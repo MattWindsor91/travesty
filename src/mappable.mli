@@ -27,16 +27,18 @@
     (non-monadically) mapped over. It resembles the Haskell (but not the
     OCaml!) notion of a functor, though we call the mapping function [map]. *)
 
-(** {2 Signatures} *)
+(** {2 Signatures}
 
-(** {{!Mappable_intf} Mappable_intf} contains the signatures for [Mappable]. *)
-include module type of Mappable_intf
+    For input and output module signatures for this module's functors, see
+    {{!Mappable_types} Mappable_types}. *)
 
 (** {2 Extending mappable containers}
 
     We define several derived functions for mappable containers in
-    {{!Mappable_intf} Mappable_intf}---here, we define functors to generate
+    {{!Mappable_types} Mappable_types}---here, we define functors to generate
     them. *)
 
-(** [Extend1] implements [Extensions1] for an arity-1 mappable container. *)
-module Extend1 (S : S1_container) : Extensions1 with type 'a t := 'a S.t
+(** [Extend1] implements {{!Mappable_types.Extensions1} Extensions1} for an
+    arity-1 mappable container. *)
+module Extend1 (S : Mappable_types.S1_container) :
+  Mappable_types.Extensions1 with type 'a t := 'a S.t

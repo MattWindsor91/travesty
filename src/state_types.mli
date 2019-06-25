@@ -28,17 +28,17 @@ open Base
 module type Generic = sig
   (** State monads share the signatures of their builder functions with
       state transformers... *)
-  include State_transform_intf.Generic_builders
+  include State_transform_types.Generic_builders
 
   (** ...as well as their runner functions... *)
   include
-    State_transform_intf.Generic_runners
+    State_transform_types.Generic_runners
     with type ('a, 's) t := ('a, 's) t
      and type 'a final := 'a final
      and type 's state := 's state
 
   (** ...and fixed-point combinators. *)
-  include State_transform_intf.Fix with type ('a, 's) t := ('a, 's) t
+  include State_transform_types.Fix with type ('a, 's) t := ('a, 's) t
 end
 
 (** [S] is the signature of state monads parametrised over their value, but
@@ -49,7 +49,7 @@ module type S = sig
 
   include Monad.S
 
-  include Monad_exts.S with type 'a t := 'a t
+  include Monad_exts_types.S with type 'a t := 'a t
 
   include
     Generic

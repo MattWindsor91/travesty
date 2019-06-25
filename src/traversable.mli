@@ -1,6 +1,6 @@
 (* This file is part of 'travesty'.
 
-   Copyright (c) 2018 by Matt Windsor
+   Copyright (c) 2018, 2019 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
    copy of this software and associated documentation files (the
@@ -34,10 +34,10 @@
 
 open Base
 
-(** {2 Signatures} *)
+(** {2 Signatures}
 
-(** @inline *)
-include module type of Traversable_intf
+    For input and output module signatures for this module's functors, see
+    {{!Traversable_types} Traversable_types}. *)
 
 (** {2 Making traversable containers}
 
@@ -47,38 +47,46 @@ include module type of Traversable_intf
 
 (** {3 New containers} *)
 
-(** [Make] makes an {{!S0} S0} from a {{!Basic0} Basic0}. *)
-module Make0 (I : Basic0) : S0 with module Elt = I.Elt and type t = I.t
+(** [Make] makes an {{!Traversable_types.S0} S0} from a
+    {{!Traversable_types.Basic0} Basic0}. *)
+module Make0 (I : Traversable_types.Basic0) :
+  Traversable_types.S0 with module Elt = I.Elt and type t = I.t
 
-(** [Make] makes an {{!S1} S1} from a {{!Basic1} Basic1}. *)
-module Make1 (I : Basic1) : S1 with type 'a t = 'a I.t
+(** [Make] makes an {{!Traversable_types.S1} S1} from a
+    {{!Traversable_types.Basic1} Basic1}. *)
+module Make1 (I : Traversable_types.Basic1) :
+  Traversable_types.S1 with type 'a t = 'a I.t
 
 (** {3 Extending existing containers with monadic traversals} *)
 
-(** [Make0_container] makes an {{!S0} S0} from a
-    {{!Basic0_container} Basic0_container}. *)
-module Make0_container (I : Basic0_container) :
-  S0 with module Elt = I.Elt and type t = I.t
+(** [Make0_container] makes an {{!Traversable_types.S0} S0} from a
+    {{!Traversable_types.Basic0_container} Basic0_container}. *)
+module Make0_container (I : Traversable_types.Basic0_container) :
+  Traversable_types.S0 with module Elt = I.Elt and type t = I.t
 
-(** [Make1_container] makes an {{!S1} S1} from a
-    {{!Basic_container1} Basic1_container}. *)
-module Make1_container (I : Basic1_container) : S1 with type 'a t = 'a I.t
+(** [Make1_container] makes an {{!Traversable_types.S1} S1} from a
+    {{!Traversable_types.Basic_container1} Basic1_container}. *)
+module Make1_container (I : Traversable_types.Basic1_container) :
+  Traversable_types.S1 with type 'a t = 'a I.t
 
 (** {2 Combining and modifying traversable containers} *)
 
 (** {3 Chaining} *)
 
-(** [Chain0] chains two {{!S0} S0} instances together, traversing each
-    element of the outer instance with the inner instance. *)
-module Chain0 (Outer : S0) (Inner : S0 with type t := Outer.Elt.t) :
-  S0 with module Elt = Inner.Elt and type t = Outer.t
+(** [Chain0] chains two {{!Traversable_types.S0} S0} instances together,
+    traversing each element of the outer instance with the inner instance. *)
+module Chain0
+    (Outer : Traversable_types.S0)
+    (Inner : Traversable_types.S0 with type t := Outer.Elt.t) :
+  Traversable_types.S0 with module Elt = Inner.Elt and type t = Outer.t
 
 (** {3 Fixing the element type} *)
 
-(** [Fix_elt (I) (Elt)] demotes an {{!S1} S1} [S] to an {{!S0} S0} by fixing
-    the element type to that mentioned in [Elt]. *)
-module Fix_elt (I : S1) (Elt : Equal.S) :
-  S0 with module Elt = Elt and type t = Elt.t I.t
+(** [Fix_elt (I) (Elt)] demotes an {{!Traversable_types.S1} S1} [S] to an
+    {{!Traversable_types.S0} S0} by fixing the element type to that
+    mentioned in [Elt]. *)
+module Fix_elt (I : Traversable_types.S1) (Elt : Equal.S) :
+  Traversable_types.S0 with module Elt = Elt and type t = Elt.t I.t
 
 (** {2 Helper functions} *)
 

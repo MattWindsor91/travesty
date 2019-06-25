@@ -54,7 +54,7 @@ open Base
     - For arity-2 types, use {{!S2} S2}: [('l, 'r) t] becomes [('l, 'r) t],
       ['l left] becomes ['l], and ['r right] becomes ['r]. *)
 module type Basic_generic = sig
-  include Types_intf.Bi_generic
+  include Generic_types.Bi_generic
 
   val bi_map :
        ('l1, 'r1) t
@@ -79,7 +79,7 @@ end
 
     Functions mapped over arity-0 types must preserve both element types. *)
 module type Basic0 = sig
-  include Types_intf.Bi0
+  include Generic_types.Bi0
 
   include
     Basic_generic
@@ -94,7 +94,7 @@ end
     Functions mapped over arity-1 types may change the left element type,
     but not the right. *)
 module type Basic1_left = sig
-  include Types_intf.Bi_left
+  include Generic_types.Bi_left
 
   include
     Basic_generic
@@ -109,7 +109,7 @@ end
     Functions mapped over arity-1 types may change the right element type,
     but not the left. *)
 module type Basic1_right = sig
-  include Types_intf.Bi_right
+  include Generic_types.Bi_right
 
   include
     Basic_generic
@@ -152,7 +152,7 @@ end
 
     Functions mapped over arity-0 types must preserve both element types. *)
 module type S0 = sig
-  include Types_intf.Bi0
+  include Generic_types.Bi0
 
   include
     Generic
@@ -167,7 +167,7 @@ end
     Functions mapped over arity-1 types may change the left element type,
     but not the right. *)
 module type S1_left = sig
-  include Types_intf.Bi_left
+  include Generic_types.Bi_left
 
   include
     Generic
@@ -182,7 +182,7 @@ end
     Functions mapped over arity-1 types may change the right element type,
     but not the left. *)
 module type S1_right = sig
-  include Types_intf.Bi_right
+  include Generic_types.Bi_right
 
   include
     Generic

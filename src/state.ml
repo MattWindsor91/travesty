@@ -22,7 +22,7 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 open Base
-include State_intf
+open State_types
 
 (* We implement all of the various monads and functors in terms of
    [State_transform] and the identity monad, for simplicity. This reflects

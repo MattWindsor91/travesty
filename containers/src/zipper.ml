@@ -22,7 +22,7 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 open Base
-include Zipper_intf
+open Zipper_types
 
 module type Basic_cell = sig
   type 'a t [@@deriving sexp]
@@ -35,7 +35,7 @@ module type Basic_cell = sig
 
   val to_data_list : 'a t list -> 'a list
 
-  include Travesty.Traversable.S1 with type 'a t := 'a t
+  include Travesty.Traversable_types.S1 with type 'a t := 'a t
 end
 
 let rev_transfer amount ~src ~dst =

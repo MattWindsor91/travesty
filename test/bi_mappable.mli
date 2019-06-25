@@ -23,7 +23,24 @@
 
 (** Parametric tests for bi-mappable types *)
 
-include module type of Bi_mappable_intf
-
 (** [Make0] builds a module of test laws for an arity-0 account. *)
-module Make0 (I : Basic0) : sig end
+module Make0 (I : sig
+  val here : Lexing.position
+  (** Should point to where the law tests were generated. *)
+
+  type t [@@deriving sexp, compare, quickcheck]
+
+  module Left : sig
+    type t [@@deriving quickcheck]
+  end
+
+  module Right : sig
+    type t [@@deriving quickcheck]
+  end
+
+  include
+    Travesty.Bi_mappable_types.S0
+    with type t := t
+     and type left := Left.t
+     and type right := Right.t
+end) : sig end

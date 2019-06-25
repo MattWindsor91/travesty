@@ -22,7 +22,7 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 open Base
-include Bi_mappable_intf
+open Bi_mappable_types
 
 module Derived_ops_gen (I : Basic_generic) = struct
   let map_left (c : ('l1, 'r) I.t) ~(f : 'l1 I.left -> 'l2 I.left) :
@@ -156,22 +156,22 @@ module Fix1_right (I : Basic1_right) (Right : T) :
   let bi_map = I.bi_map
 end)
 
-module Map1_left (I : S1_left) : Mappable.S1 with type 'l t = 'l I.t =
+module Map1_left (I : S1_left) : Mappable_types.S1 with type 'l t = 'l I.t =
 struct
   type 'l t = 'l I.t
 
   let map = I.map_left
 end
 
-module Map1_right (I : S1_right) : Mappable.S1 with type 'r t = 'r I.t =
-struct
+module Map1_right (I : S1_right) :
+  Mappable_types.S1 with type 'r t = 'r I.t = struct
   type 'r t = 'r I.t
 
   let map = I.map_right
 end
 
 module Map0_left (I : S0) :
-  Mappable.S0 with type t = I.t and type elt = I.left = struct
+  Mappable_types.S0 with type t = I.t and type elt = I.left = struct
   type t = I.t
 
   type elt = I.left
@@ -180,7 +180,7 @@ module Map0_left (I : S0) :
 end
 
 module Map0_right (I : S0) :
-  Mappable.S0 with type t = I.t and type elt = I.right = struct
+  Mappable_types.S0 with type t = I.t and type elt = I.right = struct
   type t = I.t
 
   type elt = I.right
@@ -188,7 +188,7 @@ module Map0_right (I : S0) :
   let map = I.map_right
 end
 
-module Chain_Bi2_Map1 (Bi : Basic2) (Map : Mappable.S1) :
+module Chain_Bi2_Map1 (Bi : Basic2) (Map : Mappable_types.S1) :
   S2 with type ('l, 'r) t = ('l, 'r) Bi.t Map.t = Make2 (struct
   type ('l, 'r) t = ('l, 'r) Bi.t Map.t
 
@@ -197,7 +197,7 @@ module Chain_Bi2_Map1 (Bi : Basic2) (Map : Mappable.S1) :
     Map.map x ~f:(Bi.bi_map ~left ~right)
 end)
 
-module Chain_Bi1_left_Map1 (Bi : Basic1_left) (Map : Mappable.S1) :
+module Chain_Bi1_left_Map1 (Bi : Basic1_left) (Map : Mappable_types.S1) :
   S1_left with type 'l t = 'l Bi.t Map.t and type right = Bi.right =
 Make1_left (struct
   type 'l t = 'l Bi.t Map.t
@@ -209,7 +209,7 @@ Make1_left (struct
     Map.map x ~f:(Bi.bi_map ~left ~right)
 end)
 
-module Chain_Bi1_right_Map1 (Bi : Basic1_right) (Map : Mappable.S1) :
+module Chain_Bi1_right_Map1 (Bi : Basic1_right) (Map : Mappable_types.S1) :
   S1_right with type 'r t = 'r Bi.t Map.t and type left = Bi.left =
 Make1_right (struct
   type 'r t = 'r Bi.t Map.t
@@ -221,7 +221,7 @@ Make1_right (struct
     Map.map x ~f:(Bi.bi_map ~left ~right)
 end)
 
-module Chain_Bi0_Map1 (Bi : Basic0) (Map : Mappable.S1) :
+module Chain_Bi0_Map1 (Bi : Basic0) (Map : Mappable_types.S1) :
   S0
   with type t = Bi.t Map.t
    and type left = Bi.left

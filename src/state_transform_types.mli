@@ -130,7 +130,7 @@ module type S = sig
 
   include Monad.S
 
-  include Monad_exts.S with type 'a t := 'a t
+  include Monad_exts_types.S with type 'a t := 'a t
 
   include Generic with type ('a, 's) t := 'a t and type 's state := state
 

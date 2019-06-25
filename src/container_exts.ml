@@ -22,7 +22,7 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 open Base
-include Container_exts_intf
+open Container_exts_types
 
 let too_few_error () = Error.of_string "Expected one element; got none"
 

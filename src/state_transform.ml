@@ -22,7 +22,7 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 open Base
-include State_transform_intf
+open State_transform_types
 
 module Make2 (M : Monad.S) : S2 with module Inner = M = struct
   module Inner = M

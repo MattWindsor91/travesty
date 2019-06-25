@@ -29,28 +29,30 @@
 
 open Base
 
-(** As usual, we store the extension signatures in a separate
-    {{!Container_exts_intf} intf module}. *)
-include module type of Container_exts_intf
+(** {2 Signatures}
+
+    For input and output module signatures for this module's functors, see
+    {{!Container_exts_types} Container_exts_types}. *)
 
 (** {2:functors Extension functors}
 
     These functors extend Core containers with the extensions described in
-    {{!Container_exts_intf.S0} S0} and {{!Container_exts_intf.S1} S1}. *)
+    {{!Container_exts_types.S0} S0} and {{!Container_exts_types.S1} S1}. *)
 
-(** [Extend0] creates {{!Container_exts_intf.S0} extensions} for a
+(** [Extend0] creates {{!Container_exts_types.S0} extensions} for a
     [Container.S0]. *)
 module Extend0 (C : Container.S0) :
-  S0 with type t := C.t and type elt := C.elt
+  Container_exts_types.S0 with type t := C.t and type elt := C.elt
 
 (** [Extend0_predicate] creates
-    {{!Container_exts_intf.S0_predicate} extensions} for a [Container.S0]
+    {{!Container_exts_types.S0_predicate} extensions} for a [Container.S0]
     over predicates. *)
 module Extend0_predicate
     (P : T)
     (C : Container.S0 with type elt = P.t -> bool) :
-  S0_predicate with type t := C.t and type item := P.t
+  Container_exts_types.S0_predicate with type t := C.t and type item := P.t
 
-(** [Extend1] creates {{!Container_exts_intf.S1} extensions} for a
+(** [Extend1] creates {{!Container_exts_types.S1} extensions} for a
     [Container.S1]. *)
-module Extend1 (C : Container.S1) : S1 with type 'a t := 'a C.t
+module Extend1 (C : Container.S1) :
+  Container_exts_types.S1 with type 'a t := 'a C.t

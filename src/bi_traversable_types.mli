@@ -61,7 +61,7 @@ open Base
      {- For arity-2 types, [('l, 'r) t] becomes [('l, 'r) t], ['l left]
         becomes ['l], and ['r right] becomes ['r].}} *)
 module type Basic_generic_on_monad = sig
-  include Types_intf.Bi_generic
+  include Generic_types.Bi_generic
 
   (** [M] is the monad over which we're bi-traversing. *)
   module M : Monad.S
@@ -107,7 +107,7 @@ end
 (** [Basic0_on_monad] is the inner signature of a monadic bi-traversal over
     arity-0 types. *)
 module type Basic0_on_monad = sig
-  include Types_intf.Bi0
+  include Generic_types.Bi0
 
   include
     Basic_generic_on_monad
@@ -119,7 +119,7 @@ end
 (** [Basic1_left_on_monad] is the inner signature of a monadic bi-traversal
     over arity-1 types with a floating left type and fixed right type. *)
 module type Basic1_left_on_monad = sig
-  include Types_intf.Bi_left
+  include Generic_types.Bi_left
 
   include
     Basic_generic_on_monad
@@ -131,7 +131,7 @@ end
 (** [Basic1_right_on_monad] is the inner signature of a monadic bi-traversal
     over arity-1 types with a floating right type and fixed left type. *)
 module type Basic1_right_on_monad = sig
-  include Types_intf.Bi_right
+  include Generic_types.Bi_right
 
   include
     Basic_generic_on_monad
@@ -174,7 +174,7 @@ end
     Functions traversing over arity-0 types must preserve both element
     types. *)
 module type Basic0 = sig
-  include Types_intf.Bi0
+  include Generic_types.Bi0
 
   (** [On_monad] implements monadic bi-traversal for a given monad. *)
   module On_monad (M : Monad.S) :
@@ -191,7 +191,7 @@ end
     Functions traversing over arity-1 types may change the left element
     type, but not the right. *)
 module type Basic1_left = sig
-  include Types_intf.Bi_left
+  include Generic_types.Bi_left
 
   (** [On_monad] implements monadic bi-traversal for a given monad. *)
   module On_monad (M : Monad.S) :
@@ -207,7 +207,7 @@ end
     Functions traversing over arity-1 types may change the right element
     type, but not the left. *)
 module type Basic1_right = sig
-  include Types_intf.Bi_right
+  include Generic_types.Bi_right
 
   (** [On_monad] implements monadic bi-traversal for a given monad. *)
   module On_monad (M : Monad.S) :
@@ -235,11 +235,11 @@ end
 (** [Generic] is a generic interface for bi-mappable types, used to build
     [S0] (arity-0) and [S1] (arity-1). *)
 module type Generic = sig
-  include Types_intf.Bi_generic
+  include Generic_types.Bi_generic
 
   (** We can do non-monadic bi-mapping operations. *)
   include
-    Bi_mappable.Generic
+    Bi_mappable_types.Generic
     with type ('l, 'r) t := ('l, 'r) t
      and type 'l left := 'l left
      and type 'r right := 'r right
@@ -267,7 +267,7 @@ end
     Functions traversing over arity-0 types must preserve both element
     types. *)
 module type S0 = sig
-  include Types_intf.Bi0
+  include Generic_types.Bi0
 
   include
     Generic
@@ -282,7 +282,7 @@ end
     Functions traversing over arity-1 types may change the left element
     type, but not the right. *)
 module type S1_left = sig
-  include Types_intf.Bi_left
+  include Generic_types.Bi_left
 
   include
     Generic
@@ -297,7 +297,7 @@ end
     Functions traversing over arity-1 types may change the right element
     type, but not the left. *)
 module type S1_right = sig
-  include Types_intf.Bi_right
+  include Generic_types.Bi_right
 
   include
     Generic

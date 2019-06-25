@@ -32,14 +32,14 @@ type 'a t = 'a option
 (** {2 Travesty instances} *)
 
 (** Options are traversable containers. *)
-include Travesty.Traversable.S1 with type 'a t := 'a t
+include Travesty.Traversable_types.S1 with type 'a t := 'a t
 
 (** Options are also filter-mappable; filter-mapping effectively behaves as
     monadic bind. *)
-include Travesty.Filter_mappable.S1 with type 'a t := 'a t
+include Travesty.Filter_mappable_types.S1 with type 'a t := 'a t
 
 (** Finally, options are a monad, and take the various monad extensions. *)
-include Travesty.Monad_exts.S with type 'a t := 'a t
+include Travesty.Monad_exts_types.S with type 'a t := 'a t
 
 (** {3 Applying defaults non-eagerly} *)
 

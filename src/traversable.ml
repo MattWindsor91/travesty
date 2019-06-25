@@ -22,12 +22,12 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 open Base
-include Traversable_intf
+open Traversable_types
 
 (** [Derived_ops_maker] is an internal module type used for implementing the
     derived operations (fold-map, fold, iterate) in an arity-generic way. *)
 module type Derived_ops_maker = sig
-  include Types_intf.Generic
+  include Generic_types.Generic
 
   module On_monad (M : Monad.S) :
     Basic_generic_on_monad

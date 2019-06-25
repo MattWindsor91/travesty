@@ -38,27 +38,28 @@
 
 open Base
 
-(** {2 Signatures} *)
+(** {2 Signatures}
 
-(** {{!State_transform_intf} State_transform_intf} contains the signatures
-    for [State_transform]. *)
-include module type of State_transform_intf
+    For input and output signatures for this module's functors, see
+    {{!State_transform_types} State_transform_types}. *)
 
 (** {2 Manipulating state transformers} *)
 
-(** [To_S] flattens a [S2] into an [S] by fixing the state type to [B.t]. *)
-module To_S (M : S2) (B : Base.T) :
-  S
+(** [To_S] flattens a {{!State_transform_types.S2} S2} into an
+    {{!State_transform_types.S} S} by fixing the state type to [B.t]. *)
+module To_S (M : State_transform_types.S2) (B : Base.T) :
+  State_transform_types.S
   with type state = B.t
    and type 'a t = ('a, B.t) M.t
    and module Inner = M.Inner
 
 (** {2:make Functors for making state transformers} *)
 
-(** [Make] makes an {{!S} S} (state transformer with fixed state type) from
-    a {{!Basic} Basic}. *)
-module Make (B : Basic) : S with type state = B.t and module Inner = B.Inner
+(** [Make] makes an {{!State_transform_types.S} S} (state transformer with
+    fixed state type) from a {{!State_transform_types.Basic} Basic}. *)
+module Make (B : State_transform_types.Basic) :
+  State_transform_types.S with type state = B.t and module Inner = B.Inner
 
-(** [Make2] makes an {{!S2} S2} (state transformer with variable state type)
-    from a [Monad.S]. *)
-module Make2 (M : Monad.S) : S2 with module Inner = M
+(** [Make2] makes an {{!State_transform_types.S2} S2} (state transformer
+    with variable state type) from a [Monad.S]. *)
+module Make2 (M : Monad.S) : State_transform_types.S2 with module Inner = M

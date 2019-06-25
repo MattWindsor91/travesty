@@ -22,12 +22,12 @@
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
 open Base
-include Bi_traversable_intf
+open Bi_traversable_types
 
 (** [Derived_ops_maker] is an internal module type used for implementing the
     derived operations (map-left, map-right) in an arity-generic way. *)
 module type Derived_ops_maker = sig
-  include Types_intf.Bi_generic
+  include Generic_types.Bi_generic
 
   module On_monad (M : Monad.S) :
     Basic_generic_on_monad
@@ -232,7 +232,7 @@ module Fix1_right (I : Basic1_right) (Right : T) :
 end)
 
 module Traverse1_left (I : S1_left) :
-  Traversable.S1 with type 'l t = 'l I.t = Traversable.Make1 (struct
+  Traversable_types.S1 with type 'l t = 'l I.t = Traversable.Make1 (struct
   type 'l t = 'l I.t
 
   module On_monad (M : Monad.S) = struct
@@ -243,7 +243,7 @@ module Traverse1_left (I : S1_left) :
 end)
 
 module Traverse1_right (I : S1_right) :
-  Traversable.S1 with type 'r t = 'r I.t = Traversable.Make1 (struct
+  Traversable_types.S1 with type 'r t = 'r I.t = Traversable.Make1 (struct
   type 'r t = 'r I.t
 
   module On_monad (M : Monad.S) = struct
@@ -254,7 +254,7 @@ module Traverse1_right (I : S1_right) :
 end)
 
 module Traverse0_left (L : Equal.S) (I : S0 with type left := L.t) :
-  Traversable.S0 with type t = I.t and module Elt = L =
+  Traversable_types.S0 with type t = I.t and module Elt = L =
 Traversable.Make0 (struct
   type t = I.t
 
@@ -268,7 +268,7 @@ Traversable.Make0 (struct
 end)
 
 module Traverse0_right (R : Equal.S) (I : S0 with type right := R.t) :
-  Traversable.S0 with type t = I.t and module Elt = R =
+  Traversable_types.S0 with type t = I.t and module Elt = R =
 Traversable.Make0 (struct
   type t = I.t
 
@@ -281,7 +281,7 @@ Traversable.Make0 (struct
   end
 end)
 
-module Chain_Bi2_Traverse1 (Bi : Basic2) (Trav : Traversable.S1) :
+module Chain_Bi2_Traverse1 (Bi : Basic2) (Trav : Traversable_types.S1) :
   S2 with type ('l, 'r) t = ('l, 'r) Bi.t Trav.t = Make2 (struct
   type ('l, 'r) t = ('l, 'r) Bi.t Trav.t
 
@@ -295,7 +295,9 @@ module Chain_Bi2_Traverse1 (Bi : Basic2) (Trav : Traversable.S1) :
   end
 end)
 
-module Chain_Bi1_left_Traverse1 (Bi : Basic1_left) (Trav : Traversable.S1) :
+module Chain_Bi1_left_Traverse1
+    (Bi : Basic1_left)
+    (Trav : Traversable_types.S1) :
   S1_left with type 'l t = 'l Bi.t Trav.t and type right = Bi.right =
 Make1_left (struct
   type 'l t = 'l Bi.t Trav.t
@@ -312,7 +314,9 @@ Make1_left (struct
   end
 end)
 
-module Chain_Bi1_right_Traverse1 (Bi : Basic1_right) (Trav : Traversable.S1) :
+module Chain_Bi1_right_Traverse1
+    (Bi : Basic1_right)
+    (Trav : Traversable_types.S1) :
   S1_right with type 'r t = 'r Bi.t Trav.t and type left = Bi.left =
 Make1_right (struct
   type 'r t = 'r Bi.t Trav.t
@@ -329,7 +333,7 @@ Make1_right (struct
   end
 end)
 
-module Chain_Bi0_Traverse1 (Bi : Basic0) (Trav : Traversable.S1) :
+module Chain_Bi0_Traverse1 (Bi : Basic0) (Trav : Traversable_types.S1) :
   S0
   with type t = Bi.t Trav.t
    and type left = Bi.left

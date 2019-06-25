@@ -35,7 +35,7 @@ type 'a t = 'a list
     in an error-prone context. *)
 module With_errors : sig
   include
-    Travesty.Traversable.S1_on_monad
+    Travesty.Traversable_types.S1_on_monad
     with type 'a t := 'a list
      and module M := Base.Or_error
 
@@ -58,12 +58,12 @@ end
 (** Lists are traversable containers, but have an extended [With_errors]
     submodule. *)
 include
-  Travesty.Traversable.S1
+  Travesty.Traversable_types.S1
   with type 'a t := 'a t
    and module With_errors := With_errors
 
 (** We can also filter-map over them. *)
-include Travesty.Filter_mappable.S1 with type 'a t := 'a t
+include Travesty.Filter_mappable_types.S1 with type 'a t := 'a t
 
 (** {2 Utility functions for modifying lists} *)
 
