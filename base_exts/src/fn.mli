@@ -98,17 +98,14 @@ val on : ('a -> 'b) -> 'a -> 'a -> f:('b -> 'b -> 'r) -> 'r
 
 (** {2 F# style function composition operator}
 
-    This is in a separate module to reduce the ambiguity caused by its use.
-   *)
+    This is in a separate module to reduce the ambiguity caused by its use. *)
 
 module Compose_syntax : sig
-  val ( >> ) : ('a -> 'b) -> ('b -> 'c) -> ('a -> 'c)
+  val ( >> ) : ('a -> 'b) -> ('b -> 'c) -> 'a -> 'c
   (** [f >> g] is [Fn.compose g f].
 
       Example:
 
-      {|
-        let f = String.(Compose_syntax.(strip >> lowercase >> equal "test") in
-        f "  TEST  " (* --> true *)
-      |} *)
+      {| let f = String.(Compose_syntax.(strip >> lowercase >> equal "test")
+      in f " TEST " (* --> true *) |} *)
 end

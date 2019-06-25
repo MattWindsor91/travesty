@@ -80,7 +80,8 @@ let%expect_test "never example (different type, to show polymorphism)" =
   [%expect {| false |}]
 
 let%expect_test "Compose_syntax: >> example" =
-  let f : string -> bool = String.(Compose_syntax.(strip >> lowercase >> equal "test")) in
+  let f : string -> bool =
+    String.(Compose_syntax.(strip >> lowercase >> equal "test"))
+  in
   printf "%b\n" (f "  TEST  ") ;
   [%expect {| true |}]
-

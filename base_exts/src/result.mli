@@ -21,23 +21,17 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
-open Travesty
+(** Result monad extensions.
 
-module BT :
-  Bi_traversable_types.S1_left
-  with type 'l t = 'l Base.Or_error.t
-   and type right = Base.Error.t =
-  Bi_traversable.Fix2_right (Result) (Base.Error)
+    This module contains bi-traversability for [Base]'s [Result] monad. *)
 
-include BT
+(** Defined to let this module be used directly in chaining operations etc. *)
+type ('ok, 'err) t = ('ok, 'err) Base.Result.t
 
-module On_ok : Traversable_types.S1 with type 'a t = 'a Base.Or_error.t =
-  Bi_traversable.Traverse1_left (BT)
+(** {2 Travesty signatures} *)
 
-include Monad_exts.Extend (Base.Or_error)
-
-let combine_map (xs : 'a list) ~(f : 'a -> 'b t) : 'b list t =
-  xs |> Base.List.map ~f |> Base.Or_error.combine_errors
-
-let combine_map_unit (xs : 'a list) ~(f : 'a -> unit t) : unit t =
-  xs |> Base.List.map ~f |> Base.Or_error.combine_errors_unit
+(** [Result] is a bi-traversable type, with the left type being the result
+    type, and the right type the error type. This is backwards from Haskell
+    conventions, but matches the positions of the type parameters. *)
+include
+  Travesty.Bi_traversable_types.S2 with type ('ok, 'err) t := ('ok, 'err) t

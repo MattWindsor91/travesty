@@ -16,8 +16,8 @@
 This release adds a `Bi_traversable` module---effectively being to
 `Traversable` as `Bi_mappable` is to `Mappable`.
 
-`Alist` and `Tuple2` now expose `Bi_traversable.S2`, which subsumes their
-previous interface.
+`Alist`, `Tuple2`, and `Or_error` now expose `Bi_traversable.S2`, which
+subsumes their previous interface.
 
 ## Minor improvements
 
@@ -28,6 +28,8 @@ previous interface.
   bi-mappable ancestor.
 - Added experimental F#-style `>>` operator in
   `Travesty_base_exts.Fn.Compose_syntax`.
+- Added bi-traversable instance for `Result`, from which `Or_error` now
+ inherits.
 
 # v0.5.1 (2019-05-10)
 

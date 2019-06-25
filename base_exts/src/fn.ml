@@ -39,5 +39,6 @@ let always (type a) (_ : a) : bool = true
 let never (type a) (_ : a) : bool = false
 
 module Compose_syntax = struct
-  let ( >> ) (type a b c) (f : a -> b) (g : b -> c) : a -> c = Base.Fn.compose g f
+  let ( >> ) (type a b c) (f : a -> b) (g : b -> c) : a -> c =
+    Base.Fn.compose g f
 end

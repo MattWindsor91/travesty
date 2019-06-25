@@ -43,7 +43,8 @@ module Make0 (I : sig
     with type t := t
      and type left := Left.t
      and type right := Right.t
-end) = struct
+end) =
+struct
   (* Bifunctor laws *)
 
   let%test_unit "bi_map id id === id" =

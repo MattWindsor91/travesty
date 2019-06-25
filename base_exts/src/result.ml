@@ -21,23 +21,23 @@
    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
    USE OR OTHER DEALINGS IN THE SOFTWARE. *)
 
+open Base
 open Travesty
 
 module BT :
-  Bi_traversable_types.S1_left
-  with type 'l t = 'l Base.Or_error.t
-   and type right = Base.Error.t =
-  Bi_traversable.Fix2_right (Result) (Base.Error)
+  Bi_traversable_types.S2 with type ('l, 'r) t = ('l, 'r) Result.t =
+Bi_traversable.Make2 (struct
+  type ('l, 'r) t = ('l, 'r) Result.t
+
+  module On_monad (M : Monad.S) = struct
+    let bi_map_m (e : ('l1, 'r1) Result.t) ~(left : 'l1 -> 'l2 M.t)
+        ~(right : 'r1 -> 'r2 M.t) : ('l2, 'r2) Result.t M.t =
+      match e with
+      | Ok x ->
+          M.(left x >>| Result.return)
+      | Error y ->
+          M.(right y >>| Result.fail)
+  end
+end)
 
 include BT
-
-module On_ok : Traversable_types.S1 with type 'a t = 'a Base.Or_error.t =
-  Bi_traversable.Traverse1_left (BT)
-
-include Monad_exts.Extend (Base.Or_error)
-
-let combine_map (xs : 'a list) ~(f : 'a -> 'b t) : 'b list t =
-  xs |> Base.List.map ~f |> Base.Or_error.combine_errors
-
-let combine_map_unit (xs : 'a list) ~(f : 'a -> unit t) : unit t =
-  xs |> Base.List.map ~f |> Base.Or_error.combine_errors_unit
