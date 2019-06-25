@@ -32,20 +32,19 @@ type 'a t = 'a Base.Or_error.t
 
 (** {2 Travesty signatures} *)
 
-(** [On_ok] treats an [Or_error] value as a traversable container,
-    containing one value when it is [Ok] and none otherwise. *)
-module On_ok : Travesty.Traversable_types.S1 with type 'a t = 'a t
-
 (** Monad extensions for [Or_error]. *)
 include Travesty.Monad_exts_types.S with type 'a t := 'a t
 
-(** [Or_error] is a bi-mappable type, with the right type fixed to
+(** [Or_error] is a bi-traversable type, with the right type fixed to
     [Error.t]. (This is backwards from Haskell conventions, but matches the
     position [Error.t] takes in [Result] in [Base]. *)
 include
-  Travesty.Bi_mappable_types.S1_left
+  Travesty.Bi_traversable_types.S1_left
   with type 'l t := 'l t
    and type right = Base.Error.t
+
+(** [On_ok] is shorthand for [Traverse1_left] on this module. *)
+module On_ok : Travesty.Traversable_types.S1 with type 'a t = 'a t
 
 (** {2 Shortcuts for combining errors}
 

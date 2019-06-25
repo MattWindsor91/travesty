@@ -24,32 +24,23 @@
 open Base
 open Travesty
 
-type 'a t = 'a Or_error.t
-
-module On_ok = Traversable.Make1 (struct
-  type nonrec 'a t = 'a t
-
-  module On_monad (M : Base.Monad.S) = struct
-    let map_m err ~f =
-      match err with
-      | Ok v ->
-          M.(f v >>| Base.Or_error.return)
-      | Error x ->
-          M.return (Error x)
-  end
-end)
-
-module BM = Bi_mappable.Make1_left (struct
+module BT : Bi_traversable_types.S1_left with type 'l t = 'l Or_error.t and type right = Error.t
+  = Bi_traversable.Make1_left (struct
   type 'l t = 'l Or_error.t
 
   type right = Error.t
 
-  let bi_map (e : 'l1 Or_error.t) ~(left : 'l1 -> 'l2)
-      ~(right : Error.t -> Error.t) : 'l2 Or_error.t =
-    e |> Result.map_error ~f:right |> Result.map ~f:left
+  module On_monad (M : Monad.S) = struct
+    let bi_map_m (e : 'l1 Or_error.t) ~(left : 'l1 -> 'l2 M.t)
+        ~(right : Error.t -> Error.t M.t) : 'l2 Or_error.t M.t =
+      match e with
+      | Ok x -> M.(left x >>| Result.return)
+      | Error y -> M.(right y >>| Result.fail)
+  end
 end)
+include BT
 
-include (BM : module type of BM with type 'l t := 'l t)
+module On_ok : Traversable_types.S1 with type 'a t = 'a Or_error.t = Bi_traversable.Traverse1_left (BT)
 
 include Monad_exts.Extend (Base.Or_error)
 
