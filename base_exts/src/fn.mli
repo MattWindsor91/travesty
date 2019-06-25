@@ -95,3 +95,20 @@ val on : ('a -> 'b) -> 'a -> 'a -> f:('b -> 'b -> 'r) -> 'r
       let strs = on snd ~f:String.equal (42, "banana") (42, "apple") in
       ints, strs (* --> true, false *)
     ]} *)
+
+(** {2 F# style function composition operator}
+
+    This is in a separate module to reduce the ambiguity caused by its use.
+   *)
+
+module Compose_syntax : sig
+  val ( >> ) : ('a -> 'b) -> ('b -> 'c) -> ('a -> 'c)
+  (** [f >> g] is [Fn.compose g f].
+
+      Example:
+
+      {|
+        let f = String.(Compose_syntax.(strip >> lowercase >> equal "test") in
+        f "  TEST  " (* --> true *)
+      |} *)
+end

@@ -26,6 +26,8 @@ previous interface.
 - `Bi_mappable` arity-1 chaining functors now carry previously-missing
   sharing constraints equating their fixed types with those of their
   bi-mappable ancestor.
+- Added experimental F#-style `>>` operator in
+  `Travesty_base_exts.Fn.Compose_syntax`.
 
 # v0.5.1 (2019-05-10)
 

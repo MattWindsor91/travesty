@@ -37,3 +37,7 @@ let ( ||| ) (type a) (f : a -> bool) (g : a -> bool) : a -> bool = disj f g
 let always (type a) (_ : a) : bool = true
 
 let never (type a) (_ : a) : bool = false
+
+module Compose_syntax = struct
+  let ( >> ) (type a b c) (f : a -> b) (g : b -> c) : a -> c = Base.Fn.compose g f
+end
