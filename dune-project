@@ -14,10 +14,9 @@
 (package
  (name travesty)
  (synopsis "Monadically traversable containers")
- (description "
-  'Travesty' is a library for defining containers with monadic traversals,
-  inspired by Haskell's Traversable typeclass.  It sits on top of Jane Street's
-  Base library and ecosystem.")
+ (description "'Travesty' is a library for defining containers with monadic traversals,
+inspired by Haskell's Traversable typeclass.  It sits on top of Jane Street's
+Base library and ecosystem.")
  (depends
   (ocaml (and (>= 4.07) (< 4.09)))
   (dune (and :build (> 1.10)))
