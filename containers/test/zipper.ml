@@ -3,23 +3,22 @@
    Copyright (c) 2018, 2019 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
-   copy of this software and associated documentation files (the
-   "Software"), to deal in the Software without restriction, including
-   without limitation the rights to use, copy, modify, merge, publish,
-   distribute, sublicense, and/or sell copies of the Software, and to permit
-   persons to whom the Software is furnished to do so, subject to the
-   following conditions:
+   copy of this software and associated documentation files (the "Software"),
+   to deal in the Software without restriction, including without limitation
+   the rights to use, copy, modify, merge, publish, distribute, sublicense,
+   and/or sell copies of the Software, and to permit persons to whom the
+   Software is furnished to do so, subject to the following conditions:
 
-   The above copyright notice and this permission notice shall be included
-   in all copies or substantial portions of the Software.
+   The above copyright notice and this permission notice shall be included in
+   all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-   NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-   USE OR OTHER DEALINGS IN THE SOFTWARE. *)
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+   THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE. *)
 
 open Base
 open Stdio
@@ -38,8 +37,7 @@ let%test_module "plain" =
       [%expect {| (2 -5 101 64 27 19) |}]
 
     let%expect_test "to_list-of_list idempotent on non-empty list" =
-      print_s
-        [%sexp (to_list (of_list [19; 27; 64; 101; -5; 2]) : int list)] ;
+      print_s [%sexp (to_list (of_list [19; 27; 64; 101; -5; 2]) : int list)] ;
       [%expect {| (19 27 64 101 -5 2) |}]
 
     let%expect_test "to_list-of_list idempotent on empty list" =
@@ -223,10 +221,10 @@ let%test_module "int_mark_zipper" =
       let lists =
         fold_until zipper ~init:[]
           ~finish:(fun acc zipper ->
-            Or_error.return (List.rev acc, to_list zipper) )
+            Or_error.return (List.rev acc, to_list zipper))
           ~f:(fun negatives k _zipper ->
             if Int.is_negative k then `Drop (k :: negatives)
-            else `Swap (k, negatives) )
+            else `Swap (k, negatives))
       in
       print_s [%sexp (lists : (int list * int list) Or_error.t)] ;
       [%expect {| (Ok ((-11 -92 -6 -10) (0 2 64 92 4))) |}]
@@ -251,8 +249,7 @@ let%test_module "int_mark_zipper" =
       let result =
         Or_error.(
           mark_recall_example () >>| push_left ~value:27
-          >>| push_left ~value:53 >>= delete_to_mark ~mark:1
-          >>| to_two_lists)
+          >>| push_left ~value:53 >>= delete_to_mark ~mark:1 >>| to_two_lists)
       in
       print_s [%sexp (result : (int list * int list) Or_error.t)] ;
       [%expect {| (Ok ((27 19) (-5 2))) |}]

@@ -3,23 +3,22 @@
    Copyright (c) 2018, 2019 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
-   copy of this software and associated documentation files (the
-   "Software"), to deal in the Software without restriction, including
-   without limitation the rights to use, copy, modify, merge, publish,
-   distribute, sublicense, and/or sell copies of the Software, and to permit
-   persons to whom the Software is furnished to do so, subject to the
-   following conditions:
+   copy of this software and associated documentation files (the "Software"),
+   to deal in the Software without restriction, including without limitation
+   the rights to use, copy, modify, merge, publish, distribute, sublicense,
+   and/or sell copies of the Software, and to permit persons to whom the
+   Software is furnished to do so, subject to the following conditions:
 
-   The above copyright notice and this permission notice shall be included
-   in all copies or substantial portions of the Software.
+   The above copyright notice and this permission notice shall be included in
+   all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-   NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-   USE OR OTHER DEALINGS IN THE SOFTWARE. *)
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+   THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE. *)
 
 (** Signatures and functors for containers and data structures that can be
     mapped across with a monadic side-effect.
@@ -42,8 +41,8 @@ open Base
 (** {2 Making traversable containers}
 
     Monadic traversal is sufficient to define [fold], and, therefore, all of
-    the key functionality for a Base-style container. As such, our
-    signatures and functors subsume those for building containers. *)
+    the key functionality for a Base-style container. As such, our signatures
+    and functors subsume those for building containers. *)
 
 (** {3 New containers} *)
 
@@ -83,8 +82,8 @@ module Chain0
 (** {3 Fixing the element type} *)
 
 (** [Fix_elt (I) (Elt)] demotes an {{!Traversable_types.S1} S1} [S] to an
-    {{!Traversable_types.S0} S0} by fixing the element type to that
-    mentioned in [Elt]. *)
+    {{!Traversable_types.S0} S0} by fixing the element type to that mentioned
+    in [Elt]. *)
 module Fix_elt (I : Traversable_types.S1) (Elt : Equal.S) :
   Traversable_types.S0 with module Elt = Elt and type t = Elt.t I.t
 
@@ -92,8 +91,8 @@ module Fix_elt (I : Traversable_types.S1) (Elt : Equal.S) :
 
 (** Utility functions for building traversals. *)
 module Helpers (M : Monad.S) : sig
-  (** [traversal] is shorthand for a traversal function over [M]. *)
   type 'a traversal = 'a -> 'a M.t
+  (** [traversal] is shorthand for a traversal function over [M]. *)
 
   (** {3 Variants}
 
@@ -103,8 +102,8 @@ module Helpers (M : Monad.S) : sig
       Here's an example where we define a generic traversal function over a
       variant type using {{!proc_variant1} proc_variant1} and
       {{!proc_variant3} proc_variant3}, then use it to build a traversable
-      container instance for inspecting and modifying a specific type of
-      data regardless of variant.
+      container instance for inspecting and modifying a specific type of data
+      regardless of variant.
 
       {[
         (* This type describes x86 operands: *)
@@ -113,55 +112,60 @@ module Helpers (M : Monad.S) : sig
           | Immediate of Disp.t
           | String of string
           | Typ of string
-          | Bop of t * operator * t [@@deriving variants]
+          | Bop of t * operator * t
+        [@@deriving variants]
 
         (* We use the helpers to build an intermediate mapper... *)
         module Base_map (M : Monad.S) = struct
           module F = Travesty.Traversable.Helpers (M)
 
-          let rec map_m (x : t) ~location ~immediate ~string ~typ ~bop
-            : t M.t =
+          let rec map_m (x : t) ~location ~immediate ~string ~typ ~bop :
+              t M.t =
             Variants.map x
               ~location:(F.proc_variant1 location)
               ~immediate:(F.proc_variant1 immediate)
               ~string:(F.proc_variant1 string)
-              ~typ:(F.proc_variant1 typ)
-              (* Note that this recursively folds down the operands,
-                 and that the [bop] function only receives the operator. *)
-              ~bop:(F.proc_variant3 (fun (l, b, r) ->
-                  let open M.Let_syntax in
-                  let%bind l' = map_m ~location ~immediate ~string ~typ ~bop l in
-                  let%bind b' = bop b in
-                  let%map  r' = map_m ~location ~immediate ~string ~typ ~bop r in
-                  (l', b', r')))
-          ;;
+              ~typ:
+                (F.proc_variant1 typ)
+                (* Note that this recursively folds down the operands, and
+                   that the [bop] function only receives the operator. *)
+              ~bop:
+                (F.proc_variant3 (fun (l, b, r) ->
+                     let open M.Let_syntax in
+                     let%bind l' =
+                       map_m ~location ~immediate ~string ~typ ~bop l
+                     in
+                     let%bind b' = bop b in
+                     let%map r' =
+                       map_m ~location ~immediate ~string ~typ ~bop r
+                     in
+                     (l', b', r')))
         end
 
-        (* ...then use it to build a traversable container over all of
-           the symbols in an operand. *)
-        module On_symbols
-          : Travesty.Traversable.S0_container with type t := t
-                                               and type elt := string =
-          Travesty.Traversable.Make_container0 (struct
-            type nonrec t = t
-            module Elt = String
+        (* ...then use it to build a traversable container over all of the
+           symbols in an operand. *)
+        module On_symbols :
+          Travesty.Traversable.S0_container
+            with type t := t
+             and type elt := string =
+        Travesty.Traversable.Make_container0 (struct
+          type nonrec t = t
 
-            module On_monad (M : Monad.S) = struct
-              module B = Base_map (M)
-              (* Recursively using other traversables: *)
-              module L = Location.On_symbols.On_monad (M)
-              module D = Disp.On_symbols.On_monad (M)
+          module Elt = String
 
-              let map_m t ~f =
-                B.map_m t
-                  ~location:(L.map_m ~f)
-                  ~immediate:(D.map_m ~f)
-                  (* These don't contain symbols: *)
-                  ~string:M.return
-                  ~typ:M.return
-                  ~bop:M.return
-            end
-          end)
+          module On_monad (M : Monad.S) = struct
+            module B = Base_map (M)
+
+            (* Recursively using other traversables: *)
+            module L = Location.On_symbols.On_monad (M)
+            module D = Disp.On_symbols.On_monad (M)
+
+            let map_m t ~f =
+              B.map_m t ~location:(L.map_m ~f)
+                ~immediate:(D.map_m ~f) (* These don't contain symbols: *)
+                ~string:M.return ~typ:M.return ~bop:M.return
+          end
+        end)
       ]} *)
 
   val proc_variant0 : unit traversal -> 'cont Base.Variant.t -> 'cont M.t
@@ -195,8 +199,8 @@ module Helpers (M : Monad.S) : sig
 
   (** {3 Fields}
 
-      The function [proc_field] is useful for building traversable
-      containers on top of Fieldslib's [fold] function.
+      The function [proc_field] is useful for building traversable containers
+      on top of Fieldslib's [fold] function.
 
       Here's an example where we define a generic traversal function over a
       record type using {{!proc_field} proc_field}, then use it to build a
@@ -206,50 +210,48 @@ module Helpers (M : Monad.S) : sig
       {[
         (* Type for holding x86 memory references. *)
         type t =
-          { seg    : Reg.t   option (* segment register *)
-          ; disp   : Disp.t  option (* displacement *)
-          ; base   : Reg.t   option (* base register *)
-          ; index  : Index.t option (* index *)
-          } [@@deriving fields]
+          { seg: Reg.t option (* segment register *)
+          ; disp: Disp.t option (* displacement *)
+          ; base: Reg.t option (* base register *)
+          ; index: Index.t option (* index *) }
+        [@@deriving fields]
 
-        (* First, build a generic traversal function (this isn't,
-           itself, a Traversable)... *)
+        (* First, build a generic traversal function (this isn't, itself, a
+           Traversable)... *)
         module Base_map (M : Monad.S) = struct
           module F = Travesty.Traversable.Helpers (M)
+
           let map_m indirect ~seg ~disp ~base ~index =
-            Fields.fold
-              ~init:(M.return indirect)
-              ~seg:(F.proc_field seg)
-              ~disp:(F.proc_field disp)
-              ~base:(F.proc_field base)
+            Fields.fold ~init:(M.return indirect) ~seg:(F.proc_field seg)
+              ~disp:(F.proc_field disp) ~base:(F.proc_field base)
               ~index:(F.proc_field index)
         end
 
-        (* Now, we can build a traversable container instance.
-             This one extracts symbols from memory references. *)
-        module On_symbols
-          : Travesty.Traversable.S0_container with type t := t
-                                               and type elt := string =
-          Travesty.Traversable.Make_container0 (struct
-            type nonrec t = t
-            module Elt = String
-            module Set = String.Set
+        (* Now, we can build a traversable container instance. This one
+           extracts symbols from memory references. *)
+        module On_symbols :
+          Travesty.Traversable.S0_container
+            with type t := t
+             and type elt := string =
+        Travesty.Traversable.Make_container0 (struct
+          type nonrec t = t
 
-            module On_monad (M : Monad.S) = struct
-              module B = Base_map (M)
-              module D = Disp.On_symbols.On_monad (M)
-              module O = My_option.On_monad (M)
+          module Elt = String
+          module Set = String.Set
 
-              let map_m t ~f =
-                B.map_m t
-                  (* Chained monadic traversal. *)
-                  ~disp:(O.map_m ~f:(D.map_m ~f))
+          module On_monad (M : Monad.S) = struct
+            module B = Base_map (M)
+            module D = Disp.On_symbols.On_monad (M)
+            module O = My_option.On_monad (M)
+
+            let map_m t ~f =
+              B.map_m t (* Chained monadic traversal. *)
+                ~disp:
+                  (O.map_m ~f:(D.map_m ~f))
                   (* Segments, bases, and indices have no symbols. *)
-                  ~seg:M.return
-                  ~base:M.return
-                  ~index:M.return
-            end
-          end)
+                ~seg:M.return ~base:M.return ~index:M.return
+          end
+        end)
       ]} *)
 
   val proc_field :

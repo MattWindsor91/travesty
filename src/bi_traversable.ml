@@ -3,23 +3,22 @@
    Copyright (c) 2018, 2019 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
-   copy of this software and associated documentation files (the
-   "Software"), to deal in the Software without restriction, including
-   without limitation the rights to use, copy, modify, merge, publish,
-   distribute, sublicense, and/or sell copies of the Software, and to permit
-   persons to whom the Software is furnished to do so, subject to the
-   following conditions:
+   copy of this software and associated documentation files (the "Software"),
+   to deal in the Software without restriction, including without limitation
+   the rights to use, copy, modify, merge, publish, distribute, sublicense,
+   and/or sell copies of the Software, and to permit persons to whom the
+   Software is furnished to do so, subject to the following conditions:
 
-   The above copyright notice and this permission notice shall be included
-   in all copies or substantial portions of the Software.
+   The above copyright notice and this permission notice shall be included in
+   all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-   NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-   USE OR OTHER DEALINGS IN THE SOFTWARE. *)
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+   THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE. *)
 
 open Base
 open Bi_traversable_types
@@ -31,25 +30,24 @@ module type Derived_ops_maker = sig
 
   module On_monad (M : Monad.S) :
     Basic_generic_on_monad
-    with module M := M
-     and type ('l, 'r) t := ('l, 'r) t
-     and type 'l left := 'l left
-     and type 'r right := 'r right
+      with module M := M
+       and type ('l, 'r) t := ('l, 'r) t
+       and type 'l left := 'l left
+       and type 'r right := 'r right
 end
 
-(** [Derived_ops_monadic_gen] is an internal functor used to generate
-    several derived monadic operations from a monadic bi-traversal in an
+(** [Derived_ops_monadic_gen] is an internal functor used to generate several
+    derived monadic operations from a monadic bi-traversal in an
     arity-generic way. *)
-module Derived_ops_monadic_gen (I : Derived_ops_maker) (M : Monad.S) =
-struct
+module Derived_ops_monadic_gen (I : Derived_ops_maker) (M : Monad.S) = struct
   module IM = I.On_monad (M)
 
   let map_left_m (c : ('l1, 'r) I.t) ~(f : 'l1 I.left -> 'l2 I.left M.t) :
       ('l2, 'r) I.t M.t =
     IM.bi_map_m c ~left:f ~right:M.return
 
-  let map_right_m (c : ('l, 'r1) I.t) ~(f : 'r1 I.right -> 'r2 I.right M.t)
-      : ('l, 'r2) I.t M.t =
+  let map_right_m (c : ('l, 'r1) I.t) ~(f : 'r1 I.right -> 'r2 I.right M.t) :
+      ('l, 'r2) I.t M.t =
     IM.bi_map_m c ~left:M.return ~right:f
 end
 
@@ -59,7 +57,8 @@ struct
   module On_monad (MS : Monad.S) = struct
     include I.On_monad (MS)
 
-    include Derived_ops_monadic_gen (struct
+    include Derived_ops_monadic_gen
+              (struct
                 type ('l, 'r) t = I.t
 
                 type 'l left = I.left
@@ -90,7 +89,8 @@ module Make1_left (I : Basic1_left) :
   module On_monad (MS : Monad.S) = struct
     include I.On_monad (MS)
 
-    include Derived_ops_monadic_gen (struct
+    include Derived_ops_monadic_gen
+              (struct
                 type ('l, 'r) t = 'l I.t
 
                 type 'l left = 'l
@@ -119,7 +119,8 @@ module Make1_right (I : Basic1_right) :
   module On_monad (MS : Monad.S) = struct
     include I.On_monad (MS)
 
-    include Derived_ops_monadic_gen (struct
+    include Derived_ops_monadic_gen
+              (struct
                 type ('l, 'r) t = 'r I.t
 
                 type 'l left = I.left
@@ -147,7 +148,8 @@ module Make2 (I : Basic2) : S2 with type ('l, 'r) t = ('l, 'r) I.t = struct
   module On_monad (MS : Monad.S) = struct
     include I.On_monad (MS)
 
-    include Derived_ops_monadic_gen (struct
+    include Derived_ops_monadic_gen
+              (struct
                 type ('l, 'r) t = ('l, 'r) I.t
 
                 type 'l left = 'l
@@ -191,9 +193,9 @@ end)
 
 module Fix2_both (I : Basic2) (Left : T) (Right : T) :
   S0
-  with type t = (Left.t, Right.t) I.t
-   and type left = Left.t
-   and type right = Right.t = Make0 (struct
+    with type t = (Left.t, Right.t) I.t
+     and type left = Left.t
+     and type right = Right.t = Make0 (struct
   type t = (Left.t, Right.t) I.t
 
   type left = Left.t
@@ -204,10 +206,8 @@ module Fix2_both (I : Basic2) (Left : T) (Right : T) :
 end)
 
 module Fix1_left (I : Basic1_left) (Left : T) :
-  S0
-  with type t = Left.t I.t
-   and type left = Left.t
-   and type right = I.right = Make0 (struct
+  S0 with type t = Left.t I.t and type left = Left.t and type right = I.right =
+Make0 (struct
   type t = Left.t I.t
 
   type left = Left.t
@@ -219,9 +219,9 @@ end)
 
 module Fix1_right (I : Basic1_right) (Right : T) :
   S0
-  with type t = Right.t I.t
-   and type left = I.left
-   and type right = Right.t = Make0 (struct
+    with type t = Right.t I.t
+     and type left = I.left
+     and type right = Right.t = Make0 (struct
   type t = Right.t I.t
 
   type left = I.left
@@ -335,9 +335,9 @@ end)
 
 module Chain_Bi0_Traverse1 (Bi : Basic0) (Trav : Traversable_types.Basic1) :
   S0
-  with type t = Bi.t Trav.t
-   and type left = Bi.left
-   and type right = Bi.right = Make0 (struct
+    with type t = Bi.t Trav.t
+     and type left = Bi.left
+     and type right = Bi.right = Make0 (struct
   type t = Bi.t Trav.t
 
   type left = Bi.left
@@ -357,8 +357,8 @@ end)
 module Chain_Traverse1_Bi2
     (LTrav : Traversable_types.Basic1)
     (RTrav : Traversable_types.Basic1)
-    (Bi : Basic2) :
-  S2 with type ('l, 'r) t = ('l LTrav.t, 'r RTrav.t) Bi.t = Make2 (struct
+    (Bi : Basic2) : S2 with type ('l, 'r) t = ('l LTrav.t, 'r RTrav.t) Bi.t =
+Make2 (struct
   type ('l, 'r) t = ('l LTrav.t, 'r RTrav.t) Bi.t
 
   module On_monad (M : Monad.S) = struct

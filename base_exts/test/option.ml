@@ -5,8 +5,7 @@ open Travesty_base_exts.Option
 let%test_module "map" =
   ( module struct
     let%expect_test "behaves properly: Some" =
-      print_s
-        Base.([%sexp (map ~f:(fun x -> x * x) (Some 12) : int option)]) ;
+      print_s Base.([%sexp (map ~f:(fun x -> x * x) (Some 12) : int option)]) ;
       [%expect {| (144) |}]
 
     let%expect_test "behaves properly: None" =

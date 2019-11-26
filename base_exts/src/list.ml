@@ -3,23 +3,22 @@
    Copyright (c) 2018, 2019 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
-   copy of this software and associated documentation files (the
-   "Software"), to deal in the Software without restriction, including
-   without limitation the rights to use, copy, modify, merge, publish,
-   distribute, sublicense, and/or sell copies of the Software, and to permit
-   persons to whom the Software is furnished to do so, subject to the
-   following conditions:
+   copy of this software and associated documentation files (the "Software"),
+   to deal in the Software without restriction, including without limitation
+   the rights to use, copy, modify, merge, publish, distribute, sublicense,
+   and/or sell copies of the Software, and to permit persons to whom the
+   Software is furnished to do so, subject to the following conditions:
 
-   The above copyright notice and this permission notice shall be included
-   in all copies or substantial portions of the Software.
+   The above copyright notice and this permission notice shall be included in
+   all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-   NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-   USE OR OTHER DEALINGS IN THE SOFTWARE. *)
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+   THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE. *)
 
 open Base
 open Travesty
@@ -35,7 +34,7 @@ module TC = Traversable.Make1_container (struct
         List.fold_left xs ~init:(return []) ~f:(fun state x ->
             let%bind xs' = state in
             let%map x' = f x in
-            x' :: xs' )
+            x' :: xs')
       in
       List.rev xs_final
   end
@@ -52,8 +51,8 @@ let replace_out_of_range (xs : 'a list) (at : int) (_zipper : 'a Zip.t) :
 module With_errors = struct
   include TC.With_errors
 
-  let replace_m (xs : 'a list) (at : int) ~(f : 'a -> 'a option Or_error.t)
-      : 'a list Or_error.t =
+  let replace_m (xs : 'a list) (at : int) ~(f : 'a -> 'a option Or_error.t) :
+      'a list Or_error.t =
     let open Or_error.Let_syntax in
     let z_init = Zip.of_list xs in
     let%bind z_move =
@@ -90,7 +89,7 @@ let insert (xs : 'a list) (at : int) (value : 'a) : 'a list Or_error.t =
           [%message
             "Insert failed: index out of range" ~here:[%here]
               ~insert_at:(at : int)
-              ~list_length:(List.length xs : int)] )
+              ~list_length:(List.length xs : int)])
   in
   let z_ins = Zip.push z_move ~value in
   Zip.to_list z_ins

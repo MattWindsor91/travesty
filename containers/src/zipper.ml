@@ -3,23 +3,22 @@
    Copyright (c) 2018, 2019 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
-   copy of this software and associated documentation files (the
-   "Software"), to deal in the Software without restriction, including
-   without limitation the rights to use, copy, modify, merge, publish,
-   distribute, sublicense, and/or sell copies of the Software, and to permit
-   persons to whom the Software is furnished to do so, subject to the
-   following conditions:
+   copy of this software and associated documentation files (the "Software"),
+   to deal in the Software without restriction, including without limitation
+   the rights to use, copy, modify, merge, publish, distribute, sublicense,
+   and/or sell copies of the Software, and to permit persons to whom the
+   Software is furnished to do so, subject to the following conditions:
 
-   The above copyright notice and this permission notice shall be included
-   in all copies or substantial portions of the Software.
+   The above copyright notice and this permission notice shall be included in
+   all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-   NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-   USE OR OTHER DEALINGS IN THE SOFTWARE. *)
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+   THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE. *)
 
 open Base
 open Zipper_types
@@ -58,8 +57,7 @@ module Make (Cell : Basic_cell) = struct
 
   let right_list zipper = Cell.to_data_list (right zipper)
 
-  let to_list zipper =
-    List.rev_append (left_list zipper) (right_list zipper)
+  let to_list zipper = List.rev_append (left_list zipper) (right_list zipper)
 
   let head zipper = List.hd (right zipper)
 
@@ -169,7 +167,7 @@ module Make (Cell : Basic_cell) = struct
 
   let pop zipper =
     On_error.pop_m zipper ~on_empty:(fun _ ->
-        Or_error.error_string "Tried to pop an exhausted zipper" )
+        Or_error.error_string "Tried to pop an exhausted zipper")
 
   let step ?steps zipper =
     On_error.step_m ?steps zipper ~on_empty:(fun zipper ->
@@ -178,7 +176,7 @@ module Make (Cell : Basic_cell) = struct
             "Zipper stepping went out of bounds"
               ~steps:(Option.value ~default:1 steps : int)
               ~left_bound:(left_length zipper : int)
-              ~right_bound:(right_length zipper : int)] )
+              ~right_bound:(right_length zipper : int)])
 
   (* Pushing left shouldn't fail, since the right list will always be
      nonempty after the push. *)
@@ -213,10 +211,10 @@ module Make_marked_cell (B : Basic_mark) = struct
     end
   end
 
+  type 'a t = {data: 'a; marks: Mark.Set.t} [@@deriving fields, sexp]
   (** ['a t] is the type of one cell. Each cell contains the data at the
       given zipper location, as well as any marks that have been attached to
       the cell for later recall. *)
-  type 'a t = {data: 'a; marks: Mark.Set.t} [@@deriving fields, sexp]
 
   let make data = {data; marks= Set.empty (module Mark)}
 
@@ -297,7 +295,7 @@ module Make_marked (Mark : Basic_mark) = struct
 
   let mark zipper ~mark =
     On_error.mark_m zipper ~mark ~on_empty:(fun _ ->
-        Or_error.error_string "Tried to mark an exhausted zipper" )
+        Or_error.error_string "Tried to mark an exhausted zipper")
 
   let mark_not_found mark =
     Or_error.error_s
@@ -308,7 +306,7 @@ module Make_marked (Mark : Basic_mark) = struct
 
   let delete_to_mark zipper ~mark =
     On_error.delete_to_mark_m zipper ~mark ~on_empty:(fun _ ->
-        mark_not_found mark )
+        mark_not_found mark)
 
   let fold_until = On_ident.fold_m_until
 end

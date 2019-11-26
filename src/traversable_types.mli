@@ -3,33 +3,31 @@
    Copyright (c) 2018, 2019 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
-   copy of this software and associated documentation files (the
-   "Software"), to deal in the Software without restriction, including
-   without limitation the rights to use, copy, modify, merge, publish,
-   distribute, sublicense, and/or sell copies of the Software, and to permit
-   persons to whom the Software is furnished to do so, subject to the
-   following conditions:
+   copy of this software and associated documentation files (the "Software"),
+   to deal in the Software without restriction, including without limitation
+   the rights to use, copy, modify, merge, publish, distribute, sublicense,
+   and/or sell copies of the Software, and to permit persons to whom the
+   Software is furnished to do so, subject to the following conditions:
 
-   The above copyright notice and this permission notice shall be included
-   in all copies or substantial portions of the Software.
+   The above copyright notice and this permission notice shall be included in
+   all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-   NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-   USE OR OTHER DEALINGS IN THE SOFTWARE. *)
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+   THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE. *)
 
 (** The main groups of signatures provided by this module are:
 
-    {ul
-     {- {{!basic} Basic{i n}}: minimal definition of new modules without an
-        existing [Container] instance;}
-     {- {{!bcon} Basic{i n} _container}: minimal definition of new modules
-        with an existing [Container] instance;}
-     {- {{!s} S{i n}}: full traversable containers, produced by applying
-        functors to either of the two groups.}}
+    - {{!basic} Basic{i n}}: minimal definition of new modules without an
+      existing [Container] instance;
+    - {{!bcon} Basic{i n} _container}: minimal definition of new modules with
+      an existing [Container] instance;
+    - {{!s} S{i n}}: full traversable containers, produced by applying
+      functors to either of the two groups.
 
     We also define other signatures, mostly for internal book-keeping. They
     may be useful elsewhere, however. *)
@@ -48,23 +46,23 @@ open Base
 
 (** {4:omgeneric The generic signatures}
 
-    As with {{!Mappable} Mappable}, we define some signatures for
-    traversable structures in an arity-generic way, then specialise them for
-    arity-0 and arity-1 types. *)
+    As with {{!Mappable} Mappable}, we define some signatures for traversable
+    structures in an arity-generic way, then specialise them for arity-0 and
+    arity-1 types. *)
 
-(** [Basic_generic_on_monad] describes monadic traversal on either an
-    arity-0 or arity-1 type.
+(** [Basic_generic_on_monad] describes monadic traversal on either an arity-0
+    or arity-1 type.
 
     - For arity-0 types, ['a t] becomes [t] and ['a elt] becomes [elt].
     - For arity-1 types, ['a t] becomes ['a t] and ['a elt] becomes ['a]. *)
 module type Basic_generic_on_monad = sig
+  include Generic_types.Generic
   (** [Generic] refers to the container type as ['a t], and the element type
       as ['a elt]; substitute [t]/[elt] (arity-0) or ['a t]/['a] (arity-1)
       accordingly below. *)
-  include Generic_types.Generic
 
-  (** [M] is the monad over which we're fold-mapping. *)
   module M : Monad.S
+  (** [M] is the monad over which we're fold-mapping. *)
 
   val map_m : 'a t -> f:('a elt -> 'b elt M.t) -> 'b t M.t
   (** [map_m c ~f] maps [f] over every [t] in [c], threading through monadic
@@ -130,11 +128,10 @@ end
 (** [Basic1_on_monad] is the inner signature of a monadic traversal over
     arity-1 types. *)
 module type Basic1_on_monad = sig
-  (** The type of the container to map over. *)
   type 'a t
+  (** The type of the container to map over. *)
 
-  include
-    Basic_generic_on_monad with type 'a t := 'a t and type 'a elt := 'a
+  include Basic_generic_on_monad with type 'a t := 'a t and type 'a elt := 'a
 end
 
 (** {4:oms Expanded signatures} *)
@@ -163,20 +160,19 @@ end
 
     For types that are _already_ Core containers, or types where custom
     implementation of the Core signature are desired, implement
-    {{!Basic0_container} Basic0_container} or
-    {{!Basic1_container} Basic1_container}, and use the [MakeN_container]
-    functors. *)
+    {{!Basic0_container} Basic0_container} or {{!Basic1_container}
+    Basic1_container}, and use the [MakeN_container] functors. *)
 
 (** {4:basic For modules without a [Container] implementation} *)
 
 (** [Basic0] is the minimal signature that traversable containers of arity 0
     must implement to be extensible into {{!S0} S0}. *)
 module type Basic0 = sig
-  (** The container type. *)
   type t
+  (** The container type. *)
 
-  (** [Elt] contains the element type, which must have equality. *)
   module Elt : Equal.S
+  (** [Elt] contains the element type, which must have equality. *)
 
   (** [On_monad] implements monadic traversal for a given monad [M]. *)
   module On_monad (M : Monad.S) :
@@ -186,8 +182,8 @@ end
 (** [Basic1] is the minimal signature that traversable containers of arity 1
     must implement to be extensible into. *)
 module type Basic1 = sig
-  (** The container type. *)
   type 'a t
+  (** The container type. *)
 
   (** [On_monad] implements monadic traversal for a given monad. *)
   module On_monad (M : Monad.S) :
@@ -225,9 +221,9 @@ module type Generic = sig
       [M]. *)
   module On_monad (M : Monad.S) :
     Generic_on_monad
-    with type 'a t := 'a t
-     and type 'a elt := 'a elt
-     and module M := M
+      with type 'a t := 'a t
+       and type 'a elt := 'a elt
+       and module M := M
 
   (** We can do generic container operations. *)
   include Container.Generic with type 'a t := 'a t and type 'a elt := 'a elt
@@ -248,21 +244,21 @@ module type Generic = sig
   (** [With_errors] specialises [On_monad] to the error monad. *)
   module With_errors :
     Generic_on_monad
-    with type 'a t := 'a t
-     and type 'a elt := 'a elt
-     and module M := Or_error
+      with type 'a t := 'a t
+       and type 'a elt := 'a elt
+       and module M := Or_error
 end
 
 (** [S0] is a generic interface for arity-0 traversable containers. *)
 module type S0 = sig
-  (** Elements must have equality. While this is an extra restriction on top
-      of the Core equivalent, it is required by
-      {{!Traversable.Make0} Make0}, and helps us define chaining operations. *)
   module Elt : Equal.S
+  (** Elements must have equality. While this is an extra restriction on top
+      of the Core equivalent, it is required by {{!Traversable.Make0} Make0},
+      and helps us define chaining operations. *)
 
+  include Generic_types.S0 with type elt = Elt.t
   (** We export [Elt.t] as [elt] for compatibility with Core-style
       containers. *)
-  include Generic_types.S0 with type elt = Elt.t
 
   include Generic with type 'a t := t and type 'a elt := Elt.t
 
@@ -272,12 +268,12 @@ end
 (** [S1] is a generic interface for arity-1 traversable containers. It also
     includes the extensions from {{!Mappable} Mappable}. *)
 module type S1 = sig
-  (** ['a t] is the type of the container, parametrised over the element
-      type ['a]. *)
   type 'a t
+  (** ['a t] is the type of the container, parametrised over the element type
+      ['a]. *)
 
-  (** [On_monad] implements monadic folding and mapping operators for a
-      given monad [M], including arity-1 specific operators. *)
+  (** [On_monad] implements monadic folding and mapping operators for a given
+      monad [M], including arity-1 specific operators. *)
   module On_monad (M : Monad.S) :
     S1_on_monad with type 'a t := 'a t and module M := M
 
@@ -287,10 +283,10 @@ module type S1 = sig
 
   include
     Generic
-    with type 'a t := 'a t
-     and type 'a elt := 'a
-     and module On_monad := On_monad
-     and module With_errors := With_errors
+      with type 'a t := 'a t
+       and type 'a elt := 'a
+       and module On_monad := On_monad
+       and module With_errors := With_errors
 
   include Mappable_types.S1_container with type 'a t := 'a t
 

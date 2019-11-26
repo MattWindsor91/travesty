@@ -1,3 +1,16 @@
+# v0.6.1 (2019-11-26)
+
+Minor release cut to relax various dependency pain-points caused by the last
+release being more than 4 months ago.  (I intend to make a major release in
+the near future with a migration from monads to applicative functors, but
+this depends on enough free time being available.)
+
+- Travesty now expects Dune 2.0 to build.  This is technically a breaking
+  change, but I felt that bumping to 0.7 at this stage of Travesty's lifecycle
+  would give the wrong impression.
+- Travesty now lets itself be built with v0.13 of the Jane Street packages.
+- Travesty now lets itself be built with OCaml v4.09.
+
 # v0.6.0 (2019-06-25)
 
 Major release with various breaking changes and new features, the main one
@@ -185,7 +198,7 @@ are of minor extensions and convenience functions on top of
   non-monadic function.  (This is somewhat less useful, but still helps in
   terms of slotting, say, debug printing into a monadic pipeline.)
 - Extensions: add `Or_error.combine_map[_unit]`, which are shorthand for
-  mapping followed by `combine_errors[_unit]`.  These should be used 
+  mapping followed by `combine_errors[_unit]`.  These should be used
   instead of `map_m` and `iter_m` when using lists and `Or_error`.
 - Extensions: add `Tuple2`, an extended `Core_kernel.Tuple2` adding bi-mappability.
 - Add chaining for arity-2 bi-mappable containers across arity-1 mappable

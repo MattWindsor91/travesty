@@ -3,23 +3,22 @@
    Copyright (c) 2018, 2019 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
-   copy of this software and associated documentation files (the
-   "Software"), to deal in the Software without restriction, including
-   without limitation the rights to use, copy, modify, merge, publish,
-   distribute, sublicense, and/or sell copies of the Software, and to permit
-   persons to whom the Software is furnished to do so, subject to the
-   following conditions:
+   copy of this software and associated documentation files (the "Software"),
+   to deal in the Software without restriction, including without limitation
+   the rights to use, copy, modify, merge, publish, distribute, sublicense,
+   and/or sell copies of the Software, and to permit persons to whom the
+   Software is furnished to do so, subject to the following conditions:
 
-   The above copyright notice and this permission notice shall be included
-   in all copies or substantial portions of the Software.
+   The above copyright notice and this permission notice shall be included in
+   all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-   NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-   USE OR OTHER DEALINGS IN THE SOFTWARE. *)
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+   THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE. *)
 
 open Base
 open Traversable_types
@@ -31,16 +30,15 @@ module type Derived_ops_maker = sig
 
   module On_monad (M : Monad.S) :
     Basic_generic_on_monad
-    with module M := M
-     and type 'a t := 'a t
-     and type 'a elt := 'a elt
+      with module M := M
+       and type 'a t := 'a t
+       and type 'a elt := 'a elt
 end
 
-(** [Derived_ops_monadic_gen] is an internal functor used to generate
-    several derived monadic operations (monadic fold-map, monadic iteration,
-    etc) from a monadic traversal in an arity-generic way. *)
-module Derived_ops_monadic_gen (I : Derived_ops_maker) (M : Monad.S) =
-struct
+(** [Derived_ops_monadic_gen] is an internal functor used to generate several
+    derived monadic operations (monadic fold-map, monadic iteration, etc)
+    from a monadic traversal in an arity-generic way. *)
+module Derived_ops_monadic_gen (I : Derived_ops_maker) (M : Monad.S) = struct
   (* We use the state monad to implement fold-map. *)
   module SM = State_transform.Make2 (M)
   module IM = I.On_monad (M)
@@ -54,9 +52,7 @@ struct
         end)
     in
     let module ISM = I.On_monad (SM') in
-    SM.run'
-      (ISM.map_m ~f:(fun x -> SM.Monadic.make (fun s -> f s x)) c)
-      init
+    SM.run' (ISM.map_m ~f:(fun x -> SM.Monadic.make (fun s -> f s x)) c) init
 
   let fold_m c ~init ~f =
     M.(
@@ -89,9 +85,9 @@ end
 (** Internal functor for rearranging arity-0 basics to derived-ops makers. *)
 module Basic0_to_derived_ops_maker (I : Basic0) :
   Derived_ops_maker
-  with type 'a t = I.t
-   and type 'a elt = I.Elt.t
-   and module On_monad = I.On_monad = struct
+    with type 'a t = I.t
+     and type 'a elt = I.Elt.t
+     and module On_monad = I.On_monad = struct
   type 'a t = I.t
 
   type 'a elt = I.Elt.t
@@ -102,9 +98,9 @@ end
 (** Internal functor for rearranging arity-1 basics to derived-ops makers. *)
 module Basic1_to_derived_ops_maker (I : Basic1) :
   Derived_ops_maker
-  with type 'a t = 'a I.t
-   and type 'a elt = 'a
-   and module On_monad = I.On_monad = struct
+    with type 'a t = 'a I.t
+     and type 'a elt = 'a
+     and module On_monad = I.On_monad = struct
   type 'a t = 'a I.t
 
   type 'a elt = 'a

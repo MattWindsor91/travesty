@@ -3,37 +3,36 @@
    Copyright (c) 2018, 2019 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
-   copy of this software and associated documentation files (the
-   "Software"), to deal in the Software without restriction, including
-   without limitation the rights to use, copy, modify, merge, publish,
-   distribute, sublicense, and/or sell copies of the Software, and to permit
-   persons to whom the Software is furnished to do so, subject to the
-   following conditions:
+   copy of this software and associated documentation files (the "Software"),
+   to deal in the Software without restriction, including without limitation
+   the rights to use, copy, modify, merge, publish, distribute, sublicense,
+   and/or sell copies of the Software, and to permit persons to whom the
+   Software is furnished to do so, subject to the following conditions:
 
-   The above copyright notice and this permission notice shall be included
-   in all copies or substantial portions of the Software.
+   The above copyright notice and this permission notice shall be included in
+   all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-   NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-   USE OR OTHER DEALINGS IN THE SOFTWARE. *)
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+   THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE. *)
 
 open Base
 
 (** [S_non_monadic] contains the core operations of a zipper, without any
     parametrisation over a particular failure monad. *)
 module type S_non_monadic = sig
-  (** The opaque type of zippers. *)
   type 'a t [@@deriving sexp]
+  (** The opaque type of zippers. *)
 
   (** {3 Construction and destruction} *)
 
   val make : left:'a list -> right:'a list -> 'a t
-  (** [make ~left ~right] constructs a zipper with left list [left] and
-      right list [right].
+  (** [make ~left ~right] constructs a zipper with left list [left] and right
+      list [right].
 
       These lists go directly into the zipper itself, so [left], if
       non-empty, should be in the reverse order to how it should appear when
@@ -90,8 +89,8 @@ module type S_non_monadic = sig
       current cursor becomes the second item in the right list, and so on. *)
 
   val push_left : 'a t -> value:'a -> 'a t
-  (** [push_left zipper ~value] pushes [value] into [zipper] just to the
-      left of the cursor. *)
+  (** [push_left zipper ~value] pushes [value] into [zipper] just to the left
+      of the cursor. *)
 
   (** {3 Peeking and popping} *)
 
@@ -119,15 +118,14 @@ module type S_non_monadic = sig
   (** {3 Movement} *)
 
   val step : ?steps:int -> 'a t -> 'a t Or_error.t
-  (** [step ?steps zipper ~on_empty] takes one or more steps across
-      [zipper]. The number of steps defaults to 1 (forwards), but can be
-      given by [steps]; negative numbers step backwards through the zipper.
-      If the number of steps exceeds the bounds of the zipper, an error is
-      returned. *)
+  (** [step ?steps zipper ~on_empty] takes one or more steps across [zipper].
+      The number of steps defaults to 1 (forwards), but can be given by
+      [steps]; negative numbers step backwards through the zipper. If the
+      number of steps exceeds the bounds of the zipper, an error is returned. *)
 end
 
-(** [S_monadic] contains the core operations of a zipper, parametrised over
-    a particular failure monad. *)
+(** [S_monadic] contains the core operations of a zipper, parametrised over a
+    particular failure monad. *)
 module type S_monadic = sig
   type 'a t
 
@@ -153,14 +151,13 @@ module type S_monadic = sig
     -> f:('a -> 'a option M.t)
     -> on_empty:('a t -> 'a t M.t)
     -> 'a t M.t
-  (** [map_m_head ?steps zipper ~on_empty] behaves like
-      {{!map_head} map_head}, but executes a custom monadic action
-      [on_empty], instead of leaving the zipper unchanged, when the cursor
-      is empty. *)
+  (** [map_m_head ?steps zipper ~on_empty] behaves like {{!map_head}
+      map_head}, but executes a custom monadic action [on_empty], instead of
+      leaving the zipper unchanged, when the cursor is empty. *)
 end
 
-(** [S] contains [S_non_monadic]; a functor for generating [S_monadic] over
-    a custom monad; and specialisations of it over common monads. *)
+(** [S] contains [S_non_monadic]; a functor for generating [S_monadic] over a
+    custom monad; and specialisations of it over common monads. *)
 module type S = sig
   include S_non_monadic
 
@@ -168,31 +165,31 @@ module type S = sig
   module On_monad (M : Monad.S) :
     S_monadic with type 'a t := 'a t and module M := M
 
-  (** [On_ident] is [On_monad] specialised to the identity monad. *)
   module On_ident : module type of On_monad (Monad.Ident)
+  (** [On_ident] is [On_monad] specialised to the identity monad. *)
 
-  (** [On_error] is [On_monad] specialised to the error monad. *)
   module On_error : module type of On_monad (Or_error)
+  (** [On_error] is [On_monad] specialised to the error monad. *)
 
-  (** [On_option] is [On_monad] specialised to the option monad. *)
   module On_option : module type of On_monad (Option)
+  (** [On_option] is [On_monad] specialised to the option monad. *)
 end
 
-(** The type of instructions returned by functions used with [fold_until_m]
-    and [fold_until]. *)
 type ('mark, 'a, 'acc, 'final) fold_outcome =
   [ `Stop of 'final  (** Stop folding, immediately return *)
   | `Drop of 'acc  (** Drop the cursor and continue *)
   | `Swap of 'a * 'acc  (** Replace cursor with a new value *)
   | `Mark of 'mark * 'a * 'acc  (** Replace, and mark, the cursor *) ]
+(** The type of instructions returned by functions used with [fold_until_m]
+    and [fold_until]. *)
 
 (** [S_marked_non_monadic] extends [S_non_monadic] to add functions for
     manipulating marks. *)
 module type S_marked_non_monadic = sig
   include S_non_monadic
 
-  (** The type of marks. *)
   type mark
+  (** The type of marks. *)
 
   val mark : 'a t -> mark:mark -> 'a t Or_error.t
   (** [mark zipper ~mark] marks the cursor with [mark], and returns the
@@ -220,8 +217,8 @@ module type S_marked_non_monadic = sig
       [f] receives the current accumulator, current cursor, and zipper with
       cursor popped at each stage. It can't directly modify the zipper
       mid-fold, but can influence the value of the final zipper provided to
-      the [finish] continuation by using the various legs of
-      {{!fold_outcome} fold_outcome}. *)
+      the [finish] continuation by using the various legs of {{!fold_outcome}
+      fold_outcome}. *)
 
   val delete_to_mark : 'a t -> mark:mark -> 'a t Or_error.t
   (** [delete_to_mark zipper ~mark] deletes every item in the left-list up
@@ -236,16 +233,15 @@ end
 module type S_marked_monadic = sig
   include S_monadic
 
-  (** The type of marks. *)
   type mark
+  (** The type of marks. *)
 
   val mark_m : 'a t -> mark:mark -> on_empty:('a t -> 'a t M.t) -> 'a t M.t
   (** [mark_m zipper ~mark ~on_empty] behaves like {{!mark} mark}, but
       executes a custom monadic action [on_empty], instead of returning an
       error, when the cursor is empty. *)
 
-  val recall_m :
-    'a t -> mark:mark -> on_empty:('a t -> 'a t M.t) -> 'a t M.t
+  val recall_m : 'a t -> mark:mark -> on_empty:('a t -> 'a t M.t) -> 'a t M.t
   (** [recall_m zipper ~mark ~on_empty] behaves like {{!recall} recall}, but
       executes a custom monadic action [on_empty], instead of returning an
       error, when the mark can't be found. *)
@@ -263,9 +259,9 @@ module type S_marked_monadic = sig
     -> init:'acc
     -> finish:('acc -> 'a t -> 'final M.t)
     -> 'final M.t
-  (** [fold_m_until zipper ~f ~init ~finish] behaves like
-      {{!fold_until} fold_until}, except that [f] and [finish], and
-      therefore the function itself, return results inside a monad context. *)
+  (** [fold_m_until zipper ~f ~init ~finish] behaves like {{!fold_until}
+      fold_until}, except that [f] and [finish], and therefore the function
+      itself, return results inside a monad context. *)
 end
 
 (** [S_marked] extends [S] to add functions for manipulating marks. *)
@@ -276,18 +272,18 @@ module type S_marked = sig
       monad. *)
   module On_monad (M : Monad.S) :
     S_marked_monadic
-    with type 'a t := 'a t
-     and type mark := mark
-     and module M := M
+      with type 'a t := 'a t
+       and type mark := mark
+       and module M := M
 
-  (** [On_ident] is [On_monad] specialised to the identity monad. *)
   module On_ident : module type of On_monad (Monad.Ident)
+  (** [On_ident] is [On_monad] specialised to the identity monad. *)
 
-  (** [On_error] is [On_monad] specialised to the error monad. *)
   module On_error : module type of On_monad (Or_error)
+  (** [On_error] is [On_monad] specialised to the error monad. *)
 
-  (** [On_option] is [On_monad] specialised to the option monad. *)
   module On_option : module type of On_monad (Option)
+  (** [On_option] is [On_monad] specialised to the option monad. *)
 end
 
 (** [Basic_mark] is the interface that mark types must implement. *)

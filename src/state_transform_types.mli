@@ -3,40 +3,39 @@
    Copyright (c) 2018 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
-   copy of this software and associated documentation files (the
-   "Software"), to deal in the Software without restriction, including
-   without limitation the rights to use, copy, modify, merge, publish,
-   distribute, sublicense, and/or sell copies of the Software, and to permit
-   persons to whom the Software is furnished to do so, subject to the
-   following conditions:
+   copy of this software and associated documentation files (the "Software"),
+   to deal in the Software without restriction, including without limitation
+   the rights to use, copy, modify, merge, publish, distribute, sublicense,
+   and/or sell copies of the Software, and to permit persons to whom the
+   Software is furnished to do so, subject to the following conditions:
 
-   The above copyright notice and this permission notice shall be included
-   in all copies or substantial portions of the Software.
+   The above copyright notice and this permission notice shall be included in
+   all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-   NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-   USE OR OTHER DEALINGS IN THE SOFTWARE. *)
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+   THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE. *)
 
 open Base
 
 (** [Generic_types] contains generic versions of the types used in
     [Generic_builders] and [Generic_runners]. *)
 module type Generic_types = sig
-  (** [t] is the type of the state monad. *)
   type ('a, 's) t
+  (** [t] is the type of the state monad. *)
 
+  type 'a final
   (** [final] is the type of returned results. In transformers, this becomes
       ['a Inner.t]; otherwise, it becomes just ['a]. *)
-  type 'a final
 
+  type 's state
   (** [state] is the type used to represent the state outside of its monad.
       In [S], ['s state] becomes [x] for some type [x]; in [S2], ['s state]
       becomes ['s]. *)
-  type 's state
 end
 
 (** [Generic_builders] contains generic versions of the 'builder' functions
@@ -45,8 +44,8 @@ module type Generic_builders = sig
   include Generic_types
 
   val make : ('s state -> ('s state * 'a) final) -> ('a, 's) t
-  (** [make] creates a context-sensitive computation that can modify both
-      the current context and the data passing through. *)
+  (** [make] creates a context-sensitive computation that can modify both the
+      current context and the data passing through. *)
 
   (** {3 Specialised builders} *)
 
@@ -84,9 +83,9 @@ module type Fix = sig
   val fix : f:(('a -> ('a, 's) t) -> 'a -> ('a, 's) t) -> 'a -> ('a, 's) t
   (** [fix ~f init] builds a fixed point on [f].
 
-      At each step, [f] is passed a continuation [mu] and a value [a]. It
-      may choose to return a recursive application of [mu], or some value
-      derived from [a].
+      At each step, [f] is passed a continuation [mu] and a value [a]. It may
+      choose to return a recursive application of [mu], or some value derived
+      from [a].
 
       To begin with, [f] is applied to [mu] and [init]. *)
 end
@@ -95,38 +94,36 @@ end
 module type Generic = sig
   include Generic_builders with type 'a final := 'a
 
-  (** [Inner] is the monad to which we're adding state. *)
   module Inner : Monad.S
+  (** [Inner] is the monad to which we're adding state. *)
 
-  (** State transformers have the same runner signatures as state monads,
-      but lifted into the inner monad. *)
+  (** State transformers have the same runner signatures as state monads, but
+      lifted into the inner monad. *)
   include
     Generic_runners
-    with type ('a, 's) t := ('a, 's) t
-     and type 'a final := 'a Inner.t
-     and type 's state := 's state
+      with type ('a, 's) t := ('a, 's) t
+       and type 'a final := 'a Inner.t
+       and type 's state := 's state
 
   include Fix with type ('a, 's) t := ('a, 's) t
 
-  (** [Monadic] contains a version of the builder interface that can
-      interact with the inner monad ([Inner]) this state transformer is
-      overlaying. *)
+  (** [Monadic] contains a version of the builder interface that can interact
+      with the inner monad ([Inner]) this state transformer is overlaying. *)
   module Monadic :
     Generic_builders
-    with type 'a state := 'a state
-     and type 'a final := 'a Inner.t
-     and type ('a, 's) t := ('a, 's) t
+      with type 'a state := 'a state
+       and type 'a final := 'a Inner.t
+       and type ('a, 's) t := ('a, 's) t
 end
 
-(** [S] is the signature of state monad transformers with a fixed state
-    type.
+(** [S] is the signature of state monad transformers with a fixed state type.
 
     Each [S] computation returns its value inside another monad---for
     example, [Or_error]. We can use this to build computations that are both
     stateful and can fail, for instance. *)
 module type S = sig
-  (** The fixed state type. *)
   type state
+  (** The fixed state type. *)
 
   include Monad.S
 
@@ -141,11 +138,11 @@ end
 (** [Basic] is the signature that must be implemented by state systems being
     lifted into [S_transform] instances. *)
 module type Basic = sig
-  (** The type of the state. *)
   type t
+  (** The type of the state. *)
 
-  (** [Inner] is the monad to which we're adding state. *)
   module Inner : Monad.S
+  (** [Inner] is the monad to which we're adding state. *)
 end
 
 (** [S2] is the signature of state transformers parametrised over both value

@@ -3,23 +3,22 @@
    Copyright (c) 2018, 2019 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
-   copy of this software and associated documentation files (the
-   "Software"), to deal in the Software without restriction, including
-   without limitation the rights to use, copy, modify, merge, publish,
-   distribute, sublicense, and/or sell copies of the Software, and to permit
-   persons to whom the Software is furnished to do so, subject to the
-   following conditions:
+   copy of this software and associated documentation files (the "Software"),
+   to deal in the Software without restriction, including without limitation
+   the rights to use, copy, modify, merge, publish, distribute, sublicense,
+   and/or sell copies of the Software, and to permit persons to whom the
+   Software is furnished to do so, subject to the following conditions:
 
-   The above copyright notice and this permission notice shall be included
-   in all copies or substantial portions of the Software.
+   The above copyright notice and this permission notice shall be included in
+   all copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-   NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-   USE OR OTHER DEALINGS IN THE SOFTWARE. *)
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+   THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE. *)
 
 open Base
 open Base_quickcheck
@@ -55,9 +54,7 @@ let%test_module "max_measure" =
 let%test_module "exclude" =
   ( module struct
     let%expect_test "exclude -ve numbers" =
-      let excluded =
-        exclude ~f:Int.is_negative [1; -1; 2; 10; -49; 0; 64]
-      in
+      let excluded = exclude ~f:Int.is_negative [1; -1; 2; 10; -49; 0; 64] in
       print_s [%sexp (excluded : int list)] ;
       [%expect {| (1 2 10 0 64) |}]
   end )
@@ -127,8 +124,7 @@ let%test_module "any" =
 
     let%expect_test "negative result" =
       print_s
-        [%sexp
-          (any ~predicates:[Int.is_positive; Int.is_negative] 0 : bool)] ;
+        [%sexp (any ~predicates:[Int.is_positive; Int.is_negative] 0 : bool)] ;
       [%expect {| false |}]
   end )
 
@@ -215,8 +211,7 @@ let%test_module "one" =
 
     let%expect_test "three elements" =
       print_s
-        [%sexp
-          (two ["veni"; "vidi"; "vici"] : (string * string) Or_error.t)] ;
+        [%sexp (two ["veni"; "vidi"; "vici"] : (string * string) Or_error.t)] ;
       [%expect {| (Error "Expected one element; got too many") |}]
   end )
 
@@ -292,7 +287,7 @@ let%test_module "insert" =
         ~f:(fun (x, xs) ->
           [%test_eq: int list] ~here:[[%here]]
             (Or_error.ok_exn (insert xs 0 x))
-            (x :: xs) )
+            (x :: xs))
   end )
 
 let%expect_test "chained list/list traversal example" =
