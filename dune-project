@@ -20,5 +20,5 @@ Base library and ecosystem.")
  (depends
   (ocaml (and (>= 4.07) (< 4.09)))
   (dune (and :build (> 1.10)))
-  (ppx_jane (and (>= v0.12.0) (< v0.13.0)))
-  (base (and (>= v0.12.0) (< v0.13.0)))))
+  (ppx_jane (and (>= v0.12.0) (< v0.14.0)))
+  (base (and (>= v0.12.0) (< v0.14.0)))))
