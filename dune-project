@@ -1,6 +1,6 @@
-(lang dune 1.10)
+(lang dune 2.0)
 (name travesty)
-(using fmt 1.1)
+(formatting (enabled_for dune ocaml))
 (implicit_transitive_deps false)
 
 (generate_opam_files true)
