@@ -1,4 +1,4 @@
-# v0.6.1 (2019-11-26)
+# v0.6.1 (2019-11-27)
 
 Minor release cut to relax various dependency pain-points caused by the last
 release being more than 4 months ago.  (I intend to make a major release in
@@ -10,6 +10,7 @@ this depends on enough free time being available.)
   would give the wrong impression.
 - Travesty now lets itself be built with v0.13 of the Jane Street packages.
 - Travesty now lets itself be built with OCaml v4.09.
+- Minor code formatting changes.
 
 # v0.6.0 (2019-06-25)
 
