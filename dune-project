@@ -19,6 +19,6 @@ inspired by Haskell's Traversable typeclass.  It sits on top of Jane Street's
 Base library and ecosystem.")
  (depends
   (ocaml (and (>= 4.07) (< 4.10)))
-  (dune (and :build (> 1.10)))
+  (dune (and :build (>= 2.0) (< 3.0)))
   (ppx_jane (and (>= v0.12.0) (< v0.14.0)))
   (base (and (>= v0.12.0) (< v0.14.0)))))
