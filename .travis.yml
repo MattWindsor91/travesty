@@ -6,5 +6,6 @@ env:
   - OCAML_VERSION=4.07 PACKAGE=travesty
   - OCAML_VERSION=4.08 PACKAGE=travesty
   - OCAML_VERSION=4.09 PACKAGE=travesty
+  - OCAML_VERSION=4.10 PACKAGE=travesty
 os:
   - linux
