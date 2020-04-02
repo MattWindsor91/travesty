@@ -87,7 +87,19 @@ module Chain0
 module Fix_elt (I : Traversable_types.S1) (Elt : Equal.S) :
   Traversable_types.S0 with module Elt = Elt and type t = Elt.t I.t
 
-(** {2 Helper functions} *)
+(** {2 Helper functions and functors} *)
+
+(** [Const] constructs a {{!Traversable_types.S0} S0} over container [T] and
+    arbitrary element type [Elt] that, when traversed, makes no calls to the
+    supplied function and returns the container unchanged.
+
+    {[
+      module K = Const (String) (String)
+      (* This would output "foo". *)
+      K.map "foo" ~f:String.uppercase
+    ]} *)
+module Const (T : T) (Elt : Equal.S) :
+  Traversable_types.S0 with module Elt = Elt and type t = T.t
 
 (** Utility functions for building traversals. *)
 module Helpers (M : Monad.S) : sig

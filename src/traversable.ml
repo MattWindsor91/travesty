@@ -1,6 +1,6 @@
 (* This file is part of 'travesty'.
 
-   Copyright (c) 2018, 2019 by Matt Windsor
+   Copyright (c) 2018, 2019, 2020 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
    copy of this software and associated documentation files (the "Software"),
@@ -230,6 +230,17 @@ module Fix_elt (I : S1) (Elt : Equal.S) :
   (* The [S0] fold-map has a strictly narrower function type than the [S1]
      one, so we can just supply the same [On_monad]. *)
   module On_monad (M : Monad.S) = I.On_monad (M)
+end)
+
+module Const (T : T) (Elt : Equal.S) = Make0 (struct
+  type t = T.t
+
+  module Elt = Elt
+
+  module On_monad (M : Monad.S) = struct
+    let map_m (x : t) ~(f : Elt.t -> Elt.t M.t) : t M.t =
+      ignore f ; M.return x
+  end
 end)
 
 module Helpers (M : Monad.S) = struct
