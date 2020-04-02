@@ -1,3 +1,11 @@
+# v0.6.2 (2020-04-02)
+
+Minor release with one new feature.
+
+- Can now build with OCaml v4.10
+- New feature: Traversable.Const, an implementation of a traversal that
+  type-checks, but does nothing.
+
 # v0.6.1 (2019-11-27)
 
 Minor release cut to relax various dependency pain-points caused by the last
