@@ -25,8 +25,8 @@ open Base
 (** [S_non_monadic] contains the core operations of a zipper, without any
     parametrisation over a particular failure monad. *)
 module type S_non_monadic = sig
-  type 'a t [@@deriving sexp]
   (** The opaque type of zippers. *)
+  type 'a t [@@deriving sexp]
 
   (** {3 Construction and destruction} *)
 
@@ -165,31 +165,31 @@ module type S = sig
   module On_monad (M : Monad.S) :
     S_monadic with type 'a t := 'a t and module M := M
 
-  module On_ident : module type of On_monad (Monad.Ident)
   (** [On_ident] is [On_monad] specialised to the identity monad. *)
+  module On_ident : module type of On_monad (Monad.Ident)
 
-  module On_error : module type of On_monad (Or_error)
   (** [On_error] is [On_monad] specialised to the error monad. *)
+  module On_error : module type of On_monad (Or_error)
 
-  module On_option : module type of On_monad (Option)
   (** [On_option] is [On_monad] specialised to the option monad. *)
+  module On_option : module type of On_monad (Option)
 end
 
+(** The type of instructions returned by functions used with [fold_until_m]
+    and [fold_until]. *)
 type ('mark, 'a, 'acc, 'final) fold_outcome =
   [ `Stop of 'final  (** Stop folding, immediately return *)
   | `Drop of 'acc  (** Drop the cursor and continue *)
   | `Swap of 'a * 'acc  (** Replace cursor with a new value *)
   | `Mark of 'mark * 'a * 'acc  (** Replace, and mark, the cursor *) ]
-(** The type of instructions returned by functions used with [fold_until_m]
-    and [fold_until]. *)
 
 (** [S_marked_non_monadic] extends [S_non_monadic] to add functions for
     manipulating marks. *)
 module type S_marked_non_monadic = sig
   include S_non_monadic
 
-  type mark
   (** The type of marks. *)
+  type mark
 
   val mark : 'a t -> mark:mark -> 'a t Or_error.t
   (** [mark zipper ~mark] marks the cursor with [mark], and returns the
@@ -233,8 +233,8 @@ end
 module type S_marked_monadic = sig
   include S_monadic
 
-  type mark
   (** The type of marks. *)
+  type mark
 
   val mark_m : 'a t -> mark:mark -> on_empty:('a t -> 'a t M.t) -> 'a t M.t
   (** [mark_m zipper ~mark ~on_empty] behaves like {{!mark} mark}, but
@@ -276,14 +276,14 @@ module type S_marked = sig
        and type mark := mark
        and module M := M
 
-  module On_ident : module type of On_monad (Monad.Ident)
   (** [On_ident] is [On_monad] specialised to the identity monad. *)
+  module On_ident : module type of On_monad (Monad.Ident)
 
-  module On_error : module type of On_monad (Or_error)
   (** [On_error] is [On_monad] specialised to the error monad. *)
+  module On_error : module type of On_monad (Or_error)
 
-  module On_option : module type of On_monad (Option)
   (** [On_option] is [On_monad] specialised to the option monad. *)
+  module On_option : module type of On_monad (Option)
 end
 
 (** [Basic_mark] is the interface that mark types must implement. *)

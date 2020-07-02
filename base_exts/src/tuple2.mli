@@ -22,10 +22,9 @@
 
 (** Bi-traversability for pairs (2-tuples). *)
 
-type ('l, 'r) t = 'l * 'r
 (** Type of 2-tuples. *)
+type ('l, 'r) t = 'l * 'r
 
-include Travesty.Bi_traversable_types.S2 with type ('l, 'r) t := ('l, 'r) t
 (** Pairs are trivially bi-traversable; for a pair ['l * 'r], the left type
     is ['l], and the right type is ['r].
 
@@ -36,3 +35,4 @@ include Travesty.Bi_traversable_types.S2 with type ('l, 'r) t := ('l, 'r) t
 
       (* returns: ("Foo", -27) *)
     ]} *)
+include Travesty.Bi_traversable_types.S2 with type ('l, 'r) t := ('l, 'r) t

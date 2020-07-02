@@ -167,7 +167,7 @@ module Make (Cell : Basic_cell) = struct
 
   let pop zipper =
     On_error.pop_m zipper ~on_empty:(fun _ ->
-        Or_error.error_string "Tried to pop an exhausted zipper")
+        Or_error.error_string "Tried to pop an exhausted zipper" )
 
   let step ?steps zipper =
     On_error.step_m ?steps zipper ~on_empty:(fun zipper ->
@@ -176,7 +176,7 @@ module Make (Cell : Basic_cell) = struct
             "Zipper stepping went out of bounds"
               ~steps:(Option.value ~default:1 steps : int)
               ~left_bound:(left_length zipper : int)
-              ~right_bound:(right_length zipper : int)])
+              ~right_bound:(right_length zipper : int)] )
 
   (* Pushing left shouldn't fail, since the right list will always be
      nonempty after the push. *)
@@ -211,10 +211,10 @@ module Make_marked_cell (B : Basic_mark) = struct
     end
   end
 
-  type 'a t = {data: 'a; marks: Mark.Set.t} [@@deriving fields, sexp]
   (** ['a t] is the type of one cell. Each cell contains the data at the
       given zipper location, as well as any marks that have been attached to
       the cell for later recall. *)
+  type 'a t = {data: 'a; marks: Mark.Set.t} [@@deriving fields, sexp]
 
   let make data = {data; marks= Set.empty (module Mark)}
 
@@ -295,7 +295,7 @@ module Make_marked (Mark : Basic_mark) = struct
 
   let mark zipper ~mark =
     On_error.mark_m zipper ~mark ~on_empty:(fun _ ->
-        Or_error.error_string "Tried to mark an exhausted zipper")
+        Or_error.error_string "Tried to mark an exhausted zipper" )
 
   let mark_not_found mark =
     Or_error.error_s
@@ -306,7 +306,7 @@ module Make_marked (Mark : Basic_mark) = struct
 
   let delete_to_mark zipper ~mark =
     On_error.delete_to_mark_m zipper ~mark ~on_empty:(fun _ ->
-        mark_not_found mark)
+        mark_not_found mark )
 
   let fold_until = On_ident.fold_m_until
 end

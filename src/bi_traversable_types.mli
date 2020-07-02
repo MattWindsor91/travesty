@@ -60,8 +60,8 @@ open Base
 module type Basic_generic_on_monad = sig
   include Generic_types.Bi_generic
 
-  module M : Monad.S
   (** [M] is the monad over which we're bi-traversing. *)
+  module M : Monad.S
 
   val bi_map_m :
        ('l1, 'r1) t

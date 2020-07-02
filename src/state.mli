@@ -63,6 +63,6 @@ module To_S (M : State_types.S2) (B : Base.T) :
     from a single state type. *)
 module Make (B : Base.T) : State_types.S with type state = B.t
 
-module M2 : State_types.S2
 (** [M2] is a basic implementation of {{!State_types.S2} S2} (state monad
     with variable state type). *)
+module M2 : State_types.S2

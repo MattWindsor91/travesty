@@ -24,13 +24,13 @@
 
     This module contains bi-traversability for [Base]'s [Result] monad. *)
 
-type ('ok, 'err) t = ('ok, 'err) Base.Result.t
 (** Defined to let this module be used directly in chaining operations etc. *)
+type ('ok, 'err) t = ('ok, 'err) Base.Result.t
 
 (** {2 Travesty signatures} *)
 
-include
-  Travesty.Bi_traversable_types.S2 with type ('ok, 'err) t := ('ok, 'err) t
 (** [Result] is a bi-traversable type, with the left type being the result
     type, and the right type the error type. This is backwards from Haskell
     conventions, but matches the positions of the type parameters. *)
+include
+  Travesty.Bi_traversable_types.S2 with type ('ok, 'err) t := ('ok, 'err) t

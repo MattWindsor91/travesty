@@ -22,10 +22,9 @@
 
 (** Associative-list extensions. *)
 
-type ('k, 'v) t = ('k, 'v) Base.List.Assoc.t
 (** Defined to let this module be used directly in chaining operations etc. *)
+type ('k, 'v) t = ('k, 'v) Base.List.Assoc.t
 
-include Travesty.Bi_traversable_types.S2 with type ('l, 'r) t := ('l, 'r) t
 (** Associative lists are bi-traversable (and therefore bi-mappable); the
     left type is keys, and the right type is values.
 
@@ -38,6 +37,7 @@ include Travesty.Bi_traversable_types.S2 with type ('l, 'r) t := ('l, 'r) t
 
       (* returns: [("Foo", -27); ("Bar", -53); ("Baz", -99)] *)
     ]} *)
+include Travesty.Bi_traversable_types.S2 with type ('l, 'r) t := ('l, 'r) t
 
 val compose :
   ('a, 'b) t -> ('b, 'c) t -> equal:('b -> 'b -> bool) -> ('a, 'c) t

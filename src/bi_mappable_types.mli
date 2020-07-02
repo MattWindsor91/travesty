@@ -119,8 +119,8 @@ end
 (** [Basic2] is the signature of an arity-2 bi-mappable type with floating
     left and right types. *)
 module type Basic2 = sig
-  include T2
   (** Type of containers. *)
+  include T2
 
   include
     Basic_generic
@@ -192,8 +192,8 @@ end
 (** [S2] is the full signature of an arity-2 bi-mappable type with floating
     left and right types. *)
 module type S2 = sig
-  include T2
   (** Type of containers. *)
+  include T2
 
   include
     Generic

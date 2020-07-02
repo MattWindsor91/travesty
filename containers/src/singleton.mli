@@ -26,10 +26,10 @@
     for passing one item to functors and other contexts that expect a
     container. *)
 
-type 'a t = 'a [@@deriving sexp]
 (** ['a t] is just ['a], but made to look like a container type. If its inner
     type is sexpable, it is too. *)
+type 'a t = 'a [@@deriving sexp]
 
-include Travesty.Traversable_types.S1 with type 'a t := 'a t
 (** We implement {{!Traversable_types.S1} S1}, and, by extension, the Base
     container interface. *)
+include Travesty.Traversable_types.S1 with type 'a t := 'a t

@@ -103,8 +103,8 @@ module Const (T : T) (Elt : Equal.S) :
 
 (** Utility functions for building traversals. *)
 module Helpers (M : Monad.S) : sig
-  type 'a traversal = 'a -> 'a M.t
   (** [traversal] is shorthand for a traversal function over [M]. *)
+  type 'a traversal = 'a -> 'a M.t
 
   (** {3 Variants}
 
@@ -151,7 +151,7 @@ module Helpers (M : Monad.S) : sig
                      let%map r' =
                        map_m ~location ~immediate ~string ~typ ~bop r
                      in
-                     (l', b', r')))
+                     (l', b', r') ))
         end
 
         (* ...then use it to build a traversable container over all of the

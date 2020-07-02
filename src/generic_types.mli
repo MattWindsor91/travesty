@@ -31,20 +31,20 @@
 (** [Generic] defines the types used in arity-generic container-like
     signatures. *)
 module type Generic = sig
-  type 'a t
   (** Placeholder for the container type. *)
+  type 'a t
 
-  type 'a elt
   (** Placeholder for the type of elements inside the container. *)
+  type 'a elt
 end
 
 (** [S0] defines the types used in arity-0 container-like signatures. *)
 module type S0 = sig
-  type t
   (** The container type. *)
+  type t
 
-  type elt
   (** The element type. *)
+  type elt
 end
 
 (** There is no [S1], as Core's [T1] has the same effect. *)
@@ -53,44 +53,44 @@ end
 
 (** Types used in generic signatures over bi-operations. *)
 module type Bi_generic = sig
-  type ('l, 'r) t
   (** Generic container type. *)
+  type ('l, 'r) t
 
-  type 'l left
   (** Generic left type. *)
+  type 'l left
 
-  type 'r right
   (** Generic right type. *)
+  type 'r right
 end
 
 (** Types used in leftwards arity-1 bi-operation signatures. *)
 module type Bi_left = sig
-  type 'l t
   (** Partially fixed type of containers. *)
+  type 'l t
 
-  type right
   (** Fixed type of right elements. *)
+  type right
 end
 
 (** Types used in rightwards arity-1 bi-operation signatures. *)
 module type Bi_right = sig
-  type 'r t
   (** Partially fixed type of containers. *)
+  type 'r t
 
-  type left
   (** Fixed type of left elements. *)
+  type left
 end
 
 (** Types used in arity-0 bi-operation signatures. *)
 module type Bi0 = sig
-  type t
   (** Fixed type of containers. *)
+  type t
 
-  type left
   (** Fixed type of left elements. *)
+  type left
 
-  type right
   (** Fixed type of right elements. *)
+  type right
 end
 
 (** There is no [Bi2], as Core's [T2] has the same effect. *)

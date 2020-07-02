@@ -26,13 +26,13 @@
     including monadic traversal over successful values and {{!Monad_exts}
     monad extensions}. *)
 
-type 'a t = 'a Base.Or_error.t
 (** Defined to let this module be used directly in chaining operations etc. *)
+type 'a t = 'a Base.Or_error.t
 
 (** {2 Travesty signatures} *)
 
-include Travesty.Monad_exts_types.S with type 'a t := 'a t
 (** Monad extensions for [Or_error]. *)
+include Travesty.Monad_exts_types.S with type 'a t := 'a t
 
 (** [Or_error] is a bi-traversable type, with the right type fixed to
     [Error.t]. (This is backwards from Haskell conventions, but matches the
@@ -42,8 +42,8 @@ include
     with type 'l t := 'l t
      and type right = Base.Error.t
 
-module On_ok : Travesty.Traversable_types.S1 with type 'a t = 'a t
 (** [On_ok] is shorthand for [Traverse1_left] on this module. *)
+module On_ok : Travesty.Traversable_types.S1 with type 'a t = 'a t
 
 (** {2 Shortcuts for combining errors}
 

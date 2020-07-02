@@ -29,7 +29,7 @@ include Travesty.Traversable.Make1_container (struct
       Base.Option.fold xo ~init:(return None) ~f:(fun state x ->
           let%bind _ = state in
           let%map x' = f x in
-          Some x')
+          Some x' )
   end
 end)
 
@@ -52,5 +52,5 @@ let first_some_of_thunks thunks =
     ~f:(fun () thunk ->
       Base.Option.value_map (thunk ())
         ~default:(Base.Container.Continue_or_stop.Continue ()) ~f:(fun x ->
-          Stop (Some x)))
+          Stop (Some x) ) )
     ~finish:(Base.Fn.const None)

@@ -37,4 +37,4 @@ let%test_unit "mapping f over a singleton of x is equivalent to (f x)" =
     (module Int_and_function)
     ~f:(fun (x, f) ->
       [%test_result: int] ~here:[[%here]] ~equal:[%equal: int] ~expect:(f x)
-        (Singleton.map ~f x))
+        (Singleton.map ~f x) )

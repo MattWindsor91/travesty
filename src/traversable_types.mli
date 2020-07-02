@@ -56,13 +56,13 @@ open Base
     - For arity-0 types, ['a t] becomes [t] and ['a elt] becomes [elt].
     - For arity-1 types, ['a t] becomes ['a t] and ['a elt] becomes ['a]. *)
 module type Basic_generic_on_monad = sig
-  include Generic_types.Generic
   (** [Generic] refers to the container type as ['a t], and the element type
       as ['a elt]; substitute [t]/[elt] (arity-0) or ['a t]/['a] (arity-1)
       accordingly below. *)
+  include Generic_types.Generic
 
-  module M : Monad.S
   (** [M] is the monad over which we're fold-mapping. *)
+  module M : Monad.S
 
   val map_m : 'a t -> f:('a elt -> 'b elt M.t) -> 'b t M.t
   (** [map_m c ~f] maps [f] over every [t] in [c], threading through monadic
@@ -128,8 +128,8 @@ end
 (** [Basic1_on_monad] is the inner signature of a monadic traversal over
     arity-1 types. *)
 module type Basic1_on_monad = sig
-  type 'a t
   (** The type of the container to map over. *)
+  type 'a t
 
   include Basic_generic_on_monad with type 'a t := 'a t and type 'a elt := 'a
 end
@@ -168,11 +168,11 @@ end
 (** [Basic0] is the minimal signature that traversable containers of arity 0
     must implement to be extensible into {{!S0} S0}. *)
 module type Basic0 = sig
-  type t
   (** The container type. *)
+  type t
 
-  module Elt : Equal.S
   (** [Elt] contains the element type, which must have equality. *)
+  module Elt : Equal.S
 
   (** [On_monad] implements monadic traversal for a given monad [M]. *)
   module On_monad (M : Monad.S) :
@@ -182,8 +182,8 @@ end
 (** [Basic1] is the minimal signature that traversable containers of arity 1
     must implement to be extensible into. *)
 module type Basic1 = sig
-  type 'a t
   (** The container type. *)
+  type 'a t
 
   (** [On_monad] implements monadic traversal for a given monad. *)
   module On_monad (M : Monad.S) :
@@ -251,14 +251,14 @@ end
 
 (** [S0] is a generic interface for arity-0 traversable containers. *)
 module type S0 = sig
-  module Elt : Equal.S
   (** Elements must have equality. While this is an extra restriction on top
       of the Core equivalent, it is required by {{!Traversable.Make0} Make0},
       and helps us define chaining operations. *)
+  module Elt : Equal.S
 
-  include Generic_types.S0 with type elt = Elt.t
   (** We export [Elt.t] as [elt] for compatibility with Core-style
       containers. *)
+  include Generic_types.S0 with type elt = Elt.t
 
   include Generic with type 'a t := t and type 'a elt := Elt.t
 
@@ -268,9 +268,9 @@ end
 (** [S1] is a generic interface for arity-1 traversable containers. It also
     includes the extensions from {{!Mappable} Mappable}. *)
 module type S1 = sig
-  type 'a t
   (** ['a t] is the type of the container, parametrised over the element type
       ['a]. *)
+  type 'a t
 
   (** [On_monad] implements monadic folding and mapping operators for a given
       monad [M], including arity-1 specific operators. *)

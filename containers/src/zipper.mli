@@ -51,8 +51,8 @@ open Base
 
 (** {2 Plain zippers} *)
 
-module Plain : Zipper_types.S
 (** [Plain] is a basic list zipper, without specialised functionality. *)
+module Plain : Zipper_types.S
 
 (** {2 Marked zippers} *)
 
@@ -60,5 +60,5 @@ module Plain : Zipper_types.S
 module Make_marked (Mark : Zipper_types.Basic_mark) :
   Zipper_types.S_marked with type mark := Mark.t
 
-module Int_mark_zipper : Zipper_types.S_marked with type mark := int
 (** [Int_mark_zipper] is a marked zipper whose marks are integers. *)
+module Int_mark_zipper : Zipper_types.S_marked with type mark := int

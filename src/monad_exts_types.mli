@@ -24,8 +24,8 @@
 
     To create an instance of [S], use {{!Extend} Extend}. *)
 module type S = sig
-  type 'a t
   (** The type of the extended monad. *)
+  type 'a t
 
   (** {3 Haskell-style operators} *)
 
@@ -76,7 +76,7 @@ module type S = sig
       {[
         let fail_if_negative x =
           On_error.when_m (Int.is_negative x) ~f:(fun () ->
-              Or_error.error_string "value is negative!")
+              Or_error.error_string "value is negative!" )
         in
         Or_error.(42 |> tee_m ~f:fail_if_negative >>| fun x -> x * x)
 

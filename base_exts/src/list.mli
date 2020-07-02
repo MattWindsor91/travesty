@@ -25,8 +25,8 @@
     This module contains various extensions for [Base]'s [List] module,
     including adding monadic traversal. *)
 
-type 'a t = 'a list
 (** Defined to let this module be used directly in chaining operations etc. *)
+type 'a t = 'a list
 
 (** {2 Travesty instances} *)
 
@@ -65,8 +65,8 @@ include
     with type 'a t := 'a t
      and module With_errors := With_errors
 
-include Travesty.Filter_mappable_types.S1 with type 'a t := 'a t
 (** We can also filter-map over them. *)
+include Travesty.Filter_mappable_types.S1 with type 'a t := 'a t
 
 (** {2 Utility functions for modifying lists} *)
 

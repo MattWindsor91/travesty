@@ -28,7 +28,7 @@ module Tx = Travesty_base_exts
 let%expect_test "tee_m example" =
   let fail_if_negative x =
     Tx.Or_error.when_m (Base.Int.is_negative x) ~f:(fun () ->
-        Base.Or_error.error_string "value is negative!")
+        Base.Or_error.error_string "value is negative!" )
   in
   Stdio.print_s
     [%sexp

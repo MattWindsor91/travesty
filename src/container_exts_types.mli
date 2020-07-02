@@ -33,10 +33,10 @@ open Base
     first, then specialise it for arity-0 and arity-1 containers. *)
 
 module type Generic = sig
-  include Generic_types.Generic
   (** [Generic_extensions] refers to the container type as ['a t], and the
       element type as ['a elt]; substitute [t]/[elt] (arity-0) or ['a t]/['a]
       (arity-1) accordingly below. *)
+  include Generic_types.Generic
 
   (** {3 Testing for a specific number of elements}
 
@@ -103,11 +103,11 @@ end
     type ['a -> bool]). *)
 
 module type Generic_predicate = sig
-  type 'a t
   (** The generic type of predicate containers. *)
+  type 'a t
 
-  type 'a item
   (** The generic type of predicate target elements. *)
+  type 'a item
 
   val any : 'a item -> predicates:'a t -> bool
   (** [any x ~predicates] tests [x] against [predicates] until one returns
@@ -145,11 +145,11 @@ end
 
     This signature extends and constrains {{!Extensions0} Extensions0}. *)
 module type S0_predicate = sig
-  type t
   (** Type of predicate containers *)
+  type t
 
-  type item
   (** Type of items being tested against predicates. *)
+  type item
 
   include S0 with type t := t and type elt := item -> bool
 
@@ -167,8 +167,8 @@ end
     {{!Generic_extensions} Generic_extensions} as well as extensions that
     require the ability to change the element type mid-flight. *)
 module type S1 = sig
-  type 'a t
   (** The type of the container to extend. *)
+  type 'a t
 
   include Generic with type 'a t := 'a t and type 'a elt := 'a
 
