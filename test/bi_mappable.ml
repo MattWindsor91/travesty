@@ -52,19 +52,19 @@ struct
       ~f:(fun x ->
         [%test_eq: I.t] ~here:[[%here]; I.here]
           (I.bi_map ~left:Fn.id ~right:Fn.id x)
-          x )
+          x)
 
   let%test_unit "left id === id" =
     Test.run_exn
       (module I)
       ~f:(fun x ->
-        [%test_eq: I.t] ~here:[[%here]; I.here] (I.map_left ~f:Fn.id x) x )
+        [%test_eq: I.t] ~here:[[%here]; I.here] (I.map_left ~f:Fn.id x) x)
 
   let%test_unit "right id === id" =
     Test.run_exn
       (module I)
       ~f:(fun x ->
-        [%test_eq: I.t] ~here:[[%here]; I.here] (I.map_right ~f:Fn.id x) x )
+        [%test_eq: I.t] ~here:[[%here]; I.here] (I.map_right ~f:Fn.id x) x)
 
   let%test_unit "bi_map f g === compose (left f) (right g)" =
     Test.run_exn
@@ -75,7 +75,7 @@ struct
       ~f:(fun (f, g, x) ->
         [%test_eq: I.t] ~here:[[%here]; I.here]
           (I.bi_map ~left:f ~right:g x)
-          (I.map_left ~f (I.map_right ~f:g x)) )
+          (I.map_left ~f (I.map_right ~f:g x)))
 
   let%test_unit "bi_map (compose f g) (compose h i) === compose (bimap f h) \
                  (bimap g i)" =
@@ -97,7 +97,7 @@ struct
         in
         [%test_eq: I.t] ~here:[[%here]; I.here]
           (I.bi_map ~left:f_o_g ~right:h_o_i x)
-          (bfh_o_bgi x) )
+          (bfh_o_bgi x))
 
   let%test_unit "left (compose f g) === compose (left f) (left g)" =
     Test.run_exn
@@ -108,7 +108,7 @@ struct
       ~f:(fun (f, g, x) ->
         [%test_eq: I.t] ~here:[[%here]; I.here]
           (I.map_left ~f:(Fn.compose f g) x)
-          (Fn.compose (I.map_left ~f) (I.map_left ~f:g) x) )
+          (Fn.compose (I.map_left ~f) (I.map_left ~f:g) x))
 
   let%test_unit "right (compose f g) === compose (right f) (right g)" =
     Test.run_exn
@@ -119,5 +119,5 @@ struct
       ~f:(fun (f, g, x) ->
         [%test_eq: I.t] ~here:[[%here]; I.here]
           (I.map_right ~f:(Fn.compose f g) x)
-          (Fn.compose (I.map_right ~f) (I.map_right ~f:g) x) )
+          (Fn.compose (I.map_right ~f) (I.map_right ~f:g) x))
 end

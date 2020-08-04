@@ -42,8 +42,7 @@ module Extend0 (C : Container.S0) :
   let at_most_one xs =
     C.fold_until xs ~init:`None_yet
       ~f:(function
-        | `None_yet -> fun x -> Continue (`One x) | `One _ -> too_many_error
-        )
+        | `None_yet -> fun x -> Continue (`One x) | `One _ -> too_many_error)
       ~finish:(function `None_yet -> Ok None | `One x -> Ok (Some x))
 
   let one xs =
@@ -58,12 +57,12 @@ module Extend0 (C : Container.S0) :
         | `One x ->
             fun y -> Continue (`Two (x, y))
         | `Two _ ->
-            too_many_error )
+            too_many_error)
       ~finish:(function
         | `None_yet | `One _ ->
             Result.Error (too_few_error ())
         | `Two (x, y) ->
-            Ok (x, y) )
+            Ok (x, y))
 end
 
 module Extend0_predicate
@@ -94,8 +93,7 @@ module Extend1 (C : Container.S1) : S1 with type 'a t := 'a C.t = struct
   let at_most_one xs =
     C.fold_until xs ~init:`None_yet
       ~f:(function
-        | `None_yet -> fun x -> Continue (`One x) | `One _ -> too_many_error
-        )
+        | `None_yet -> fun x -> Continue (`One x) | `One _ -> too_many_error)
       ~finish:(function `None_yet -> Ok None | `One x -> Ok (Some x))
 
   let one xs =
@@ -110,12 +108,12 @@ module Extend1 (C : Container.S1) : S1 with type 'a t := 'a C.t = struct
         | `One x ->
             fun y -> Continue (`Two (x, y))
         | `Two _ ->
-            too_many_error )
+            too_many_error)
       ~finish:(function
         | `None_yet | `One _ ->
             Result.Error (too_few_error ())
         | `Two (x, y) ->
-            Ok (x, y) )
+            Ok (x, y))
 
   let any x ~predicates = C.exists predicates ~f:(fun p -> p x)
 

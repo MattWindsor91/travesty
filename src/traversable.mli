@@ -151,7 +151,7 @@ module Helpers (M : Monad.S) : sig
                      let%map r' =
                        map_m ~location ~immediate ~string ~typ ~bop r
                      in
-                     (l', b', r') ))
+                     (l', b', r')))
         end
 
         (* ...then use it to build a traversable container over all of the

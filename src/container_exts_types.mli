@@ -33,9 +33,9 @@ open Base
     first, then specialise it for arity-0 and arity-1 containers. *)
 
 module type Generic = sig
-  (** [Generic] refers to the container type as ['a t], and the
-      element type as ['a elt]; substitute [t]/[elt] (arity-0) or ['a t]/['a]
-      (arity-1) accordingly below. *)
+  (** [Generic] refers to the container type as ['a t], and the element type
+      as ['a elt]; substitute [t]/[elt] (arity-0) or ['a t]/['a] (arity-1)
+      accordingly below. *)
   include Generic_types.Generic
 
   (** {3 Testing for a specific number of elements}
@@ -53,13 +53,15 @@ module type Generic = sig
 
       {[
         (* ok None *)
-        List.at_most_one [];;
-
+        List.at_most_one []
+      ]}
+      {[
         (* ok (Some 1) *)
-        List.at_most_one [1];;
-
+        List.at_most_one [1]
+      ]}
+      {[
         (* error -- too many *)
-        List.at_most_one [1; 2];;
+        List.at_most_one [1; 2]
       ]} *)
 
   val one : 'a t -> 'a elt Or_error.t
@@ -70,14 +72,16 @@ module type Generic = sig
       List}):
 
       {[
-        (* error -- not enough *) 
-        List.one [];;
-
-        (* ok 1 *) 
-        List.one [1];;
-
+        (* error -- not enough *)
+        List.one []
+      ]}
+      {[
+        (* ok 1 *)
+        List.one [1]
+      ]}
+      {[
         (* error -- too many *)
-        List.one [1; 2];;
+        List.one [1; 2]
       ]} *)
 
   val two : 'a t -> ('a elt * 'a elt) Or_error.t
@@ -89,16 +93,19 @@ module type Generic = sig
 
       {[
         (* error -- not enough *)
-        List.two [];;
-
+        List.two []
+      ]}
+      {[
         (* error -- not enough *)
-        List.two [1];;
-
+        List.two [1]
+      ]}
+      {[
         (* ok (1, 2) *)
-        List.two [1; 2];;
-
+        List.two [1; 2]
+      ]}
+      {[
         (* error -- too many *)
-        List.two [1; 2; 3];;
+        List.two [1; 2; 3]
       ]} *)
 
   (** {3 Miscellaneous extensions} *)
@@ -175,8 +182,8 @@ end
 (** Extensions for a [Container.S1].
 
     This signature contains both the generic extensions outlined in
-    {!Generic} as well as extensions that
-    require the ability to change the element type mid-flight. *)
+    {!Generic} as well as extensions that require the ability to change the
+    element type mid-flight. *)
 module type S1 = sig
   (** The type of the container to extend. *)
   type 'a t
