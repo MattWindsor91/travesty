@@ -1,6 +1,6 @@
 (* This file is part of 'travesty'.
 
-   Copyright (c) 2018 by Matt Windsor
+   Copyright (c) 2018-2020 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
    copy of this software and associated documentation files (the "Software"),
@@ -33,7 +33,7 @@ open Base
     first, then specialise it for arity-0 and arity-1 containers. *)
 
 module type Generic = sig
-  (** [Generic_extensions] refers to the container type as ['a t], and the
+  (** [Generic] refers to the container type as ['a t], and the
       element type as ['a elt]; substitute [t]/[elt] (arity-0) or ['a t]/['a]
       (arity-1) accordingly below. *)
   include Generic_types.Generic
@@ -52,11 +52,14 @@ module type Generic = sig
       List}):
 
       {[
-        List.at_most_one [] (* ok None *) at_most_one
-          [1] (* ok (Some 1) *)
-          at_most_one [1; 2]
+        (* ok None *)
+        List.at_most_one [];;
+
+        (* ok (Some 1) *)
+        List.at_most_one [1];;
 
         (* error -- too many *)
+        List.at_most_one [1; 2];;
       ]} *)
 
   val one : 'a t -> 'a elt Or_error.t
@@ -67,9 +70,14 @@ module type Generic = sig
       List}):
 
       {[
-        List.one [] (* error -- not enough *) one [1] (* ok 1 *) one [1; 2]
+        (* error -- not enough *) 
+        List.one [];;
+
+        (* ok 1 *) 
+        List.one [1];;
 
         (* error -- too many *)
+        List.one [1; 2];;
       ]} *)
 
   val two : 'a t -> ('a elt * 'a elt) Or_error.t
@@ -80,13 +88,17 @@ module type Generic = sig
       List}):
 
       {[
-        List.two [] (* error -- not enough *) two
-          [1] (* error -- not enough *)
-          two
-          [1; 2] (* ok (1, 2) *)
-          two [1; 2; 3]
+        (* error -- not enough *)
+        List.two [];;
+
+        (* error -- not enough *)
+        List.two [1];;
+
+        (* ok (1, 2) *)
+        List.two [1; 2];;
 
         (* error -- too many *)
+        List.two [1; 2; 3];;
       ]} *)
 
   (** {3 Miscellaneous extensions} *)
@@ -133,8 +145,7 @@ end
 
 (** Extensions for a [Container.S0].
 
-    This signature contains the generic extensions outlined in
-    {{!Generic_extensions} Generic_extensions}. *)
+    This signature contains the generic extensions outlined in {!Generic}. *)
 module type S0 = sig
   include Generic_types.S0
 
@@ -143,7 +154,7 @@ end
 
 (** Extensions for a [Container.S0] whose elements are predicates.
 
-    This signature extends and constrains {{!Extensions0} Extensions0}. *)
+    This signature extends and constrains {!S0}. *)
 module type S0_predicate = sig
   (** Type of predicate containers *)
   type t
@@ -164,7 +175,7 @@ end
 (** Extensions for a [Container.S1].
 
     This signature contains both the generic extensions outlined in
-    {{!Generic_extensions} Generic_extensions} as well as extensions that
+    {!Generic} as well as extensions that
     require the ability to change the element type mid-flight. *)
 module type S1 = sig
   (** The type of the container to extend. *)
