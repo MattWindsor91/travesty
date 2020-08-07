@@ -1,3 +1,10 @@
+# Unreleased
+
+## Removed
+
+- Support for OCaml v4.07.  This has effectively been broken since v0.6.2 when
+  building on Jane Street libraries v0.14.
+
 # v0.6.2 (2020-04-02)
 
 Minor release with one new feature.
