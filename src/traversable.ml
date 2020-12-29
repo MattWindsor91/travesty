@@ -243,27 +243,3 @@ module Const (T : T) (Elt : Equal.S) = Make0 (struct
   end
 end)
 
-module Helpers (M : Monad.S) = struct
-  type 'a traversal = 'a -> 'a M.t
-
-  let proc_variant0 f v = M.(f () >>| fun () -> v.Base.Variant.constructor)
-
-  let proc_variant1 f v a = M.(f a >>| v.Base.Variant.constructor)
-
-  let proc_variant2 f v a b =
-    let open M.Let_syntax in
-    let%map a', b' = f (a, b) in
-    v.Base.Variant.constructor a' b'
-
-  let proc_variant3 f v a b c =
-    let open M.Let_syntax in
-    let%map a', b', c' = f (a, b, c) in
-    v.Base.Variant.constructor a' b' c'
-
-  let proc_field f state field =
-    let open M.Let_syntax in
-    let%bind container = state in
-    let original = Field.get field container in
-    let%map nval = f original in
-    Field.fset field container nval
-end

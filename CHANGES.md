@@ -2,6 +2,9 @@
 
 ## Removed
 
+- The `Traversable.Helpers` module; in practice this doesn't seem to be very
+  useful compared to writing the traversable boilerplate manually, and it
+  doesn't gel particularly well with the planned monad to applicative change.
 - Support for OCaml v4.07.  This has effectively been broken since v0.6.2 when
   building on Jane Street libraries v0.14.
 
