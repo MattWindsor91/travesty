@@ -19,6 +19,8 @@ Major release with large breaking changes, and added and removed features.
 - `Monad_exts.App` is `Base.Applicative.Of_monad`, but keeps the original
   monad type around; this is useful for passing monads to things that expect
   applicatives.
+- `Monad_exts.Let` produces OCaml 4.08-style `let+` and `let*` bindings for
+  monads.  It is included in `Monad_exts.Make`.
 
 ## Removed
 

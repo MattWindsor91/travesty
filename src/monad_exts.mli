@@ -32,7 +32,10 @@ open Base
     For input and output module signatures for this module's functors, see
     {!Filter_mappable_types}. *)
 
-(** {2:exts Extensions functors} *)
+(** {2:exts Extension functors} *)
+
+(** [Let] implements OCaml 4.08 let bindings for Base monads. *)
+module Let (M : Monad.S) : Monad_exts_types.S_let with type 'a t := 'a M.t
 
 (** [Extend] creates {{!Monad_exts_types.S} extensions} for a [Monad.S]. *)
 module Extend (M : Monad.S) : Monad_exts_types.S with type 'a t := 'a M.t

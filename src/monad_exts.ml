@@ -23,7 +23,15 @@
 open Base
 open Monad_exts_types
 
+module Let (M : Monad.S) : S_let with type 'a t := 'a M.t = struct
+  let ( let+ ) x f = M.map x ~f
+
+  let ( let* ) x f = M.bind x ~f
+end
+
 module Extend (M : Monad.S) : S with type 'a t := 'a M.t = struct
+  include Let (M)
+
   let then_m (x : _ M.t) (y : 'a M.t) : 'a M.t = M.(x >>= fun _ -> y)
 
   let compose_m (f : 'a -> 'b M.t) (g : 'b -> 'c M.t) (x : 'a) : 'c M.t =

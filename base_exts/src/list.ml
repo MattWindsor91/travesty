@@ -20,9 +20,13 @@
    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
    DEALINGS IN THE SOFTWARE. *)
 
+open struct
+  module Zip = Travesty_containers.Zipper.Plain
+  module OE = Or_error
+end
+
 open Base
 open Travesty
-module Zip = Travesty_containers.Zipper.Plain
 
 module TC = Traversable.Make1_container (struct
   include List
@@ -48,17 +52,17 @@ module With_errors = struct
 
   let replace_m (xs : 'a list) (at : int) ~(f : 'a -> 'a option Or_error.t) :
       'a list Or_error.t =
-    let open Or_error.Let_syntax in
     let z_init = Zip.of_list xs in
-    let%bind z_move =
-      Zip.On_error.step_m z_init ~steps:at
-        ~on_empty:(replace_out_of_range xs at)
-    in
-    let%map z_repl =
-      Zip.On_error.map_m_head z_move ~f
-        ~on_empty:(replace_out_of_range xs at)
-    in
-    Zip.to_list z_repl
+    OE.(
+      let* z_move =
+        Zip.On_error.step_m z_init ~steps:at
+          ~on_empty:(replace_out_of_range xs at)
+      in
+      let+ z_repl =
+        Zip.On_error.map_m_head z_move ~f
+          ~on_empty:(replace_out_of_range xs at)
+      in
+      Zip.to_list z_repl)
 end
 
 include (TC : module type of TC with module With_errors := With_errors)
@@ -76,15 +80,15 @@ let replace (xs : 'a list) (at : int) ~(f : 'a -> 'a option) :
 let prefixes xs = List.mapi ~f:(fun i _ -> List.take xs (i + 1)) xs
 
 let insert (xs : 'a list) (at : int) (value : 'a) : 'a list Or_error.t =
-  let open Or_error.Let_syntax in
   let z_init = Zip.of_list xs in
-  let%map z_move =
-    Zip.On_error.step_m z_init ~steps:at ~on_empty:(fun _ ->
-        Or_error.error_s
-          [%message
-            "Insert failed: index out of range" ~here:[%here]
-              ~insert_at:(at : int)
-              ~list_length:(List.length xs : int)])
-  in
-  let z_ins = Zip.push z_move ~value in
-  Zip.to_list z_ins
+  OE.(
+    let+ z_move =
+      Zip.On_error.step_m z_init ~steps:at ~on_empty:(fun _ ->
+          Or_error.error_s
+            [%message
+              "Insert failed: index out of range" ~here:[%here]
+                ~insert_at:(at : int)
+                ~list_length:(List.length xs : int)])
+    in
+    let z_ins = Zip.push z_move ~value in
+    Zip.to_list z_ins)
