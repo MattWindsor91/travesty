@@ -28,7 +28,7 @@ module BT :
 Bi_traversable.Make2 (struct
   type ('l, 'r) t = ('l, 'r) Result.t
 
-  module On_monad (M : Monad.S) = struct
+  module On (M : Applicative.S) = struct
     let bi_map_m (e : ('l1, 'r1) Result.t) ~(left : 'l1 -> 'l2 M.t)
         ~(right : 'r1 -> 'r2 M.t) : ('l2, 'r2) Result.t M.t =
       match e with

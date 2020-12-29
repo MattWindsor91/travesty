@@ -23,13 +23,13 @@
 include Travesty.Traversable.Make1_container (struct
   include Base.Option
 
-  module On_monad (M : Base.Monad.S) = struct
+  module On (M : Base.Applicative.S) = struct
     let map_m xo ~f =
-      let open M.Let_syntax in
-      Base.Option.fold xo ~init:(return None) ~f:(fun state x ->
-          let%bind _ = state in
-          let%map x' = f x in
-          Some x')
+      match xo with
+      | None ->
+          M.return None
+      | Some x ->
+          M.(x |> f >>| Base.Option.return)
   end
 end)
 

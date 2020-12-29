@@ -227,7 +227,7 @@ module Make_marked_cell (B : Basic_mark) = struct
   module T = Travesty.Traversable.Make1 (struct
     type nonrec 'a t = 'a t
 
-    module On_monad (M : Monad.S) = struct
+    module On (M : Applicative.S) = struct
       let map_m cell ~f = M.(f cell.data >>| fun d -> {cell with data= d})
     end
   end)

@@ -23,9 +23,9 @@
 (** Signatures for filter-mapping.
 
     The {{!basics} basic signatures}, which contain only {!filter_map}, are
-    {!Basic0} and {!Basic1}. We also define {!sigs} richer signatures}, {!S0}
-    and {!S1}, for which we provide functors in {{!Filter_mappable} the main
-    interface}. *)
+    {!Basic0} and {!Basic1}. We also define {{!sigs} richer signatures},
+    {!S0} and {!S1}, for which we provide functors in {{!Filter_mappable} the
+    main interface}. *)
 
 open Base
 

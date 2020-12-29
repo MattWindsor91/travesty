@@ -27,16 +27,11 @@ module Zip = Travesty_containers.Zipper.Plain
 module TC = Traversable.Make1_container (struct
   include List
 
-  module On_monad (M : Monad.S) = struct
+  module On (M : Applicative.S) = struct
     let map_m xs ~f =
-      let open M.Let_syntax in
-      let%map xs_final =
-        List.fold_left xs ~init:(return []) ~f:(fun state x ->
-            let%bind xs' = state in
-            let%map x' = f x in
-            x' :: xs')
-      in
-      List.rev xs_final
+      M.(
+        List.fold_right xs ~init:(return []) ~f:(fun x state ->
+            map2 ~f:cons (f x) state))
   end
 end)
 

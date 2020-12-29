@@ -28,19 +28,22 @@ open Bi_traversable_types
 module type Derived_ops_maker = sig
   include Generic_types.Bi_generic
 
-  module On_monad (M : Monad.S) :
-    Basic_generic_on_monad
+  module On (M : Applicative.S) :
+    Basic_generic_on_applicative
       with module M := M
        and type ('l, 'r) t := ('l, 'r) t
        and type 'l left := 'l left
        and type 'r right := 'r right
 end
 
-(** [Derived_ops_monadic_gen] is an internal functor used to generate several
-    derived monadic operations from a monadic bi-traversal in an
+(** [Derived_ops_applicative_gen] is an internal functor used to generate
+    several derived operations from an applicative bi-traversal in an
     arity-generic way. *)
-module Derived_ops_monadic_gen (I : Derived_ops_maker) (M : Monad.S) = struct
-  module IM = I.On_monad (M)
+module Derived_ops_applicative_gen
+    (I : Derived_ops_maker)
+    (M : Applicative.S) =
+struct
+  module IM = I.On (M)
 
   let map_left_m (c : ('l1, 'r) I.t) ~(f : 'l1 I.left -> 'l2 I.left M.t) :
       ('l2, 'r) I.t M.t =
@@ -54,10 +57,10 @@ end
 module Make0 (I : Basic0) :
   S0 with type t = I.t and type left = I.left and type right = I.right =
 struct
-  module On_monad (MS : Monad.S) = struct
-    include I.On_monad (MS)
+  module On (MS : Applicative.S) = struct
+    include I.On (MS)
 
-    include Derived_ops_monadic_gen
+    include Derived_ops_applicative_gen
               (struct
                 type ('l, 'r) t = I.t
 
@@ -65,13 +68,14 @@ struct
 
                 type 'r right = I.right
 
-                module On_monad = I.On_monad
+                module On = I.On
               end)
               (MS)
   end
 
+  module On_monad (M : Monad.S) = On (Monad_exts.App (M))
   module With_errors = On_monad (Or_error)
-  module Ident = I.On_monad (Monad.Ident)
+  module Ident = On_monad (Monad.Ident)
 
   include Bi_mappable.Make0 (struct
     type t = I.t
@@ -86,10 +90,10 @@ end
 
 module Make1_left (I : Basic1_left) :
   S1_left with type 'l t = 'l I.t and type right = I.right = struct
-  module On_monad (MS : Monad.S) = struct
-    include I.On_monad (MS)
+  module On (MS : Applicative.S) = struct
+    include I.On (MS)
 
-    include Derived_ops_monadic_gen
+    include Derived_ops_applicative_gen
               (struct
                 type ('l, 'r) t = 'l I.t
 
@@ -97,13 +101,14 @@ module Make1_left (I : Basic1_left) :
 
                 type 'r right = I.right
 
-                module On_monad = I.On_monad
+                module On = I.On
               end)
               (MS)
   end
 
+  module On_monad (M : Monad.S) = On (Monad_exts.App (M))
   module With_errors = On_monad (Or_error)
-  module Ident = I.On_monad (Monad.Ident)
+  module Ident = On_monad (Monad.Ident)
 
   include Bi_mappable.Make1_left (struct
     type 'l t = 'l I.t
@@ -116,10 +121,10 @@ end
 
 module Make1_right (I : Basic1_right) :
   S1_right with type 'r t = 'r I.t and type left = I.left = struct
-  module On_monad (MS : Monad.S) = struct
-    include I.On_monad (MS)
+  module On (MS : Applicative.S) = struct
+    include I.On (MS)
 
-    include Derived_ops_monadic_gen
+    include Derived_ops_applicative_gen
               (struct
                 type ('l, 'r) t = 'r I.t
 
@@ -127,13 +132,14 @@ module Make1_right (I : Basic1_right) :
 
                 type 'r right = 'r
 
-                module On_monad = I.On_monad
+                module On = I.On
               end)
               (MS)
   end
 
+  module On_monad (M : Monad.S) = On (Monad_exts.App (M))
   module With_errors = On_monad (Or_error)
-  module Ident = I.On_monad (Monad.Ident)
+  module Ident = On_monad (Monad.Ident)
 
   include Bi_mappable.Make1_right (struct
     type 'r t = 'r I.t
@@ -145,10 +151,10 @@ module Make1_right (I : Basic1_right) :
 end
 
 module Make2 (I : Basic2) : S2 with type ('l, 'r) t = ('l, 'r) I.t = struct
-  module On_monad (MS : Monad.S) = struct
-    include I.On_monad (MS)
+  module On (MS : Applicative.S) = struct
+    include I.On (MS)
 
-    include Derived_ops_monadic_gen
+    include Derived_ops_applicative_gen
               (struct
                 type ('l, 'r) t = ('l, 'r) I.t
 
@@ -156,13 +162,14 @@ module Make2 (I : Basic2) : S2 with type ('l, 'r) t = ('l, 'r) I.t = struct
 
                 type 'r right = 'r
 
-                module On_monad = I.On_monad
+                module On = I.On
               end)
               (MS)
   end
 
+  module On_monad (M : Monad.S) = On (Monad_exts.App (M))
   module With_errors = On_monad (Or_error)
-  module Ident = I.On_monad (Monad.Ident)
+  module Ident = On_monad (Monad.Ident)
 
   include Bi_mappable.Make2 (struct
     type ('l, 'r) t = ('l, 'r) I.t
@@ -178,7 +185,7 @@ Make1_right (struct
 
   type left = Left.t
 
-  module On_monad = I.On_monad
+  module On = I.On
 end)
 
 module Fix2_right (I : Basic2) (Right : T) :
@@ -188,7 +195,7 @@ Make1_left (struct
 
   type right = Right.t
 
-  module On_monad = I.On_monad
+  module On = I.On
 end)
 
 module Fix2_both (I : Basic2) (Left : T) (Right : T) :
@@ -202,7 +209,7 @@ module Fix2_both (I : Basic2) (Left : T) (Right : T) :
 
   type right = Right.t
 
-  module On_monad = I.On_monad
+  module On = I.On
 end)
 
 module Fix1_left (I : Basic1_left) (Left : T) :
@@ -214,7 +221,7 @@ Make0 (struct
 
   type right = I.right
 
-  module On_monad = I.On_monad
+  module On = I.On
 end)
 
 module Fix1_right (I : Basic1_right) (Right : T) :
@@ -228,15 +235,15 @@ module Fix1_right (I : Basic1_right) (Right : T) :
 
   type right = Right.t
 
-  module On_monad = I.On_monad
+  module On = I.On
 end)
 
 module Traverse1_left (I : S1_left) :
   Traversable_types.S1 with type 'l t = 'l I.t = Traversable.Make1 (struct
   type 'l t = 'l I.t
 
-  module On_monad (M : Monad.S) = struct
-    module IM = I.On_monad (M)
+  module On (M : Applicative.S) = struct
+    module IM = I.On (M)
 
     let map_m = IM.map_left_m
   end
@@ -246,8 +253,8 @@ module Traverse1_right (I : S1_right) :
   Traversable_types.S1 with type 'r t = 'r I.t = Traversable.Make1 (struct
   type 'r t = 'r I.t
 
-  module On_monad (M : Monad.S) = struct
-    module IM = I.On_monad (M)
+  module On (M : Applicative.S) = struct
+    module IM = I.On (M)
 
     let map_m = IM.map_right_m
   end
@@ -260,8 +267,8 @@ Traversable.Make0 (struct
 
   module Elt = L
 
-  module On_monad (M : Monad.S) = struct
-    module IM = I.On_monad (M)
+  module On (M : Applicative.S) = struct
+    module IM = I.On (M)
 
     let map_m = IM.map_left_m
   end
@@ -274,8 +281,8 @@ Traversable.Make0 (struct
 
   module Elt = R
 
-  module On_monad (M : Monad.S) = struct
-    module IM = I.On_monad (M)
+  module On (M : Applicative.S) = struct
+    module IM = I.On (M)
 
     let map_m = IM.map_right_m
   end
@@ -285,9 +292,9 @@ module Chain_Bi2_Traverse1 (Bi : Basic2) (Trav : Traversable_types.Basic1) :
   S2 with type ('l, 'r) t = ('l, 'r) Bi.t Trav.t = Make2 (struct
   type ('l, 'r) t = ('l, 'r) Bi.t Trav.t
 
-  module On_monad (M : Monad.S) = struct
-    module MBi = Bi.On_monad (M)
-    module MTrav = Trav.On_monad (M)
+  module On (M : Applicative.S) = struct
+    module MBi = Bi.On (M)
+    module MTrav = Trav.On (M)
 
     let bi_map_m (x : ('l1, 'r1) t) ~(left : 'l1 -> 'l2 M.t)
         ~(right : 'r1 -> 'r2 M.t) : ('l2, 'r2) t M.t =
@@ -304,9 +311,9 @@ Make1_left (struct
 
   type right = Bi.right
 
-  module On_monad (M : Monad.S) = struct
-    module MBi = Bi.On_monad (M)
-    module MTrav = Trav.On_monad (M)
+  module On (M : Applicative.S) = struct
+    module MBi = Bi.On (M)
+    module MTrav = Trav.On (M)
 
     let bi_map_m (x : 'l1 t) ~(left : 'l1 -> 'l2 M.t)
         ~(right : right -> right M.t) : 'l2 t M.t =
@@ -323,9 +330,9 @@ Make1_right (struct
 
   type left = Bi.left
 
-  module On_monad (M : Monad.S) = struct
-    module MBi = Bi.On_monad (M)
-    module MTrav = Trav.On_monad (M)
+  module On (M : Applicative.S) = struct
+    module MBi = Bi.On (M)
+    module MTrav = Trav.On (M)
 
     let bi_map_m (x : 'r1 t) ~(left : left -> left M.t)
         ~(right : 'r1 -> 'r2 M.t) : 'r2 t M.t =
@@ -344,9 +351,9 @@ module Chain_Bi0_Traverse1 (Bi : Basic0) (Trav : Traversable_types.Basic1) :
 
   type right = Bi.right
 
-  module On_monad (M : Monad.S) = struct
-    module MBi = Bi.On_monad (M)
-    module MTrav = Trav.On_monad (M)
+  module On (M : Applicative.S) = struct
+    module MBi = Bi.On (M)
+    module MTrav = Trav.On (M)
 
     let bi_map_m (x : t) ~(left : left -> left M.t)
         ~(right : right -> right M.t) : t M.t =
@@ -361,10 +368,10 @@ module Chain_Traverse1_Bi2
 Make2 (struct
   type ('l, 'r) t = ('l LTrav.t, 'r RTrav.t) Bi.t
 
-  module On_monad (M : Monad.S) = struct
-    module MBi = Bi.On_monad (M)
-    module MTrav1 = LTrav.On_monad (M)
-    module MTrav2 = RTrav.On_monad (M)
+  module On (M : Applicative.S) = struct
+    module MBi = Bi.On (M)
+    module MTrav1 = LTrav.On (M)
+    module MTrav2 = RTrav.On (M)
 
     let bi_map_m (x : ('l1, 'r1) t) ~(left : 'l1 -> 'l2 M.t)
         ~(right : 'r1 -> 'r2 M.t) : ('l2, 'r2) t M.t =
@@ -382,9 +389,9 @@ Make1_left (struct
 
   type right = Bi.right
 
-  module On_monad (M : Monad.S) = struct
-    module MBi = Bi.On_monad (M)
-    module MTrav = LTrav.On_monad (M)
+  module On (M : Applicative.S) = struct
+    module MBi = Bi.On (M)
+    module MTrav = LTrav.On (M)
 
     let bi_map_m (x : 'l1 t) ~(left : 'l1 -> 'l2 M.t)
         ~(right : right -> right M.t) : 'l2 t M.t =
@@ -401,9 +408,9 @@ Make1_right (struct
 
   type left = Bi.left
 
-  module On_monad (M : Monad.S) = struct
-    module MBi = Bi.On_monad (M)
-    module MTrav = RTrav.On_monad (M)
+  module On (M : Applicative.S) = struct
+    module MBi = Bi.On (M)
+    module MTrav = RTrav.On (M)
 
     let bi_map_m (x : 'r1 t) ~(left : left -> left M.t)
         ~(right : 'r1 -> 'r2 M.t) : 'r2 t M.t =

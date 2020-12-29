@@ -25,11 +25,9 @@ open Base
 include Travesty.Bi_traversable.Make2 (struct
   type ('l, 'r) t = 'l * 'r
 
-  module On_monad (M : Monad.S) = struct
+  module On (M : Applicative.S) = struct
     let bi_map_m ((l, r) : ('l1, 'r1) t) ~(left : 'l1 -> 'l2 M.t)
         ~(right : 'r1 -> 'r2 M.t) : ('l2, 'r2) t M.t =
-      M.Let_syntax.(
-        let%map l' = left l and r' = right r in
-        (l', r'))
+      M.map2 ~f:(fun l' r' -> (l', r')) (left l) (right r)
   end
 end)

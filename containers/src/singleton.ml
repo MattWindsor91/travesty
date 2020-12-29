@@ -28,7 +28,7 @@ type 'a t = 'a [@@deriving sexp]
 module M = Traversable.Make1 (struct
   type nonrec 'a t = 'a t
 
-  module On_monad (M : Monad.S) = struct
+  module On (M : Applicative.S) = struct
     let map_m x ~f = f x
   end
 end)

@@ -28,20 +28,34 @@ open Traversable_types
 module type Derived_ops_maker = sig
   include Generic_types.Generic
 
-  module On_monad (M : Monad.S) :
-    Basic_generic_on_monad
+  module On (M : Applicative.S) :
+    Basic_generic_on_applicative
       with module M := M
        and type 'a t := 'a t
        and type 'a elt := 'a elt
 end
 
+(** [Derived_ops_applicative_gen] is an internal functor used to generate
+    several derived applicative operations (currently just iteration) from a
+    applicative traversal in an arity-generic way. *)
+module Derived_ops_applicative_gen
+    (I : Derived_ops_maker)
+    (M : Applicative.S) =
+struct
+  module IM = I.On (M)
+
+  let iter_m c ~f =
+    M.(IM.map_m ~f:(fun x -> M.(f x >>| fun () -> x)) c >>| fun _ -> ())
+end
+
 (** [Derived_ops_monadic_gen] is an internal functor used to generate several
-    derived monadic operations (monadic fold-map, monadic iteration, etc)
-    from a monadic traversal in an arity-generic way. *)
+    derived monadic operations (fold-map, etc) from a applicative traversal
+    in an arity-generic way. *)
 module Derived_ops_monadic_gen (I : Derived_ops_maker) (M : Monad.S) = struct
+  include Derived_ops_applicative_gen (I) (Monad_exts.App (M))
+
   (* We use the state monad to implement fold-map. *)
   module SM = State_transform.Make2 (M)
-  module IM = I.On_monad (M)
 
   let fold_map_m (type acc) c ~f ~init =
     let module SM' =
@@ -51,15 +65,12 @@ module Derived_ops_monadic_gen (I : Derived_ops_maker) (M : Monad.S) = struct
           type t = acc
         end)
     in
-    let module ISM = I.On_monad (SM') in
+    let module ISM = I.On (Monad_exts.App (SM')) in
     SM.run' (ISM.map_m ~f:(fun x -> SM.Monadic.make (fun s -> f s x)) c) init
 
   let fold_m c ~init ~f =
     M.(
       fold_map_m ~init c ~f:(fun k x -> f k x >>| fun x' -> (x', x)) >>| fst)
-
-  let iter_m c ~f =
-    M.(IM.map_m ~f:(fun x -> M.(f x >>| fun () -> x)) c >>| fun _ -> ())
 
   let mapi_m ~f c =
     M.(
@@ -67,11 +78,12 @@ module Derived_ops_monadic_gen (I : Derived_ops_maker) (M : Monad.S) = struct
       >>| snd)
 end
 
-(** Internal functor for generating several derived non-monadic,
+(** Internal functor for generating several derived non-applicative,
     non-[Container] operations (map, iterate) from a fold-map, generic over
     both arity-0 and arity-1. *)
 module Derived_ops_gen (I : Derived_ops_maker) = struct
-  (* As usual, we just use the monadic equivalents over the identity monad. *)
+  (* As usual, we just use the applicative equivalents over the identity
+     monad. *)
   module D = Derived_ops_monadic_gen (I) (Monad.Ident)
 
   let fold_map = D.fold_map_m
@@ -87,12 +99,12 @@ module Basic0_to_derived_ops_maker (I : Basic0) :
   Derived_ops_maker
     with type 'a t = I.t
      and type 'a elt = I.Elt.t
-     and module On_monad = I.On_monad = struct
+     and module On = I.On = struct
   type 'a t = I.t
 
   type 'a elt = I.Elt.t
 
-  module On_monad = I.On_monad
+  module On = I.On
 end
 
 (** Internal functor for rearranging arity-1 basics to derived-ops makers. *)
@@ -100,12 +112,12 @@ module Basic1_to_derived_ops_maker (I : Basic1) :
   Derived_ops_maker
     with type 'a t = 'a I.t
      and type 'a elt = 'a
-     and module On_monad = I.On_monad = struct
+     and module On = I.On = struct
   type 'a t = 'a I.t
 
   type 'a elt = 'a
 
-  module On_monad = I.On_monad
+  module On = I.On
 end
 
 (** [Container_gen] is an internal functor used to generate the input to
@@ -133,21 +145,26 @@ module Make0_container (I : Basic0_container) :
 
   type elt = I.Elt.t
 
-  (* We can implement the non-monadic map using the identity monad. *)
-  module Ident = I.On_monad (Monad.Ident)
-
-  let map = Ident.map_m
-
   include Derived_ops_gen (Maker)
 
   include (I : Container.S0 with type t = I.t and type elt := elt)
 
+  module On (MS : Applicative.S) = struct
+    include I.On (MS)
+    include Derived_ops_applicative_gen (Maker) (MS)
+  end
+
   module On_monad (MS : Monad.S) = struct
-    include I.On_monad (MS)
+    include I.On (Monad_exts.App (MS))
     include Derived_ops_monadic_gen (Maker) (MS)
   end
 
   module With_errors = On_monad (Or_error)
+
+  (* We can implement the non-applicative map using the identity monad. *)
+  module Ident = On_monad (Monad.Ident)
+
+  let map = Ident.map_m
 end
 
 module Make0 (I : Basic0) : S0 with module Elt = I.Elt and type t = I.t =
@@ -167,15 +184,32 @@ struct
   (* [I] needs a bit of rearrangement to fit in the derived operation
      functors (as above, but slightly differently). *)
   module Maker = Basic1_to_derived_ops_maker (I)
-  module Ident = I.On_monad (Monad.Ident)
-
-  let map = Ident.map_m
-
   include Derived_ops_gen (Maker)
 
   module C : Container.S1 with type 'a t := 'a I.t = I
 
   include C
+
+  module On (MS : Applicative.S) = struct
+    include I.On (MS)
+    include Derived_ops_applicative_gen (Maker) (MS)
+
+    (* [sequence_m] can't be defined on arity-0 containers. *)
+    let sequence_m c = map_m ~f:Fn.id c
+  end
+
+  module On_monad (MS : Monad.S) = struct
+    include I.On (Monad_exts.App (MS))
+    include Derived_ops_monadic_gen (Maker) (MS)
+
+    (* [sequence_m] can't be defined on arity-0 containers. *)
+    let sequence_m c = map_m ~f:Fn.id c
+  end
+
+  module With_errors = On_monad (Base.Or_error)
+  module Ident = On_monad (Monad.Ident)
+
+  let map = Ident.map_m
 
   include Mappable.Extend1 (struct
     type nonrec 'a t = 'a I.t
@@ -184,16 +218,6 @@ struct
 
     include C
   end)
-
-  module On_monad (MS : Monad.S) = struct
-    include I.On_monad (MS)
-    include Derived_ops_monadic_gen (Maker) (MS)
-
-    (* [sequence_m] can't be defined on arity-0 containers. *)
-    let sequence_m c = map_m ~f:Fn.id c
-  end
-
-  module With_errors = On_monad (Base.Or_error)
 end
 
 module Make1 (I : Basic1) : S1 with type 'a t = 'a I.t =
@@ -213,9 +237,9 @@ module Chain0 (Outer : S0) (Inner : S0 with type t := Outer.Elt.t) :
 
   module Elt = Inner.Elt
 
-  module On_monad (M : Monad.S) = struct
-    module OM = Outer.On_monad (M)
-    module IM = Inner.On_monad (M)
+  module On (M : Applicative.S) = struct
+    module OM = Outer.On (M)
+    module IM = Inner.On (M)
 
     let map_m x ~f = OM.map_m x ~f:(IM.map_m ~f)
   end
@@ -229,7 +253,7 @@ module Fix_elt (I : S1) (Elt : Equal.S) :
 
   (* The [S0] fold-map has a strictly narrower function type than the [S1]
      one, so we can just supply the same [On_monad]. *)
-  module On_monad (M : Monad.S) = I.On_monad (M)
+  module On (M : Applicative.S) = I.On (M)
 end)
 
 module Const (T : T) (Elt : Equal.S) = Make0 (struct
@@ -237,9 +261,8 @@ module Const (T : T) (Elt : Equal.S) = Make0 (struct
 
   module Elt = Elt
 
-  module On_monad (M : Monad.S) = struct
+  module On (M : Applicative.S) = struct
     let map_m (x : t) ~(f : Elt.t -> Elt.t M.t) : t M.t =
       ignore f ; M.return x
   end
 end)
-

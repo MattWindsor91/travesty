@@ -43,11 +43,15 @@ open Base
 
 (** {4:omgeneric The generic signatures}
 
-    Here, wee define some signatures for bi-traversable structures in an
-    arity-generic way. We then specialise them for arity-0 and arity-1 types. *)
+    Here, we define some signatures for bi-traversable structures in an
+    arity-generic way. We then specialise them for arity-0 and arity-1 types.
 
-(** [Basic_generic_on_monad] describes monadic bi-traversal on types of any
-    arity.
+    Unlike in {!Traversal_types}, we don't (yet) have any specific types for
+    monadic bi-traversals; this is because we don't derive any operations
+    that only work on monads. *)
+
+(** [Basic_generic_on_applicative] describes applicative bi-traversal on
+    types of any arity.
 
     - For arity-0 types, [('l, 'r) t] becomes [t], ['l left] becomes [left],
       and ['r right] becomes [right].
@@ -57,23 +61,23 @@ open Base
       ['l left] becomes [left], and ['r right] becomes ['r].
     - For arity-2 types, [('l, 'r) t] becomes [('l, 'r) t], ['l left] becomes
       ['l], and ['r right] becomes ['r]. *)
-module type Basic_generic_on_monad = sig
+module type Basic_generic_on_applicative = sig
   include Generic_types.Bi_generic
 
-  (** [M] is the monad over which we're bi-traversing. *)
-  module M : Monad.S
+  (** [M] is the applicative functor over which we're bi-traversing. *)
+  module M : Applicative.S
 
   val bi_map_m :
        ('l1, 'r1) t
     -> left:('l1 left -> 'l2 left M.t)
     -> right:('r1 right -> 'r2 right M.t)
     -> ('l2, 'r2) t M.t
-  (** [bi_map_m c ~left ~right] monadically traverses with [left] over every
-      ['l1 left], and [right] over every ['r1 right], in [c]. *)
+  (** [bi_map_m c ~left ~right] traverses with [left] over every ['l1 left],
+      and [right] over every ['r1 right], in [c]. *)
 end
 
-(** [Generic_on_monad] extends [Generic] to contain various derived
-    operators; we use it to derive the signatures of the various [On_monad]
+(** [Generic_on_applicative] extends [Generic] to contain various derived
+    operators; we use it to derive the signatures of the various [On]
     modules.
 
     - For arity-0 types, [('l, 'r) t] becomes [t], ['l left] becomes [left],
@@ -84,8 +88,8 @@ end
       ['l left] becomes [left], and ['r right] becomes ['r].
     - For arity-2 types, [('l, 'r) t] becomes [('l, 'r) t], ['l left] becomes
       ['l], and ['r right] becomes ['r]. *)
-module type Generic_on_monad = sig
-  include Basic_generic_on_monad
+module type Generic_on_applicative = sig
+  include Basic_generic_on_applicative
 
   val map_left_m :
     ('l1, 'r) t -> f:('l1 left -> 'l2 left M.t) -> ('l2, 'r) t M.t
@@ -100,49 +104,51 @@ end
 
 (** {4:ombasic Basic signatures} *)
 
-(** [Basic0_on_monad] is the inner signature of a monadic bi-traversal over
-    arity-0 types. *)
-module type Basic0_on_monad = sig
+(** [Basic0_on_applicative] is the inner signature of an applicative
+    bi-traversal over arity-0 types. *)
+module type Basic0_on_applicative = sig
   include Generic_types.Bi0
 
   include
-    Basic_generic_on_monad
+    Basic_generic_on_applicative
       with type ('l, 'r) t := t
        and type 'l left := left
        and type 'r right := right
 end
 
-(** [Basic1_left_on_monad] is the inner signature of a monadic bi-traversal
-    over arity-1 types with a floating left type and fixed right type. *)
-module type Basic1_left_on_monad = sig
+(** [Basic1_left_on_applicative] is the inner signature of an applicative
+    bi-traversal over arity-1 types with a floating left type and fixed right
+    type. *)
+module type Basic1_left_on_applicative = sig
   include Generic_types.Bi_left
 
   include
-    Basic_generic_on_monad
+    Basic_generic_on_applicative
       with type ('l, 'r) t := 'l t
        and type 'l left := 'l
        and type 'r right := right
 end
 
-(** [Basic1_right_on_monad] is the inner signature of a monadic bi-traversal
-    over arity-1 types with a floating right type and fixed left type. *)
-module type Basic1_right_on_monad = sig
+(** [Basic1_right_on_applicative] is the inner signature of a monadic
+    bi-traversal over arity-1 types with a floating right type and fixed left
+    type. *)
+module type Basic1_right_on_applicative = sig
   include Generic_types.Bi_right
 
   include
-    Basic_generic_on_monad
+    Basic_generic_on_applicative
       with type ('l, 'r) t := 'r t
        and type 'l left := left
        and type 'r right := 'r
 end
 
-(** [Basic2_on_monad] is the inner signature of a monadic bi-traversal over
-    arity-2 types with a floating right type and fixed left type. *)
-module type Basic2_on_monad = sig
+(** [Basic2_on_applicative] is the inner signature of a monadic bi-traversal
+    over arity-2 types with a floating right type and fixed left type. *)
+module type Basic2_on_applicative = sig
   include T2
 
   include
-    Basic_generic_on_monad
+    Basic_generic_on_applicative
       with type ('l, 'r) t := ('l, 'r) t
        and type 'l left := 'l
        and type 'r right := 'r
@@ -170,9 +176,9 @@ end
 module type Basic0 = sig
   include Generic_types.Bi0
 
-  (** [On_monad] implements monadic bi-traversal for a given monad. *)
-  module On_monad (M : Monad.S) :
-    Basic0_on_monad
+  (** [On] implements monadic bi-traversal for a given applicative functor. *)
+  module On (M : Applicative.S) :
+    Basic0_on_applicative
       with type t := t
        and type left := left
        and type right := right
@@ -187,9 +193,9 @@ end
 module type Basic1_left = sig
   include Generic_types.Bi_left
 
-  (** [On_monad] implements monadic bi-traversal for a given monad. *)
-  module On_monad (M : Monad.S) :
-    Basic1_left_on_monad
+  (** [On] implements monadic bi-traversal for a given applicative functor. *)
+  module On (M : Applicative.S) :
+    Basic1_left_on_applicative
       with type 'r t := 'r t
        and type right := right
        and module M := M
@@ -203,9 +209,9 @@ end
 module type Basic1_right = sig
   include Generic_types.Bi_right
 
-  (** [On_monad] implements monadic bi-traversal for a given monad. *)
-  module On_monad (M : Monad.S) :
-    Basic1_right_on_monad
+  (** [On] implements monadic bi-traversal for a given applicative functor. *)
+  module On (M : Applicative.S) :
+    Basic1_right_on_applicative
       with type 'l t := 'l t
        and type left := left
        and module M := M
@@ -216,9 +222,11 @@ end
 module type Basic2 = sig
   include T2
 
-  (** [On_monad] implements monadic bi-traversal for a given monad. *)
-  module On_monad (M : Monad.S) :
-    Basic2_on_monad with type ('l, 'r) t := ('l, 'r) t and module M := M
+  (** [On] implements monadic bi-traversal for a given monad. *)
+  module On (M : Applicative.S) :
+    Basic2_on_applicative
+      with type ('l, 'r) t := ('l, 'r) t
+       and module M := M
 end
 
 (** {3:s Signatures for bi-traversable types}
@@ -238,18 +246,29 @@ module type Generic = sig
        and type 'l left := 'l left
        and type 'r right := 'r right
 
-  (** [On_monad] implements monadic bi-traversal operators for a given monad
+  (** [On] implements bi-traversal operators for a given applicative functor
       [M]. *)
-  module On_monad (M : Monad.S) :
-    Generic_on_monad
+  module On (M : Applicative.S) :
+    Generic_on_applicative
       with type ('l, 'r) t := ('l, 'r) t
        and type 'l left := 'l left
        and type 'r right := 'r right
        and module M := M
 
+  (** [On_monad] implements bi-traversal operators for a given monad [M].
+
+      Currently, this is no different to [On(Monad_exts.App(M))]; this may
+      change in the future. *)
+  module On_monad (M : Monad.S) :
+    Generic_on_applicative
+      with type ('l, 'r) t := ('l, 'r) t
+       and type 'l left := 'l left
+       and type 'r right := 'r right
+       and module M := Monad_exts.App(M)
+
   (** [With_errors] specialises [On_monad] to the error_monad. *)
   module With_errors :
-    Generic_on_monad
+    Generic_on_applicative
       with type ('l, 'r) t := ('l, 'r) t
        and type 'l left := 'l left
        and type 'r right := 'r right

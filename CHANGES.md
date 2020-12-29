@@ -1,5 +1,19 @@
 # Unreleased
 
+Major release with large breaking changes, and added and removed features.
+
+## Breaking changes
+
+- `Traversable` and `Bi_traversable` now encode applicative traversals, not
+  monadic traversals.  This means that every use of a `Make` functor needs
+  changing such that, instead of an `On_monad` functor over `Monad.S`, they
+  expose an `On` functor over `Applicative.S`.  No function names have changed
+  (they remain `map_m`, `iter_m` etc. for backwards compatibility), and the
+  various `Make` functors generate both `On` (applicative) and `On_monad`
+  (monadic) functors, so most code that _consumes_ traversals should be fine.
+- Some traversal implementations in `Base_exts` have changed; this may subtly
+  affect side effect processing order.
+
 ## Added
 
 - `Monad_exts.App` is `Base.Applicative.Of_monad`, but keeps the original
