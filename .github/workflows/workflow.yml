@@ -12,10 +12,11 @@ jobs:
         os:
           - macos-latest
           - ubuntu-latest
-          - windows-latest
+#          - windows-latest
         ocaml-version:
           - 4.11.0
           - 4.10.1
+          - 4.08.1 # 4.08 is our lower bound ATM
 
     runs-on: ${{ matrix.os }}
 
