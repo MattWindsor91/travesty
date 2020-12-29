@@ -35,20 +35,18 @@ open Base
 
 (** {4:generic The generic signature}
 
-    As with {!Traversable}, we define the basic signature of
-    bi-mappable structures in an arity-generic way, then specialise it for
-    the various arities. *)
+    As with {!Traversable}, we define the basic signature of bi-mappable
+    structures in an arity-generic way, then specialise it for the various
+    arities. *)
 
 (** [Basic_generic] describes bi-mapping on any arity of type.
 
     - For arity-0 types, use {!S0}: [('l, 'r) t] becomes [t], ['l left]
       becomes [left], and ['r right] becomes [right].
-    - For arity-1 types with a fixed right type, use {!S1_left}:
-      [('l, 'r) t] becomes ['l t], ['l left] becomes ['l], and ['r right]
-      becomes [right].
-    - For arity-1 types with a fixed left type, use {!S1_right}:
-      [('l, 'r) t] becomes ['l t], ['l left] becomes [left], and ['r right]
-      becomes ['r].
+    - For arity-1 types with a fixed right type, use {!S1_left}: [('l, 'r) t]
+      becomes ['l t], ['l left] becomes ['l], and ['r right] becomes [right].
+    - For arity-1 types with a fixed left type, use {!S1_right}: [('l, 'r) t]
+      becomes ['l t], ['l left] becomes [left], and ['r right] becomes ['r].
     - For arity-2 types, use {!S2}: [('l, 'r) t] becomes [('l, 'r) t],
       ['l left] becomes ['l], and ['r right] becomes ['r]. *)
 module type Basic_generic = sig
@@ -65,13 +63,12 @@ end
 
 (** {4:sigs Arity-specific basic signatures}
 
-    The basic signatures are {!Basic0}, which defines mapping across
-    an arity-0 type [t] (with a fixed, associated element type [elt]);
-    {!Basic1_left} and {!Basic1_right}, which
-    fix the right and left element type respectively (leaving the named type
-    floating); and {!Basic2}, which defines mapping across an
-    arity-2 type [('l, 'r) t] with left element type ['l] and right element
-    type ['r]. *)
+    The basic signatures are {!Basic0}, which defines mapping across an
+    arity-0 type [t] (with a fixed, associated element type [elt]);
+    {!Basic1_left} and {!Basic1_right}, which fix the right and left element
+    type respectively (leaving the named type floating); and {!Basic2}, which
+    defines mapping across an arity-2 type [('l, 'r) t] with left element
+    type ['l] and right element type ['r]. *)
 
 (** [Basic0] is the basic signature of an arity-0 bi-mappable type.
 

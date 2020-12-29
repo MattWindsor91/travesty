@@ -23,9 +23,9 @@
 (** Signatures and functors for containers and data structures that can be
     mapped across in two different ways with a monadic side-effect.
 
-    [Bi_traversable] is to {!Bi_mappable} what {!Traversable} is to {!Mappable}.
-    It approximates the concept
-    with the same name that appears in various Haskell bifunctor libraries. *)
+    [Bi_traversable] is to {!Bi_mappable} what {!Traversable} is to
+    {!Mappable}. It approximates the concept with the same name that appears
+    in various Haskell bifunctor libraries. *)
 
 open Base
 
@@ -117,10 +117,10 @@ module Fix1_right (I : Bi_traversable_types.Basic1_right) (Right : T) :
 (** {2 Converting bi-traversable modules to traversable modules}
 
     By ignoring values of either the left or the right type, we can derive
-    {!Traversable} modules from bi-traversable ones. Since the
-    various [S] {i n} signatures contain functions for doing this on an
-    ad-hoc basis, the functors below are mainly for use when one needs actual
-    {!Traversable} instances.
+    {!Traversable} modules from bi-traversable ones. Since the various [S]
+    {i n} signatures contain functions for doing this on an ad-hoc basis, the
+    functors below are mainly for use when one needs actual {!Traversable}
+    instances.
 
     The various caveats that apply to fixing {{!Bi_mappable} bi-mappable}
     types apply. Note also that the various [Traverse0] functors are more
@@ -145,10 +145,10 @@ module Traverse1_right (S : Bi_traversable_types.S1_right) :
     traversables}. This means that the arity-0 functors need to carry an
     extra parameter that witnesses this equality.
 
-    As {!Mappable} types don't have this restriction, if one requires
-    only non-monadic mappable functionality down one side of an arity 0
-    bi-traversable, one can use the [Map0] functors in {!Bi_mappable} with
-    an {{!Bi_mappable_types.S0} S0}. *)
+    As {!Mappable} types don't have this restriction, if one requires only
+    non-monadic mappable functionality down one side of an arity 0
+    bi-traversable, one can use the [Map0] functors in {!Bi_mappable} with an
+    {{!Bi_mappable_types.S0} S0}. *)
 
 (** Traversing over the left type of an arity-0 bi-traversable container,
     which must have equality as witnessed by an [Equal.S] module. *)

@@ -32,8 +32,8 @@
     S}), and one leaving the state type as part of the monad type ({!S2}).
     Both have corresponding {{!make} make functors}.
 
-    We also provide a functor {!To_S} for fixing the state type in an
-    arity-2 monad after the fact. *)
+    We also provide a functor {!To_S} for fixing the state type in an arity-2
+    monad after the fact. *)
 
 open Base
 

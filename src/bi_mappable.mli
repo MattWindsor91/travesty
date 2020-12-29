@@ -117,9 +117,9 @@ module Fix1_right (I : Bi_mappable_types.Basic1_right) (Right : T) :
 (** {2 Converting bi-mappable modules to mappable modules}
 
     By ignoring values of either the left or the right type, we can derive
-    {!Mappable} modules from bi-mappable ones. Since the various
-    [S] {i n} signatures contain functions for doing this on an ad-hoc basis,
-    the functors below are mainly for use when one needs actual {!Mappable}
+    {!Mappable} modules from bi-mappable ones. Since the various [S] {i n}
+    signatures contain functions for doing this on an ad-hoc basis, the
+    functors below are mainly for use when one needs actual {!Mappable}
     instances.
 
     This reflects the 'clowns to the left of me, jokers to the right' (the

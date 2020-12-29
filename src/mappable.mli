@@ -34,8 +34,7 @@
 (** {2 Extending mappable containers}
 
     We define several derived functions for mappable containers in
-    {!Mappable_types}---here, we define functors to generate
-    them. *)
+    {!Mappable_types}---here, we define functors to generate them. *)
 
 (** [Extend1] implements {{!Mappable_types.Extensions1} Extensions1} for an
     arity-1 mappable container. *)

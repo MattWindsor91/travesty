@@ -22,33 +22,33 @@
 
 (** Signatures for filter-mapping.
 
-    The {{!basics} basic signatures}, which contain only {!filter_map},
-    are {!Basic0} and {!Basic1}. We also
-    define {!sigs} richer signatures}, {!S0} and {!S1}, for which
-    we provide functors in {{!Filter_mappable} the main interface}. *)
+    The {{!basics} basic signatures}, which contain only {!filter_map}, are
+    {!Basic0} and {!Basic1}. We also define {!sigs} richer signatures}, {!S0}
+    and {!S1}, for which we provide functors in {{!Filter_mappable} the main
+    interface}. *)
 
 open Base
 
 (** {2:basics Basic signatures}
 
-    The basic signatures are {!Basic0}, which defines filtered
-    mapping across an arity-0 type [t] (with a fixed, associated element type
-    [elt]), and {!Basic1}, which defines filtered mapping across an
-    arity-1 type ['a t] (with element type ['a]). *)
+    The basic signatures are {!Basic0}, which defines filtered mapping across
+    an arity-0 type [t] (with a fixed, associated element type [elt]), and
+    {!Basic1}, which defines filtered mapping across an arity-1 type ['a t]
+    (with element type ['a]). *)
 
 (** {3 The generic basic signature}
 
-    As with {!Traversable} and {!Mappable}, we
-    define the basic and full signatures of filter-mappable structures in an
-    arity-generic way, then specialise them for arity-0 and arity-1 types. *)
+    As with {!Traversable} and {!Mappable}, we define the basic and full
+    signatures of filter-mappable structures in an arity-generic way, then
+    specialise them for arity-0 and arity-1 types. *)
 
 (** Generic input shape of filter-mappable structures on either an arity-0 or
     arity-1 type.
 
-    - For arity-0 types, use {!Basic0}: ['a t] becomes [t], and
-      ['a elt] becomes [elt];
-    - For arity-1 types, use {!Basic1}: ['a t] becomes ['a t], and
-      ['a elt] becomes ['a]. *)
+    - For arity-0 types, use {!Basic0}: ['a t] becomes [t], and ['a elt]
+      becomes [elt];
+    - For arity-1 types, use {!Basic1}: ['a t] becomes ['a t], and ['a elt]
+      becomes ['a]. *)
 module type Generic_basic = sig
   (** [Generic_basic] refers to the container type as ['a t], and the element
       type as ['a elt]; substitute [t]/[elt] (arity-0) or ['a t]/['a]
@@ -90,9 +90,9 @@ end
 (** Generic output shape of filter-mappable structures on either an arity-0
     or arity-1 type.
 
-    - For arity-0 types, use {!S0}: ['a t] becomes [t], and ['a elt]
-      becomes [elt]; - For arity-1 types, use {!S1}: ['a t] becomes
-      ['a t], and ['a elt] becomes ['a]. *)
+    - For arity-0 types, use {!S0}: ['a t] becomes [t], and ['a elt] becomes
+      [elt]; - For arity-1 types, use {!S1}: ['a t] becomes ['a t], and
+      ['a elt] becomes ['a]. *)
 module type Generic = sig
   (** [Generic] strictly extends [Generic_basic]. *)
   include Generic_basic
@@ -105,8 +105,8 @@ module type Generic = sig
   (** [exclude c ~f] checks [f] over every [t] in [c], discarding any items
       for which [f] returns [true]. *)
 
-  (** We can also derive {!Mappable} interfaces from
-      filter-mappable ones, but leave that to a separate functor. *)
+  (** We can also derive {!Mappable} interfaces from filter-mappable ones,
+      but leave that to a separate functor. *)
 end
 
 (** {3 Arity-0 and arity-1 full signatures} *)

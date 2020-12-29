@@ -72,5 +72,6 @@ end)
 
 module App (M : Monad.S) : Applicative.S with type 'a t = 'a M.t = struct
   type 'a t = 'a M.t
-  include Applicative.Of_monad(M)
+
+  include Applicative.Of_monad (M)
 end

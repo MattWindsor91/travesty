@@ -28,13 +28,13 @@
     or [modify] it, or do both.
 
     We provide two signatures for state monads: one corresponding to the
-    situation where the state type is fixed at the module level ({!S}),
-    and one leaving the state type as part of the monad type ({!S2}).
-    The former has a corresponding {{!Make} make functor}; the latter has a
-    {{!M2} direct implementation}.
+    situation where the state type is fixed at the module level ({!S}), and
+    one leaving the state type as part of the monad type ({!S2}). The former
+    has a corresponding {{!Make} make functor}; the latter has a {{!M2}
+    direct implementation}.
 
-    We also provide a functor {!To_S} for fixing the state type in an
-    arity-2 monad after the fact. *)
+    We also provide a functor {!To_S} for fixing the state type in an arity-2
+    monad after the fact. *)
 
 (** {2 Relation to state transformers}
 

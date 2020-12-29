@@ -157,13 +157,12 @@ end
     operations, chaining, type-fixing, and conversion to bi-mappable and
     regular traversable containers.
 
-    The basic signatures are {!Basic0}, which defines traversal
-    across an arity-0 type [t] (with a fixed, associated element type [elt]);
-    {!Basic1_left} and {!Basic1_right}, which
-    fix the right and left element type respectively (leaving the named type
-    floating); and {!Basic2}, which defines traversal across an
-    arity-2 type [('l, 'r) t] with left element type ['l] and right element
-    type ['r]. *)
+    The basic signatures are {!Basic0}, which defines traversal across an
+    arity-0 type [t] (with a fixed, associated element type [elt]);
+    {!Basic1_left} and {!Basic1_right}, which fix the right and left element
+    type respectively (leaving the named type floating); and {!Basic2}, which
+    defines traversal across an arity-2 type [('l, 'r) t] with left element
+    type ['l] and right element type ['r]. *)
 
 (** [Basic0] is the basic signature of an arity-0 bi-traversable type.
 

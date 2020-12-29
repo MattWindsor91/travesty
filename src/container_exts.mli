@@ -23,8 +23,7 @@
 (** Extensions for containers.
 
     We keep these in the main Travesty library because it's useful to pull
-    them in for {!Mappable} and {!Traversable}
-    containers. *)
+    them in for {!Mappable} and {!Traversable} containers. *)
 
 open Base
 

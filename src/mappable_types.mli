@@ -22,23 +22,22 @@
 
 (** Signatures for (non-monadic) mapping.
 
-    The {{!sigs} main signatures} are {!S0} and {!S1}. We also
-    define {{!containers} container} forms of the above, which include the
-    Base container interfaces, and {!Extensions1}, a signature
-    of extensions to arity-1 mappable containers. *)
+    The {{!sigs} main signatures} are {!S0} and {!S1}. We also define
+    {{!containers} container} forms of the above, which include the Base
+    container interfaces, and {!Extensions1}, a signature of extensions to
+    arity-1 mappable containers. *)
 
 open Base
 
 (** {2:generic The generic signature}
 
-    As with {!Traversable}, we define the signature of mappable
-    structures in an arity-generic way, then specialise it for arity-0 and
-    arity-1 types. *)
+    As with {!Traversable}, we define the signature of mappable structures in
+    an arity-generic way, then specialise it for arity-0 and arity-1 types. *)
 
 (** [Generic] describes mapping on either an arity-0 or arity-1 type.
 
-    - For arity-0 types, use {!S0}: ['a t] becomes [t], and ['a elt]
-      becomes [elt];
+    - For arity-0 types, use {!S0}: ['a t] becomes [t], and ['a elt] becomes
+      [elt];
     - For arity-1 types, use {!S1}: ['a t] becomes ['a t], and ['a elt]
       becomes ['a]. *)
 module type Generic = sig
@@ -53,10 +52,9 @@ end
 
 (** {2:sigs Basic signatures}
 
-    The basic signatures are {!S0}, which defines mapping across an
-    arity-0 type [t] (with a fixed, associated element type [elt]), and
-    {!S1}, which defines mapping across an arity-1 type ['a t] (with
-    element type ['a]). *)
+    The basic signatures are {!S0}, which defines mapping across an arity-0
+    type [t] (with a fixed, associated element type [elt]), and {!S1}, which
+    defines mapping across an arity-1 type ['a t] (with element type ['a]). *)
 
 (** [S0] is the signature of an arity-0 mappable type.
 
@@ -79,10 +77,10 @@ end
 
 (** {2:containers Mappable container signatures}
 
-    Unlike with {!Traversable}'s [map_m], we can't actually
-    implement the Core container signatures over [map] alone. We still define
-    versions of the [Mappable] interfaces that include their respective
-    container signatures, both for symmetry and to allow for extensions. *)
+    Unlike with {!Traversable}'s [map_m], we can't actually implement the
+    Core container signatures over [map] alone. We still define versions of
+    the [Mappable] interfaces that include their respective container
+    signatures, both for symmetry and to allow for extensions. *)
 
 (** [S0_container] is the signature of an arity-0 mappable container. *)
 module type S0_container = sig

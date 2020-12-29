@@ -22,8 +22,8 @@
 
 (** Generic monad extensions.
 
-    [Monad_exts] contains a signature and functor for adding various
-    {{!exts} extensions} to [Base]-style monads. *)
+    [Monad_exts] contains a signature and functor for adding various {{!exts}
+    extensions} to [Base]-style monads. *)
 
 open Base
 
