@@ -36,7 +36,7 @@ open Base
 (** {2 Signatures}
 
     For input and output module signatures for this module's functors, see
-    {{!Traversable_types} Traversable_types}. *)
+    {!Traversable_types}. *)
 
 (** {2 Making traversable containers}
 

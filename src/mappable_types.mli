@@ -22,24 +22,24 @@
 
 (** Signatures for (non-monadic) mapping.
 
-    The {{!sigs} main signatures} are {{!S0} S0} and {{!S1} S1}. We also
+    The {{!sigs} main signatures} are {!S0} and {!S1}. We also
     define {{!containers} container} forms of the above, which include the
-    Core container interfaces, and {{!Extensions1} Extensions1}, a signature
+    Base container interfaces, and {!Extensions1}, a signature
     of extensions to arity-1 mappable containers. *)
 
 open Base
 
 (** {2:generic The generic signature}
 
-    As with {{!Traversable} Traversable}, we define the signature of mappable
+    As with {!Traversable}, we define the signature of mappable
     structures in an arity-generic way, then specialise it for arity-0 and
     arity-1 types. *)
 
 (** [Generic] describes mapping on either an arity-0 or arity-1 type.
 
-    - For arity-0 types, use {{!S0} S0}: ['a t] becomes [t], and ['a elt]
+    - For arity-0 types, use {!S0}: ['a t] becomes [t], and ['a elt]
       becomes [elt];
-    - For arity-1 types, use {{!S1} S1}: ['a t] becomes ['a t], and ['a elt]
+    - For arity-1 types, use {!S1}: ['a t] becomes ['a t], and ['a elt]
       becomes ['a]. *)
 module type Generic = sig
   (** [Generic] refers to the container type as ['a t], and the element type
@@ -53,9 +53,9 @@ end
 
 (** {2:sigs Basic signatures}
 
-    The basic signatures are {{!S0} S0}, which defines mapping across an
+    The basic signatures are {!S0}, which defines mapping across an
     arity-0 type [t] (with a fixed, associated element type [elt]), and
-    {{!S1} S1}, which defines mapping across an arity-1 type ['a t] (with
+    {!S1}, which defines mapping across an arity-1 type ['a t] (with
     element type ['a]). *)
 
 (** [S0] is the signature of an arity-0 mappable type.
@@ -79,7 +79,7 @@ end
 
 (** {2:containers Mappable container signatures}
 
-    Unlike with {{!Traversable} Traversable}'s [map_m], we can't actually
+    Unlike with {!Traversable}'s [map_m], we can't actually
     implement the Core container signatures over [map] alone. We still define
     versions of the [Mappable] interfaces that include their respective
     container signatures, both for symmetry and to allow for extensions. *)
@@ -102,7 +102,7 @@ end
 
     The signatures below describe various functions we can derive from
     mappable types and mappable containers. To apply them to existing types,
-    use the functors in {{!Mappable} Mappable}. *)
+    use the functors in {!Mappable}. *)
 
 (** [Extensions1] describes various extensions of arity-1 mappable
     containers. *)
@@ -110,8 +110,8 @@ module type Extensions1 = sig
   (** [t] is the type of the container to map over. *)
   type 'a t
 
-  (** [Extensions1] includes the container extensions from {{!Container_exts}
-      Container_exts}, as they work with any arity-1 container. *)
+  (** [Extensions1] includes the container extensions from {!Container_exts},
+      as they work with any arity-1 container. *)
   include Container_exts_types.S1 with type 'a t := 'a t
 
   val right_pad : padding:'a -> 'a list t -> 'a list t

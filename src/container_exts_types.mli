@@ -23,7 +23,7 @@
 (** Extension signatures for containers.
 
     This module contains various signatures that enumerate extensions that
-    apply to Core containers of both {{!S0} arity 0} and {{!S1} arity 1}. *)
+    apply to Base containers of both {{!S0} arity 0} and {{!S1} arity 1}. *)
 
 open Base
 

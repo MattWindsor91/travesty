@@ -28,7 +28,7 @@
 (** {2 Signatures}
 
     For input and output module signatures for this module's functors, see
-    {{!Filter_mappable_types} Filter_mappable_types}. *)
+    {!Filter_mappable_types}. *)
 
 (** {2 Making full instances from basic ones} *)
 

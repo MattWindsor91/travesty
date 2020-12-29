@@ -37,7 +37,7 @@
     monad like [Or_error], but can be anything else (like a state
     transformer).
 
-    Second, items in zippers constructed using {{!Make_marked} Make_marked}
+    Second, items in zippers constructed using {!Make_marked}
     can be [mark]ed, attaching a tag to them; later on, if the item still
     exists in the zipper, the zipper can be rewound back to the mark using
     [recall]. *)
@@ -47,7 +47,7 @@ open Base
 (** {2 Signatures}
 
     For input and output signatures for this module's functors, see
-    {{!Zipper_types} Zipper_types}. *)
+    {!Zipper_types}. *)
 
 (** {2 Plain zippers} *)
 

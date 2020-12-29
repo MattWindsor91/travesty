@@ -22,7 +22,7 @@
 
 (** [S] contains extensions for a monad.
 
-    To create an instance of [S], use {{!Extend} Extend}. *)
+    To create an instance of [S], use {!Extend}. *)
 module type S = sig
   (** The type of the extended monad. *)
   type 'a t
@@ -41,7 +41,7 @@ module type S = sig
   (** [compose_m f g] is the Kleisli composition of [f] and [g]. *)
 
   val ( >=> ) : ('a -> 'b t) -> ('b -> 'c t) -> 'a -> 'c t
-  (** [x >=> y] is [k_compose x y]. *)
+  (** [x >=> y] is [compose_m x y]. *)
 
   (** {3 Guarded monadic computations} *)
 
@@ -84,7 +84,7 @@ module type S = sig
       ]} *)
 
   val tee : 'a -> f:('a -> unit) -> 'a t
-  (** [tee val ~f] behaves as {{!tee_m} tee}, but takes a non-monadic [f].
+  (** [tee val ~f] behaves as {!tee_m}, but takes a non-monadic [f].
 
       Example (using an {{!Travesty_base_exts.Or_error} extended Or_error}):
 

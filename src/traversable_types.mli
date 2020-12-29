@@ -1,6 +1,6 @@
 (* This file is part of 'travesty'.
 
-   Copyright (c) 2018, 2019 by Matt Windsor
+   Copyright (c) 2018, 2019, 2020 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
    copy of this software and associated documentation files (the "Software"),
@@ -158,15 +158,15 @@ end
     To satisfy these signatures for new types, implement {{!Basic0} Basic0}
     or {{!Basic1} Basic1}, and use the corresponding [MakeN] functor.
 
-    For types that are _already_ Core containers, or types where custom
-    implementation of the Core signature are desired, implement
-    {{!Basic0_container} Basic0_container} or {{!Basic1_container}
-    Basic1_container}, and use the [MakeN_container] functors. *)
+    For types that are _already_ Base containers, or types where custom
+    implementation of the Base signature are desired, implement
+    {!Basic0_container} or {!Basic1_container}, and use the
+    [MakeN_container] functors. *)
 
 (** {4:basic For modules without a [Container] implementation} *)
 
 (** [Basic0] is the minimal signature that traversable containers of arity 0
-    must implement to be extensible into {{!S0} S0}. *)
+    must implement to be extensible into {!S0}. *)
 module type Basic0 = sig
   (** The container type. *)
   type t
@@ -192,18 +192,18 @@ end
 
 (** {4:bcon For modules with a [Container] implementation} *)
 
-(** [Basic0_container] combines {{!Basic0} Basic0} and the Base container
+(** [Basic0_container] combines {!Basic0} and the Base container
     signature, and is used for extending existing containers into
-    {{!S0_container} S0_container} s. *)
+    {!S0_container}s. *)
 module type Basic0_container = sig
   include Basic0
 
   include Container.S0 with type t := t and type elt := Elt.t
 end
 
-(** [Basic1_container] combines {{!Basic1} Basic1} and the Base container
+(** [Basic1_container] combines {!Basic1} and the Base container
     signature, and is used for extending existing containers into
-    {{!S1_container} S1_container} s. *)
+    {!S1_container} s. *)
 module type Basic1_container = sig
   include Basic1
 
@@ -252,7 +252,7 @@ end
 (** [S0] is a generic interface for arity-0 traversable containers. *)
 module type S0 = sig
   (** Elements must have equality. While this is an extra restriction on top
-      of the Core equivalent, it is required by {{!Traversable.Make0} Make0},
+      of the Base equivalent, it is required by {{!Traversable.Make0} Make0},
       and helps us define chaining operations. *)
   module Elt : Equal.S
 

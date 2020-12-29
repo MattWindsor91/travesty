@@ -29,12 +29,12 @@
 (** {2 Signatures}
 
     For input and output module signatures for this module's functors, see
-    {{!Mappable_types} Mappable_types}. *)
+    {!Mappable_types}. *)
 
 (** {2 Extending mappable containers}
 
     We define several derived functions for mappable containers in
-    {{!Mappable_types} Mappable_types}---here, we define functors to generate
+    {!Mappable_types}---here, we define functors to generate
     them. *)
 
 (** [Extend1] implements {{!Mappable_types.Extensions1} Extensions1} for an

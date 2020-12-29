@@ -22,15 +22,15 @@
 
 (** Generic monad extensions.
 
-    [Monad_exts] contains a signature and functor for adding various {{!exts}
-    extensions} to [Base]-style monads. *)
+    [Monad_exts] contains a signature and functor for adding various
+    {{!exts} extensions} to [Base]-style monads. *)
 
 open Base
 
 (** {2 Signatures}
 
     For input and output module signatures for this module's functors, see
-    {{!Filter_mappable_types} Filter_mappable_types}. *)
+    {!Filter_mappable_types}. *)
 
 (** {2:exts Extensions functors} *)
 

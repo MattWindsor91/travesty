@@ -23,7 +23,7 @@
 (** Extensions for containers.
 
     We keep these in the main Travesty library because it's useful to pull
-    them in for {{!Mappable} mappable} and {{!Traversable} traversable}
+    them in for {!Mappable} and {!Traversable}
     containers. *)
 
 open Base
@@ -31,7 +31,7 @@ open Base
 (** {2 Signatures}
 
     For input and output module signatures for this module's functors, see
-    {{!Container_exts_types} Container_exts_types}. *)
+    {!Container_exts_types}. *)
 
 (** {2:functors Extension functors}
 

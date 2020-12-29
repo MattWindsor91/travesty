@@ -29,10 +29,10 @@
 
     We provide two signatures for state transformers: one corresponding to
     the situation where the state type is fixed at the module level ({{!S}
-    S}), and one leaving the state type as part of the monad type ({{!S2}
-    S2}). Both have corresponding {{!make} make functors}.
+    S}), and one leaving the state type as part of the monad type ({!S2}).
+    Both have corresponding {{!make} make functors}.
 
-    We also provide a functor {{!To_S} To_S} for fixing the state type in an
+    We also provide a functor {!To_S} for fixing the state type in an
     arity-2 monad after the fact. *)
 
 open Base
@@ -40,7 +40,7 @@ open Base
 (** {2 Signatures}
 
     For input and output signatures for this module's functors, see
-    {{!State_transform_types} State_transform_types}. *)
+    {!State_transform_types}. *)
 
 (** {2 Manipulating state transformers} *)
 

@@ -107,7 +107,7 @@ module type S_non_monadic = sig
       new zipper formed by removing [a]. *)
 
   val pop_opt : 'a t -> ('a * 'a t) option
-  (** [pop_opt zipper] behaves as {{!pop} pop}, but returns [None] if
+  (** [pop_opt zipper] behaves as {!pop}, but returns [None] if
       [zipper] has no cursor and [Some (a, zipper')] otherwise. *)
 
   val map_head : 'a t -> f:('a -> 'a option) -> 'a t
@@ -132,17 +132,17 @@ module type S_monadic = sig
   module M : Monad.S
 
   val pop_m : 'a t -> on_empty:('a t -> ('a * 'a t) M.t) -> ('a * 'a t) M.t
-  (** [pop_m zipper ~on_empty] behaves like {{!pop} pop}, but executes a
+  (** [pop_m zipper ~on_empty] behaves like {!pop}, but executes a
       custom monadic action [on_empty], instead of returning an error, when
       the cursor is empty. *)
 
   val peek_m : ?steps:int -> 'a t -> on_empty:('a t -> 'a M.t) -> 'a M.t
-  (** [peek_m ?steps zipper ~on_empty] behaves like {{!peek_opt} peek_opt},
+  (** [peek_m ?steps zipper ~on_empty] behaves like {!peek_opt},
       but executes a custom monadic action [on_empty], instead of returning
       [None], when the cursor is empty. *)
 
   val step_m : ?steps:int -> 'a t -> on_empty:('a t -> 'a t M.t) -> 'a t M.t
-  (** [step_m ?steps zipper ~on_empty] behaves like {{!step} step}, but
+  (** [step_m ?steps zipper ~on_empty] behaves like {!step}, but
       executes a custom monadic action [on_empty], instead of returning an
       error, when the cursor is empty. *)
 
@@ -151,8 +151,8 @@ module type S_monadic = sig
     -> f:('a -> 'a option M.t)
     -> on_empty:('a t -> 'a t M.t)
     -> 'a t M.t
-  (** [map_m_head ?steps zipper ~on_empty] behaves like {{!map_head}
-      map_head}, but executes a custom monadic action [on_empty], instead of
+  (** [map_m_head ?steps zipper ~on_empty] behaves like {!map_head}, but
+      executes a custom monadic action [on_empty], instead of
       leaving the zipper unchanged, when the cursor is empty. *)
 end
 
@@ -211,14 +211,13 @@ module type S_marked_non_monadic = sig
     -> finish:('acc -> 'a t -> 'final)
     -> 'final
   (** [fold_until zipper ~f ~init ~finish] behaves conceptually like
-      {{!List.fold_until} List.fold_until}, but folds [f] through the
+      {!List.fold_until}, but folds [f] through the
       remaining elements of a zipper.
 
       [f] receives the current accumulator, current cursor, and zipper with
       cursor popped at each stage. It can't directly modify the zipper
       mid-fold, but can influence the value of the final zipper provided to
-      the [finish] continuation by using the various legs of {{!fold_outcome}
-      fold_outcome}. *)
+      the [finish] continuation by using the various legs of {!fold_outcome}. *)
 
   val delete_to_mark : 'a t -> mark:mark -> 'a t Or_error.t
   (** [delete_to_mark zipper ~mark] deletes every item in the left-list up
@@ -237,19 +236,19 @@ module type S_marked_monadic = sig
   type mark
 
   val mark_m : 'a t -> mark:mark -> on_empty:('a t -> 'a t M.t) -> 'a t M.t
-  (** [mark_m zipper ~mark ~on_empty] behaves like {{!mark} mark}, but
+  (** [mark_m zipper ~mark ~on_empty] behaves like {!mark}, but
       executes a custom monadic action [on_empty], instead of returning an
       error, when the cursor is empty. *)
 
   val recall_m : 'a t -> mark:mark -> on_empty:('a t -> 'a t M.t) -> 'a t M.t
-  (** [recall_m zipper ~mark ~on_empty] behaves like {{!recall} recall}, but
+  (** [recall_m zipper ~mark ~on_empty] behaves like {!recall}, but
       executes a custom monadic action [on_empty], instead of returning an
       error, when the mark can't be found. *)
 
   val delete_to_mark_m :
     'a t -> mark:mark -> on_empty:('a t -> 'a t M.t) -> 'a t M.t
   (** [delete_to_mark_m zipper ~mark ~on_empty] behaves like
-      {{!delete_to_mark} delete_to_mark}, but executes a custom monadic
+      {!delete_to_mark}, but executes a custom monadic
       action [on_empty], instead of returning an error, when the mark can't
       be found. *)
 
@@ -259,9 +258,9 @@ module type S_marked_monadic = sig
     -> init:'acc
     -> finish:('acc -> 'a t -> 'final M.t)
     -> 'final M.t
-  (** [fold_m_until zipper ~f ~init ~finish] behaves like {{!fold_until}
-      fold_until}, except that [f] and [finish], and therefore the function
-      itself, return results inside a monad context. *)
+  (** [fold_m_until zipper ~f ~init ~finish] behaves like {!fold_until}, except
+      that [f] and [finish], and therefore the function itself, return results
+      inside a monad context. *)
 end
 
 (** [S_marked] extends [S] to add functions for manipulating marks. *)
