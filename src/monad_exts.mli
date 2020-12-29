@@ -39,6 +39,9 @@ module Extend (M : Monad.S) : Monad_exts_types.S with type 'a t := 'a M.t
 
 (** {2:misc Miscellaneous} *)
 
+(** Like [Base.Applicative.Of_monad], but retains the type. *)
+module App (M : Monad.S) : Applicative.S with type 'a t = 'a M.t
+
 (** Demotes an arity-2 monad [M] to an arity-1 one, fixing its second type to
     be [B.t]. *)
 module S2_to_S (M : Monad.S2) (B : T) :

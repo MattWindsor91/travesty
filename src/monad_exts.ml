@@ -69,3 +69,8 @@ module S2_to_S (M : Monad.S2) (B : T) :
 
   let bind = M.bind
 end)
+
+module App (M : Monad.S) : Applicative.S with type 'a t = 'a M.t = struct
+  type 'a t = 'a M.t
+  include Applicative.Of_monad(M)
+end

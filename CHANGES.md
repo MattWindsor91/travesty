@@ -1,5 +1,11 @@
 # Unreleased
 
+## Added
+
+- `Monad_exts.App` is `Base.Applicative.Of_monad`, but keeps the original
+  monad type around; this is useful for passing monads to things that expect
+  applicatives.
+
 ## Removed
 
 - The `Traversable.Helpers` module; in practice this doesn't seem to be very
