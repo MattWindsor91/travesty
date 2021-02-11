@@ -6,8 +6,8 @@
 (generate_opam_files true)
 (source (github MattWindsor91/travesty))
 (license MIT)
-(authors "Matt Windsor <m.windsor@imperial.ac.uk>")
-(maintainers "Matt Windsor <m.windsor@imperial.ac.uk>")
+(authors "Matt Windsor <mattwindsor91@gmail.com>")
+(maintainers "Matt Windsor <mattwindsor91@gmail.com>")
 (homepage "https://MattWindsor91.github.io/travesty/")
 (documentation "https://MattWindsor91.github.io/travesty/")
 
