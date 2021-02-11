@@ -23,4 +23,6 @@ Street's Base library and ecosystem.")
   (ocaml (>= 4.08))
   (ppx_jane (and (>= v0.12.0) (< v0.15.0)))
   (ppx_expect (and :with-test (>= v0.12.0) (< v0.15.0)))
-  (base (and (>= v0.12.0) (< v0.15.0)))))
+  (base (and (>= v0.12.0) (< v0.15.0))))
+ (conflicts
+  (bisect_ppx (>= 2.6.0))))
