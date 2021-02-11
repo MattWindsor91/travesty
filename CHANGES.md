@@ -1,4 +1,4 @@
-# Unreleased
+# v0.7.0 (2021-02-11)
 
 Major release with large breaking changes, and added and removed features.
 
