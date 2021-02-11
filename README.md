@@ -1,5 +1,7 @@
 # Travesty
 
+![Main workflow](https://github.com/MattWindsor91/travesty/workflows/Main%20workflow/badge.svg)
+
 _Travesty_ is a library for defining containers with applicative traversals,
 inspired by Haskell's
 [Traversable](http://hackage.haskell.org/package/base/docs/Data-Traversable.html)
@@ -21,8 +23,6 @@ Note: the `Travesty_base_exts` modules form a separate subpackage
 
 Travesty is licenced under the MIT licence, and is a spin-off from the
 [c4f](https://github.com/c4-project/c4f) project.
-
-[![Build Status](https://travis-ci.com/MattWindsor91/travesty.svg?branch=master)](https://travis-ci.com/MattWindsor91/travesty)
 
 ## Usage
 
