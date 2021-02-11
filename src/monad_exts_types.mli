@@ -93,7 +93,7 @@ module type S = sig
       {[
         let fail_if_negative x =
           On_error.when_m (Int.is_negative x) ~f:(fun () ->
-              Or_error.error_string "value is negative!")
+              Or_error.error_string "value is negative!" )
         in
         Or_error.(42 |> tee_m ~f:fail_if_negative >>| fun x -> x * x)
 

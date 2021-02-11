@@ -63,14 +63,10 @@ module Make (Cell : Basic_cell) = struct
 
   let set_head_cell_on_right right new_head =
     match (right, new_head) with
-    | [], None ->
-        []
-    | [], Some head' ->
-        [head']
-    | _ :: rest, None ->
-        rest
-    | _ :: rest, Some head' ->
-        head' :: rest
+    | [], None -> []
+    | [], Some head' -> [head']
+    | _ :: rest, None -> rest
+    | _ :: rest, Some head' -> head' :: rest
 
   let set_head_cell zipper new_head =
     {zipper with right= set_head_cell_on_right zipper.right new_head}
@@ -95,10 +91,8 @@ module Make (Cell : Basic_cell) = struct
 
     let pop_m zipper ~on_empty =
       match zipper.right with
-      | [] ->
-          on_empty zipper
-      | x :: xs ->
-          M.return (Cell.data x, {zipper with right= xs})
+      | [] -> on_empty zipper
+      | x :: xs -> M.return (Cell.data x, {zipper with right= xs})
   end
 
   module On_option_base = On_monad_base (Option)
@@ -118,38 +112,29 @@ module Make (Cell : Basic_cell) = struct
 
     let peek_m ?steps zipper ~on_empty =
       match peek_opt ?steps zipper with
-      | Some v ->
-          M.return v
-      | None ->
-          on_empty zipper
+      | Some v -> M.return v
+      | None -> on_empty zipper
 
     let step_m ?(steps = 1) zipper ~on_empty =
       let amount = Int.abs steps in
       match Ordering.of_int (Int.compare steps 0) with
       | Less -> (
         match rev_transfer amount ~src:zipper.left ~dst:zipper.right with
-        | Some (l, r) ->
-            M.return {left= l; right= r}
-        | None ->
-            on_empty zipper )
-      | Equal ->
-          M.return zipper
+        | Some (l, r) -> M.return {left= l; right= r}
+        | None -> on_empty zipper )
+      | Equal -> M.return zipper
       | Greater -> (
         match rev_transfer amount ~src:zipper.right ~dst:zipper.left with
-        | Some (r, l) ->
-            M.return {left= l; right= r}
-        | None ->
-            on_empty zipper )
+        | Some (r, l) -> M.return {left= l; right= r}
+        | None -> on_empty zipper )
 
     let push_left_m zipper ~value ~on_empty =
       push zipper ~value |> step_m ~on_empty
 
     let map_m_head_cell zipper ~f ~on_empty =
       match head zipper with
-      | None ->
-          on_empty zipper
-      | Some h ->
-          M.(f h >>| set_head_cell zipper)
+      | None -> on_empty zipper
+      | Some h -> M.(f h >>| set_head_cell zipper)
 
     let map_m_head zipper ~f ~on_empty =
       map_m_head_cell zipper
@@ -167,7 +152,7 @@ module Make (Cell : Basic_cell) = struct
 
   let pop zipper =
     On_error.pop_m zipper ~on_empty:(fun _ ->
-        Or_error.error_string "Tried to pop an exhausted zipper")
+        Or_error.error_string "Tried to pop an exhausted zipper" )
 
   let step ?steps zipper =
     On_error.step_m ?steps zipper ~on_empty:(fun zipper ->
@@ -176,7 +161,7 @@ module Make (Cell : Basic_cell) = struct
             "Zipper stepping went out of bounds"
               ~steps:(Option.value ~default:1 steps : int)
               ~left_bound:(left_length zipper : int)
-              ~right_bound:(right_length zipper : int)])
+              ~right_bound:(right_length zipper : int)] )
 
   (* Pushing left shouldn't fail, since the right list will always be
      nonempty after the push. *)
@@ -253,10 +238,8 @@ module Make_marked (Mark : Basic_mark) = struct
     let recall_m zipper ~mark ~on_empty =
       let rec mu zipper' =
         match List.hd zipper'.Main.right with
-        | Some h when Set.mem (Cell.marks h) mark ->
-            M.return zipper'
-        | Some _ | None ->
-            M.(step_m ~steps:(-1) zipper' ~on_empty >>= mu)
+        | Some h when Set.mem (Cell.marks h) mark -> M.return zipper'
+        | Some _ | None -> M.(step_m ~steps:(-1) zipper' ~on_empty >>= mu)
       in
       mu zipper
 
@@ -271,14 +254,11 @@ module Make_marked (Mark : Basic_mark) = struct
     let rec fold_m_until zipper ~f ~init ~finish =
       let open M.Let_syntax in
       match pop_opt zipper with
-      | None ->
-          finish init zipper
+      | None -> finish init zipper
       | Some (hd, zipper') -> (
           match%bind f init hd zipper' with
-          | `Stop final ->
-              M.return final
-          | `Drop accum ->
-              fold_m_until zipper' ~f ~init:accum ~finish
+          | `Stop final -> M.return final
+          | `Drop accum -> fold_m_until zipper' ~f ~init:accum ~finish
           | `Mark (mark, hd', accum) ->
               push zipper' ~value:hd'
               |> mark_m ~mark ~on_empty:M.return
@@ -295,7 +275,7 @@ module Make_marked (Mark : Basic_mark) = struct
 
   let mark zipper ~mark =
     On_error.mark_m zipper ~mark ~on_empty:(fun _ ->
-        Or_error.error_string "Tried to mark an exhausted zipper")
+        Or_error.error_string "Tried to mark an exhausted zipper" )
 
   let mark_not_found mark =
     Or_error.error_s
@@ -306,7 +286,7 @@ module Make_marked (Mark : Basic_mark) = struct
 
   let delete_to_mark zipper ~mark =
     On_error.delete_to_mark_m zipper ~mark ~on_empty:(fun _ ->
-        mark_not_found mark)
+        mark_not_found mark )
 
   let fold_until = On_ident.fold_m_until
 end

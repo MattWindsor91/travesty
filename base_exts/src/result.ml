@@ -32,10 +32,8 @@ Bi_traversable.Make2 (struct
     let bi_map_m (e : ('l1, 'r1) Result.t) ~(left : 'l1 -> 'l2 M.t)
         ~(right : 'r1 -> 'r2 M.t) : ('l2, 'r2) Result.t M.t =
       match e with
-      | Ok x ->
-          M.(left x >>| Result.return)
-      | Error y ->
-          M.(right y >>| Result.fail)
+      | Ok x -> M.(left x >>| Result.return)
+      | Error y -> M.(right y >>| Result.fail)
   end
 end)
 

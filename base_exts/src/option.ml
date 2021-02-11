@@ -26,10 +26,8 @@ include Travesty.Traversable.Make1_container (struct
   module On (M : Base.Applicative.S) = struct
     let map_m xo ~f =
       match xo with
-      | None ->
-          M.return None
-      | Some x ->
-          M.(x |> f >>| Base.Option.return)
+      | None -> M.return None
+      | Some x -> M.(x |> f >>| Base.Option.return)
   end
 end)
 
@@ -52,5 +50,5 @@ let first_some_of_thunks thunks =
     ~f:(fun () thunk ->
       Base.Option.value_map (thunk ())
         ~default:(Base.Container.Continue_or_stop.Continue ()) ~f:(fun x ->
-          Stop (Some x)))
+          Stop (Some x) ) )
     ~finish:(Base.Fn.const None)

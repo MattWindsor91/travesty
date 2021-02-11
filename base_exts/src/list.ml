@@ -35,7 +35,7 @@ module TC = Traversable.Make1_container (struct
     let map_m xs ~f =
       M.(
         List.fold_right xs ~init:(return []) ~f:(fun x state ->
-            map2 ~f:cons (f x) state))
+            map2 ~f:cons (f x) state ))
   end
 end)
 
@@ -88,7 +88,7 @@ let insert (xs : 'a list) (at : int) (value : 'a) : 'a list Or_error.t =
             [%message
               "Insert failed: index out of range" ~here:[%here]
                 ~insert_at:(at : int)
-                ~list_length:(List.length xs : int)])
+                ~list_length:(List.length xs : int)] )
     in
     let z_ins = Zip.push z_move ~value in
     Zip.to_list z_ins)

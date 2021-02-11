@@ -221,10 +221,10 @@ let%test_module "int_mark_zipper" =
       let lists =
         fold_until zipper ~init:[]
           ~finish:(fun acc zipper ->
-            Or_error.return (List.rev acc, to_list zipper))
+            Or_error.return (List.rev acc, to_list zipper) )
           ~f:(fun negatives k _zipper ->
             if Int.is_negative k then `Drop (k :: negatives)
-            else `Swap (k, negatives))
+            else `Swap (k, negatives) )
       in
       print_s [%sexp (lists : (int list * int list) Or_error.t)] ;
       [%expect {| (Ok ((-11 -92 -6 -10) (0 2 64 92 4))) |}]

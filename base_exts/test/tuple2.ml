@@ -59,20 +59,20 @@ let%test_module "bi-traversing on Option monad" =
       test
         (T.bi_map_m
            ~left:(Fn.compose Option.return String.capitalize)
-           ~right:(Fn.compose Option.return Int.neg)) ;
+           ~right:(Fn.compose Option.return Int.neg) ) ;
       [%expect {| (Bar, -53) |}]
 
     let%expect_test "bi_map_m: left None" =
       test
         (T.bi_map_m ~left:(Fn.const None)
-           ~right:(Fn.compose Option.return Int.neg)) ;
+           ~right:(Fn.compose Option.return Int.neg) ) ;
       [%expect {| |}]
 
     let%expect_test "bi_map_m: right None" =
       test
         (T.bi_map_m
            ~left:(Fn.compose Option.return String.capitalize)
-           ~right:(Fn.const None)) ;
+           ~right:(Fn.const None) ) ;
       [%expect {| |}]
 
     let%expect_test "bi_map_m: both None" =

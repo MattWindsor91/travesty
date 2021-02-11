@@ -60,17 +60,18 @@ struct
   module On (MS : Applicative.S) = struct
     include I.On (MS)
 
-    include Derived_ops_applicative_gen
-              (struct
-                type ('l, 'r) t = I.t
+    include
+      Derived_ops_applicative_gen
+        (struct
+          type ('l, 'r) t = I.t
 
-                type 'l left = I.left
+          type 'l left = I.left
 
-                type 'r right = I.right
+          type 'r right = I.right
 
-                module On = I.On
-              end)
-              (MS)
+          module On = I.On
+        end)
+        (MS)
   end
 
   module On_monad (M : Monad.S) = On (Monad_exts.App (M))
@@ -93,17 +94,18 @@ module Make1_left (I : Basic1_left) :
   module On (MS : Applicative.S) = struct
     include I.On (MS)
 
-    include Derived_ops_applicative_gen
-              (struct
-                type ('l, 'r) t = 'l I.t
+    include
+      Derived_ops_applicative_gen
+        (struct
+          type ('l, 'r) t = 'l I.t
 
-                type 'l left = 'l
+          type 'l left = 'l
 
-                type 'r right = I.right
+          type 'r right = I.right
 
-                module On = I.On
-              end)
-              (MS)
+          module On = I.On
+        end)
+        (MS)
   end
 
   module On_monad (M : Monad.S) = On (Monad_exts.App (M))
@@ -124,17 +126,18 @@ module Make1_right (I : Basic1_right) :
   module On (MS : Applicative.S) = struct
     include I.On (MS)
 
-    include Derived_ops_applicative_gen
-              (struct
-                type ('l, 'r) t = 'r I.t
+    include
+      Derived_ops_applicative_gen
+        (struct
+          type ('l, 'r) t = 'r I.t
 
-                type 'l left = I.left
+          type 'l left = I.left
 
-                type 'r right = 'r
+          type 'r right = 'r
 
-                module On = I.On
-              end)
-              (MS)
+          module On = I.On
+        end)
+        (MS)
   end
 
   module On_monad (M : Monad.S) = On (Monad_exts.App (M))
@@ -154,17 +157,18 @@ module Make2 (I : Basic2) : S2 with type ('l, 'r) t = ('l, 'r) I.t = struct
   module On (MS : Applicative.S) = struct
     include I.On (MS)
 
-    include Derived_ops_applicative_gen
-              (struct
-                type ('l, 'r) t = ('l, 'r) I.t
+    include
+      Derived_ops_applicative_gen
+        (struct
+          type ('l, 'r) t = ('l, 'r) I.t
 
-                type 'l left = 'l
+          type 'l left = 'l
 
-                type 'r right = 'r
+          type 'r right = 'r
 
-                module On = I.On
-              end)
-              (MS)
+          module On = I.On
+        end)
+        (MS)
   end
 
   module On_monad (M : Monad.S) = On (Monad_exts.App (M))

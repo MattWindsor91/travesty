@@ -287,7 +287,7 @@ let%test_module "insert" =
         ~f:(fun (x, xs) ->
           [%test_eq: int list] ~here:[[%here]]
             (Or_error.ok_exn (insert xs 0 x))
-            (x :: xs))
+            (x :: xs) )
   end )
 
 let%expect_test "chained list/list traversal example" =
