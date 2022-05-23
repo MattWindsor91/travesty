@@ -12,24 +12,20 @@ jobs:
         os:
           - macos-latest
           - ubuntu-latest
-#          - windows-latest
-        ocaml-version:
-          - 4.14.0
+          - windows-latest
+        ocaml-compiler:
+          - 4.14.x
 
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Use OCaml ${{ matrix.ocaml-version }}
-        uses: avsm/setup-ocaml@v1
+      - name: Use OCaml ${{ matrix.ocaml-compiler }}
+        uses: ocaml/setup-ocaml@v2
         with:
-          ocaml-version: ${{ matrix.ocaml-version }}
-
-      - run: opam pin add travesty.dev . --no-action
-
-      - run: opam depext travesty --yes --with-doc --with-test
+          ocaml-compiler: ${{ matrix.ocaml-compiler }}
 
       - run: opam install . --deps-only --with-doc --with-test
 
@@ -37,8 +33,32 @@ jobs:
 
       - run: opam exec -- dune runtest
 
-#      - name: Upload the build artifact
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: ${{ matrix.os }}-${{ matrix.ocaml-version }}-world.exe
-#          path: _build/default/world.exe
+  lint-doc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use OCaml 4.14.x
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: 4.14.x
+          dune-cache: true
+
+      - name: Lint doc
+        uses: ocaml/setup-ocaml/lint-doc@v2
+
+  lint-fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use OCaml 4.14.x
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: 4.14.x
+          dune-cache: true
+
+      - name: Lint fmt
+        uses: ocaml/setup-ocaml/lint-fmt@v2
