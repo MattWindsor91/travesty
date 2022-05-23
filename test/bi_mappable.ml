@@ -50,7 +50,8 @@ struct
     Test.run_exn
       (module I)
       ~f:(fun x ->
-        [%test_eq: I.t] ~here:[[%here]; I.here]
+        [%test_eq: I.t]
+          ~here:[[%here]; I.here]
           (I.bi_map ~left:Fn.id ~right:Fn.id x)
           x )
 
@@ -73,7 +74,8 @@ struct
         [@@deriving quickcheck, sexp]
       end )
       ~f:(fun (f, g, x) ->
-        [%test_eq: I.t] ~here:[[%here]; I.here]
+        [%test_eq: I.t]
+          ~here:[[%here]; I.here]
           (I.bi_map ~left:f ~right:g x)
           (I.map_left ~f (I.map_right ~f:g x)) )
 
@@ -95,7 +97,8 @@ struct
         let bfh_o_bgi =
           Fn.compose (I.bi_map ~left:f ~right:h) (I.bi_map ~left:g ~right:i)
         in
-        [%test_eq: I.t] ~here:[[%here]; I.here]
+        [%test_eq: I.t]
+          ~here:[[%here]; I.here]
           (I.bi_map ~left:f_o_g ~right:h_o_i x)
           (bfh_o_bgi x) )
 
@@ -106,7 +109,8 @@ struct
         [@@deriving quickcheck, sexp]
       end )
       ~f:(fun (f, g, x) ->
-        [%test_eq: I.t] ~here:[[%here]; I.here]
+        [%test_eq: I.t]
+          ~here:[[%here]; I.here]
           (I.map_left ~f:(Fn.compose f g) x)
           (Fn.compose (I.map_left ~f) (I.map_left ~f:g) x) )
 
@@ -117,7 +121,8 @@ struct
         [@@deriving quickcheck, sexp]
       end )
       ~f:(fun (f, g, x) ->
-        [%test_eq: I.t] ~here:[[%here]; I.here]
+        [%test_eq: I.t]
+          ~here:[[%here]; I.here]
           (I.map_right ~f:(Fn.compose f g) x)
           (Fn.compose (I.map_right ~f) (I.map_right ~f:g) x) )
 end

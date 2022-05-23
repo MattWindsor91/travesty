@@ -45,7 +45,9 @@ val conj : ('a -> bool) -> ('a -> bool) -> 'a -> bool
 
     Examples:
 
-    {[ let is_zero = Int.(conj is_non_negative is_non_positive) ]}
+    {[
+      let is_zero = Int.(conj is_non_negative is_non_positive)
+    ]}
     {[
       (* Short-circuiting: *)
       conj always (fun () -> failwith "oops") () ;
@@ -61,7 +63,9 @@ val disj : ('a -> bool) -> ('a -> bool) -> 'a -> bool
 
     Examples:
 
-    {[ let is_not_zero = Int.(disj is_negative is_positive) ]}
+    {[
+      let is_not_zero = Int.(disj is_negative is_positive)
+    ]}
     {[
       (* Short-circuiting: *)
       disj never (fun () -> failwith "oops") () ;

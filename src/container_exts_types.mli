@@ -51,12 +51,18 @@ module type Generic = sig
       Examples (using {{!Travesty_base_exts.List} an extended version of
       List}):
 
-      {[ (* ok None *)
-         List.at_most_one [] ]}
-      {[ (* ok (Some 1) *)
-         List.at_most_one [1] ]}
-      {[ (* error -- too many *)
-         List.at_most_one [1; 2] ]} *)
+      {[
+        (* ok None *)
+        List.at_most_one []
+      ]}
+      {[
+        (* ok (Some 1) *)
+        List.at_most_one [1]
+      ]}
+      {[
+        (* error -- too many *)
+        List.at_most_one [1; 2]
+      ]} *)
 
   val one : 'a t -> 'a elt Or_error.t
   (** [one xs] returns [Ok x] if [xs] contains only [x], and an error
@@ -65,12 +71,18 @@ module type Generic = sig
       Examples (using {{!Travesty_base_exts.List} an extended version of
       List}):
 
-      {[ (* error -- not enough *)
-         List.one [] ]}
-      {[ (* ok 1 *)
-         List.one [1] ]}
-      {[ (* error -- too many *)
-         List.one [1; 2] ]} *)
+      {[
+        (* error -- not enough *)
+        List.one []
+      ]}
+      {[
+        (* ok 1 *)
+        List.one [1]
+      ]}
+      {[
+        (* error -- too many *)
+        List.one [1; 2]
+      ]} *)
 
   val two : 'a t -> ('a elt * 'a elt) Or_error.t
   (** [two xs] returns [Ok (x, y)] if [xs] is a list containing only [x] and
@@ -79,14 +91,22 @@ module type Generic = sig
       Examples (using {{!Travesty_base_exts.List} an extended version of
       List}):
 
-      {[ (* error -- not enough *)
-         List.two [] ]}
-      {[ (* error -- not enough *)
-         List.two [1] ]}
-      {[ (* ok (1, 2) *)
-         List.two [1; 2] ]}
-      {[ (* error -- too many *)
-         List.two [1; 2; 3] ]} *)
+      {[
+        (* error -- not enough *)
+        List.two []
+      ]}
+      {[
+        (* error -- not enough *)
+        List.two [1]
+      ]}
+      {[
+        (* ok (1, 2) *)
+        List.two [1; 2]
+      ]}
+      {[
+        (* error -- too many *)
+        List.two [1; 2; 3]
+      ]} *)
 
   (** {3 Miscellaneous extensions} *)
 

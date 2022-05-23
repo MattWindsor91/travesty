@@ -285,7 +285,8 @@ let%test_module "insert" =
       Test.run_exn
         (module Qc)
         ~f:(fun (x, xs) ->
-          [%test_eq: int list] ~here:[[%here]]
+          [%test_eq: int list]
+            ~here:[[%here]]
             (Or_error.ok_exn (insert xs 0 x))
             (x :: xs) )
   end )
