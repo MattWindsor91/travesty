@@ -1,3 +1,12 @@
+# v0.7.1 (2022-05-23)
+
+Minor release.
+
+- Depends on OCaml 4.14+, Dune 3.2+, and Base 0.15+.
+- Can now be built against Base v0.15 without deprecation warnings.  This
+  required changing the definition of `Base_exts.Option`, but the difference
+  should not be externally visible.
+
 # v0.7.0 (2021-02-11)
 
 Major release with large breaking changes, and added and removed features.

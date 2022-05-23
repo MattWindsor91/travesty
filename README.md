@@ -6,7 +6,7 @@ _Travesty_ is a library for defining containers with applicative traversals,
 inspired by Haskell's
 [Traversable](http://hackage.haskell.org/package/base/docs/Data-Traversable.html)
 typeclass.  It sits on top of Jane Street's
-[Core](https://opensource.janestreet.com/core/) library ecosystem.
+[Base](https://opensource.janestreet.com/base/) library.
 
 Travesty also contains several other bits of Haskell-style applicative
 functor and monad functionality:
@@ -23,6 +23,11 @@ Note: the `Travesty_base_exts` modules form a separate subpackage
 
 Travesty is licenced under the MIT licence, and is a spin-off from the
 [c4f](https://github.com/c4-project/c4f) project.
+
+**NOTE:** I (@MattWindsor91) am no longer _actively_ working on `travesty`.  As
+such, it will receive infrequent updates to keep it aligned with `Base` and
+OCaml, but not many more new features.  Please feel free to file issues and
+pull requests, but be patient when waiting for responses!
 
 ## Usage
 
