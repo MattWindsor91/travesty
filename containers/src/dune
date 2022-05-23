@@ -9,3 +9,5 @@
  (preprocess
   (pps ppx_jane))
  (libraries sexplib0 base travesty))
+
+(documentation)
