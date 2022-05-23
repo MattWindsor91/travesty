@@ -30,7 +30,7 @@ type 'a t = 'a option
 
 (** {2 Travesty instances} *)
 
-(** Options are traversable containers. *)
+(** Options are traversable. *)
 include Travesty.Traversable_types.S1 with type 'a t := 'a t
 
 (** Options are also filter-mappable; filter-mapping effectively behaves as

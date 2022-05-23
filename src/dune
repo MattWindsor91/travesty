@@ -4,9 +4,17 @@
  (public_name travesty)
  (preprocess
   (pps ppx_jane))
- (modules_without_implementation bi_mappable_types bi_traversable_types
-   container_exts_types filter_mappable_types mappable_types monad_exts_types
-   state_types state_transform_types traversable_types generic_types)
+ (modules_without_implementation
+  bi_mappable_types
+  bi_traversable_types
+  container_exts_types
+  filter_mappable_types
+  mappable_types
+  monad_exts_types
+  state_types
+  state_transform_types
+  traversable_types
+  generic_types)
  (libraries base))
 
 (documentation

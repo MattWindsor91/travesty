@@ -4,7 +4,7 @@
  (name travesty_containers)
  (public_name travesty.containers)
  (synopsis
-   "Non-standard containers with traversability and other Travesty extensions")
+  "Non-standard containers with traversability and other Travesty extensions")
  (modules_without_implementation zipper_types)
  (preprocess
   (pps ppx_jane))

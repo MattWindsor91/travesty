@@ -1,6 +1,6 @@
 (* This file is part of 'travesty'.
 
-   Copyright (c) 2018, 2019 by Matt Windsor
+   Copyright (c) 2018, 2019, 2022 by Matt Windsor
 
    Permission is hereby granted, free of charge, to any person obtaining a
    copy of this software and associated documentation files (the "Software"),
@@ -20,7 +20,7 @@
    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
    DEALINGS IN THE SOFTWARE. *)
 
-include Travesty.Traversable.Make1_container (struct
+include Travesty.Traversable.Make1 (struct
   include Base.Option
 
   module On (M : Base.Applicative.S) = struct
