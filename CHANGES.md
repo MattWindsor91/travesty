@@ -1,6 +1,12 @@
+# v0.7.2 (2022-05-24)
+
+No changes from v0.7.1; fixes issues with the GitHub workflow that blocked
+its release.
+
 # v0.7.1 (2022-05-23)
 
 Minor release.
+(Not released on OPAM)
 
 - Depends on OCaml 4.14+, Dune 3.2+, and Base 0.15+.
 - Can now be built against Base v0.15 without deprecation warnings.  This
