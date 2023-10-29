@@ -214,7 +214,7 @@ let%test_module "int_mark_zipper" =
         |> step ~steps:2 (* looking at 64 *)
         >>= mark ~mark:1 >>= step (* looking at 101 *) >>= pop
         (* now looking at -5 *)
-        >>| snd)
+        >>| snd )
 
     let%expect_test "zipper: fold_until: partition on sign" =
       let zipper = of_list [0; 2; -11; 64; 92; -92; 4; -6; -10] in
@@ -240,7 +240,7 @@ let%test_module "int_mark_zipper" =
           mark_recall_example ()
           >>| push ~value:64 (* now looking at (another) 64 *)
           >>= recall ~mark:1 (* should have jumped to first 64 *)
-          >>| to_two_lists)
+          >>| to_two_lists )
       in
       print_s [%sexp (result : (int list * int list) Or_error.t)] ;
       [%expect {| (Ok ((27 19) (64 64 -5 2))) |}]
@@ -249,7 +249,7 @@ let%test_module "int_mark_zipper" =
       let result =
         Or_error.(
           mark_recall_example () >>| push_left ~value:27
-          >>| push_left ~value:53 >>= delete_to_mark ~mark:1 >>| to_two_lists)
+          >>| push_left ~value:53 >>= delete_to_mark ~mark:1 >>| to_two_lists )
       in
       print_s [%sexp (result : (int list * int list) Or_error.t)] ;
       [%expect {| (Ok ((27 19) (-5 2))) |}]
@@ -258,7 +258,7 @@ let%test_module "int_mark_zipper" =
         =
       let result =
         Or_error.(
-          mark_recall_example () >>= delete_to_mark ~mark:2 >>| to_two_lists)
+          mark_recall_example () >>= delete_to_mark ~mark:2 >>| to_two_lists )
       in
       print_s [%sexp (result : (int list * int list) Or_error.t)] ;
       [%expect {| (Error ("Couldn't find requested mark" (mark 2))) |}]

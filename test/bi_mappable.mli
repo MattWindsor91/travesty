@@ -42,5 +42,4 @@ module Make0 (_ : sig
       with type t := t
        and type left := Left.t
        and type right := Right.t
-end) : sig
-end
+end) : sig end

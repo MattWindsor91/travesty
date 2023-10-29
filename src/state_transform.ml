@@ -70,7 +70,7 @@ module Make2 (M : Monad.S) : S2 with module Inner = M = struct
     let return (x : 'a Inner.t) ctx =
       Inner.Let_syntax.(
         let%map x' = x in
-        (ctx, x'))
+        (ctx, x') )
   end
 
   let make f = Monadic.make (Fn.compose Inner.return f)
@@ -86,7 +86,7 @@ module Make2 (M : Monad.S) : S2 with module Inner = M = struct
         Let_syntax.(
           let%bind a' = f mu_monad a in
           let%map ctx' = peek Fn.id in
-          (ctx', a'))
+          (ctx', a') )
       in
       run f' ctx
     in

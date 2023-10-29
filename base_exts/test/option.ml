@@ -33,7 +33,7 @@ let%test_module "map_m" =
         Base.(
           [%sexp
             ( M.map_m ~f:Base.Option.some (Some "hello")
-              : string option option )]) ;
+              : string option option )] ) ;
       [%expect {| ((hello)) |}]
   end )
 
@@ -61,7 +61,7 @@ let%test_module "first_some_of_thunks" =
                 ; Fn.const (Some "hello")
                 ; Fn.const (Some "world")
                 ; (fun () -> failwith "this shouldn't happen") ]
-              : string option )]) ;
+              : string option )] ) ;
       [%expect {| (hello) |}]
   end )
 

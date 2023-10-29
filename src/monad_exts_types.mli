@@ -110,6 +110,6 @@ module type S = sig
           if Int.negative x then Stdio.print_string "value is negative!"
         in
         Or_error.(
-          try_get_value () >>= tee ~f:print_if_negative >>= try_use_value ())
+          try_get_value () >>= tee ~f:print_if_negative >>= try_use_value () )
       ]} *)
 end

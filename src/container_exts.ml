@@ -48,7 +48,7 @@ module Extend0 (C : Container.S0) :
 
   let one xs =
     Or_error.(
-      xs |> at_most_one >>= Result.of_option ~error:(too_few_error ()))
+      xs |> at_most_one >>= Result.of_option ~error:(too_few_error ()) )
 
   let two xs =
     C.fold_until xs ~init:`None_yet
@@ -95,7 +95,7 @@ module Extend1 (C : Container.S1) : S1 with type 'a t := 'a C.t = struct
 
   let one xs =
     Or_error.(
-      xs |> at_most_one >>= Result.of_option ~error:(too_few_error ()))
+      xs |> at_most_one >>= Result.of_option ~error:(too_few_error ()) )
 
   let two xs =
     C.fold_until xs ~init:`None_yet

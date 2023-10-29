@@ -33,7 +33,7 @@ let%expect_test "tee_m example" =
   Stdio.print_s
     [%sexp
       ( Base.Or_error.(
-          42 |> Tx.Or_error.tee_m ~f:fail_if_negative >>| fun x -> x * x)
+          42 |> Tx.Or_error.tee_m ~f:fail_if_negative >>| fun x -> x * x )
         : Base.Int.t Or_error.t )] ;
   [%expect {| (Ok 1764) |}]
 

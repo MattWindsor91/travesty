@@ -35,7 +35,7 @@ module TC = Traversable.Make1_container (struct
     let map_m xs ~f =
       M.(
         List.fold_right xs ~init:(return []) ~f:(fun x state ->
-            map2 ~f:cons (f x) state ))
+            map2 ~f:cons (f x) state ) )
   end
 end)
 
@@ -62,7 +62,7 @@ module With_errors = struct
         Zip.On_error.map_m_head z_move ~f
           ~on_empty:(replace_out_of_range xs at)
       in
-      Zip.to_list z_repl)
+      Zip.to_list z_repl )
 end
 
 include (TC : module type of TC with module With_errors := With_errors)
@@ -91,4 +91,4 @@ let insert (xs : 'a list) (at : int) (value : 'a) : 'a list Or_error.t =
                 ~list_length:(List.length xs : int)] )
     in
     let z_ins = Zip.push z_move ~value in
-    Zip.to_list z_ins)
+    Zip.to_list z_ins )

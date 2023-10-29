@@ -279,7 +279,7 @@ module Make_marked (Mark : Basic_mark) = struct
 
   let mark_not_found mark =
     Or_error.error_s
-      [%message "Couldn't find requested mark" ~(mark : Mark.t)]
+      [%message "Couldn't find requested mark" ~mark:(mark : Mark.t)]
 
   let recall zipper ~mark =
     On_error.recall_m zipper ~mark ~on_empty:(fun _ -> mark_not_found mark)
