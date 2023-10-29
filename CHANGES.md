@@ -1,3 +1,10 @@
+# v0.8.0 (2023-10-29)
+
+- Depends on OCaml 5.1+, Dune 3.6+, and Base 0.16+.
+- Generic containers now have a phantom type parameter in compliance with Base
+  0.16.  There are currently no functors or signatures that make use of this
+  phantom type.  This may change if client code needs it.
+
 # v0.7.2 (2022-05-24)
 
 No changes from v0.7.1; fixes issues with the GitHub workflow that blocked
