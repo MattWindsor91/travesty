@@ -14,11 +14,11 @@ homepage: "https://MattWindsor91.github.io/travesty/"
 doc: "https://MattWindsor91.github.io/travesty/"
 bug-reports: "https://github.com/MattWindsor91/travesty/issues"
 depends: [
-  "dune" {>= "3.2"}
-  "ocaml" {>= "4.14"}
-  "ppx_jane" {>= "v0.15.0"}
-  "ppx_expect" {with-test & >= "v0.15.0"}
-  "base" {>= "v0.15.0"}
+  "dune" {>= "3.6"}
+  "ocaml" {>= "5.1"}
+  "ppx_jane" {>= "v0.16.0"}
+  "ppx_expect" {with-test & >= "v0.16.0"}
+  "base" {>= "v0.16.3"}
   "odoc" {with-doc}
 ]
 build: [

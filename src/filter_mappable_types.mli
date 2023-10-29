@@ -55,7 +55,8 @@ module type Generic_basic = sig
       (arity-1) accordingly below. *)
   include Generic_types.Generic
 
-  val filter_map : 'a t -> f:('a elt -> 'b elt option) -> 'b t
+  val filter_map :
+    ('a, 'phantom) t -> f:('a elt -> 'b elt option) -> ('b, 'phantom) t
   (** [filter_map c ~f] maps [f] over every [t] in [c], discarding any items
       for which [f] returns [None]. *)
 end
@@ -68,7 +69,8 @@ end
 module type Basic0 = sig
   include Generic_types.S0
 
-  include Generic_basic with type 'a t := t and type 'a elt := elt
+  include
+    Generic_basic with type ('a, 'phantom) t := t and type 'a elt := elt
 end
 
 (** Basic signature of an arity-1 mappable type.
@@ -78,7 +80,8 @@ module type Basic1 = sig
   (** The type of the container to map over. *)
   type 'a t
 
-  include Generic_basic with type 'a t := 'a t and type 'a elt := 'a
+  include
+    Generic_basic with type ('a, 'phantom) t := 'a t and type 'a elt := 'a
 end
 
 (** {2:sigs Full signatures}
@@ -97,11 +100,11 @@ module type Generic = sig
   (** [Generic] strictly extends [Generic_basic]. *)
   include Generic_basic
 
-  val filter : 'a t -> f:('a elt -> bool) -> 'a t
+  val filter : ('a, 'phantom) t -> f:('a elt -> bool) -> ('a, 'phantom) t
   (** [filter c ~f] checks [f] over every [t] in [c], discarding any items
       for which [f] returns [false]. *)
 
-  val exclude : 'a t -> f:('a elt -> bool) -> 'a t
+  val exclude : ('a, 'phantom) t -> f:('a elt -> bool) -> ('a, 'phantom) t
   (** [exclude c ~f] checks [f] over every [t] in [c], discarding any items
       for which [f] returns [true]. *)
 
@@ -117,7 +120,7 @@ end
 module type S0 = sig
   include Generic_types.S0
 
-  include Generic with type 'a t := t and type 'a elt := elt
+  include Generic with type ('a, 'phantom) t := t and type 'a elt := elt
 end
 
 (** Full signature of an arity-1 mappable type.
@@ -127,5 +130,5 @@ module type S1 = sig
   (** The type of the container to map over. *)
   type 'a t
 
-  include Generic with type 'a t := 'a t and type 'a elt := 'a
+  include Generic with type ('a, 'phantom) t := 'a t and type 'a elt := 'a
 end

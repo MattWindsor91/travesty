@@ -44,7 +44,7 @@ module type Generic = sig
       particular, commonly-required number of elements (zero or one, one,
       two, and so on). *)
 
-  val at_most_one : 'a t -> 'a elt option Or_error.t
+  val at_most_one : ('a, 'phantom) t -> 'a elt option Or_error.t
   (** [at_most_one xs] returns [Ok None] if [xs] is empty; [Ok Some(x)] if it
       contains only [x]; and an error otherwise.
 
@@ -64,7 +64,7 @@ module type Generic = sig
         List.at_most_one [1; 2]
       ]} *)
 
-  val one : 'a t -> 'a elt Or_error.t
+  val one : ('a, 'phantom) t -> 'a elt Or_error.t
   (** [one xs] returns [Ok x] if [xs] contains only [x], and an error
       otherwise.
 
@@ -84,7 +84,7 @@ module type Generic = sig
         List.one [1; 2]
       ]} *)
 
-  val two : 'a t -> ('a elt * 'a elt) Or_error.t
+  val two : ('a, 'phantom) t -> ('a elt * 'a elt) Or_error.t
   (** [two xs] returns [Ok (x, y)] if [xs] is a list containing only [x] and
       [y] in that order, and an error otherwise.
 
@@ -110,7 +110,8 @@ module type Generic = sig
 
   (** {3 Miscellaneous extensions} *)
 
-  val max_measure : measure:('a elt -> int) -> ?default:int -> 'a t -> int
+  val max_measure :
+    measure:('a elt -> int) -> ?default:int -> ('a, 'phantom) t -> int
   (** [max_measure ~measure ~default xs] measures each item in [xs] according
       to [measure], and returns the highest measure reported. If [xs] is
       empty, return [default] if given, and [0] otherwise. *)
@@ -123,22 +124,22 @@ end
 
 module type Generic_predicate = sig
   (** The generic type of predicate containers. *)
-  type 'a t
+  type ('a, 'phantom) t
 
   (** The generic type of predicate target elements. *)
   type 'a item
 
-  val any : 'a item -> predicates:'a t -> bool
+  val any : 'a item -> predicates:('a, 'phantom) t -> bool
   (** [any x ~predicates] tests [x] against [predicates] until one returns
       [true], in which case it returns [true]; or all return [false], in
       which case it returns [false]. *)
 
-  val all : 'a item -> predicates:'a t -> bool
+  val all : 'a item -> predicates:('a, 'phantom) t -> bool
   (** [any x ~predicates] tests [x] against [predicates] until one returns
       [false], in which case it returns [false]; or all return [true], in
       which case it returns [true]. *)
 
-  val none : 'a item -> predicates:'a t -> bool
+  val none : 'a item -> predicates:('a, 'phantom) t -> bool
   (** [none x ~predicates] is the same as [any x] with all predicates in
       [predicates] negated. It tests [x] against [predicates] until one
       returns [true], in which case it returns [false]; or all return
@@ -156,7 +157,7 @@ end
 module type S0 = sig
   include Generic_types.S0
 
-  include Generic with type 'a t := t and type 'a elt := elt
+  include Generic with type ('a, 'phantom) t := t and type 'a elt := elt
 end
 
 (** Extensions for a [Container.S0] whose elements are predicates.
@@ -171,7 +172,10 @@ module type S0_predicate = sig
 
   include S0 with type t := t and type elt := item -> bool
 
-  include Generic_predicate with type 'a t := t and type 'a item := item
+  include
+    Generic_predicate
+      with type ('a, 'phantom) t := t
+       and type 'a item := item
 end
 
 (** {2:a1 Arity-1 container extensions}
@@ -188,10 +192,12 @@ module type S1 = sig
   (** The type of the container to extend. *)
   type 'a t
 
-  include Generic with type 'a t := 'a t and type 'a elt := 'a
+  include Generic with type ('a, 'phantom) t := 'a t and type 'a elt := 'a
 
   (** Predicate extensions are available on all arity-1 containers, provided
       that we fix the element type parameter to ['a -> bool]. *)
   include
-    Generic_predicate with type 'a t := ('a -> bool) t and type 'a item := 'a
+    Generic_predicate
+      with type ('a, 'phantom) t := ('a -> bool) t
+       and type 'a item := 'a
 end

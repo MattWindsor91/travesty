@@ -24,7 +24,9 @@ open Base
 open Filter_mappable_types
 
 module Make_generic (F : Generic_basic) :
-  Generic with type 'a t := 'a F.t and type 'a elt := 'a F.elt = struct
+  Generic
+    with type ('a, 'phantom) t := ('a, 'phantom) F.t
+     and type 'a elt := 'a F.elt = struct
   include F
 
   let filter xs ~f = filter_map xs ~f:(fun x -> Option.some_if (f x) x)
@@ -34,7 +36,7 @@ end
 
 module Make0 (F : Basic0) : S0 with type t := F.t and type elt := F.elt =
 Make_generic (struct
-  type 'a t = F.t
+  type ('a, 'phantom) t = F.t
 
   type 'a elt = F.elt
 
@@ -43,7 +45,7 @@ end)
 
 module Make1 (F : Basic1) : S1 with type 'a t := 'a F.t =
 Make_generic (struct
-  type 'a t = 'a F.t
+  type ('a, 'phantom) t = 'a F.t
 
   type 'a elt = 'a
 
@@ -51,8 +53,9 @@ Make_generic (struct
 end)
 
 module To_mappable_generic (F : Generic_basic) :
-  Mappable_types.Generic with type 'a t := 'a F.t and type 'a elt := 'a F.elt =
-struct
+  Mappable_types.Generic
+    with type ('a, 'phantom) t := ('a, 'phantom) F.t
+     and type 'a elt := 'a F.elt = struct
   include F
 
   let map xs ~f = filter_map xs ~f:(fun x -> Some (f x))
@@ -61,7 +64,7 @@ end
 module To_mappable0 (F : Basic0) :
   Mappable_types.S0 with type t := F.t and type elt := F.elt =
 To_mappable_generic (struct
-  type 'a t = F.t
+  type ('a, 'phantom) t = F.t
 
   type 'a elt = F.elt
 
@@ -70,7 +73,7 @@ end)
 
 module To_mappable1 (F : Basic1) :
   Mappable_types.S1 with type 'a t := 'a F.t = To_mappable_generic (struct
-  type 'a t = 'a F.t
+  type ('a, 'phantom) t = 'a F.t
 
   type 'a elt = 'a
 

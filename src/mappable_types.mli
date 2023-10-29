@@ -46,7 +46,7 @@ module type Generic = sig
       accordingly below. *)
   include Generic_types.Generic
 
-  val map : 'a t -> f:('a elt -> 'b elt) -> 'b t
+  val map : ('a, 'phantom) t -> f:('a elt -> 'b elt) -> ('b, 'phantom) t
   (** [map c ~f] maps [f] over every [t] in [c]. *)
 end
 
@@ -62,7 +62,7 @@ end
 module type S0 = sig
   include Generic_types.S0
 
-  include Generic with type 'a t := t and type 'a elt := elt
+  include Generic with type ('a, 'phantom) t := t and type 'a elt := elt
 end
 
 (** [S1] is the signature of an arity-1 mappable type.
@@ -72,7 +72,7 @@ module type S1 = sig
   (** [t] is the type of the container to map over. *)
   type 'a t
 
-  include Generic with type 'a t := 'a t and type 'a elt := 'a
+  include Generic with type ('a, 'phantom) t := 'a t and type 'a elt := 'a
 end
 
 (** {2:containers Mappable container signatures}

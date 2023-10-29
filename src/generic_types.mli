@@ -32,7 +32,7 @@
     signatures. *)
 module type Generic = sig
   (** Placeholder for the container type. *)
-  type 'a t
+  type ('a, 'phantom) t
 
   (** Placeholder for the type of elements inside the container. *)
   type 'a elt

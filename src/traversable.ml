@@ -31,7 +31,7 @@ module type Derived_ops_maker = sig
   module On (M : Applicative.S) :
     Basic_generic_on_applicative
       with module M := M
-       and type 'a t := 'a t
+       and type ('a, 'phantom) t := ('a, 'phantom) t
        and type 'a elt := 'a elt
 end
 
@@ -69,13 +69,12 @@ module Derived_ops_monadic_gen (I : Derived_ops_maker) (M : Monad.S) = struct
     SM.run' (ISM.map_m ~f:(fun x -> SM.Monadic.make (fun s -> f s x)) c) init
 
   let fold_m c ~init ~f =
-    M.(
-      fold_map_m ~init c ~f:(fun k x -> f k x >>| fun x' -> (x', x)) >>| fst)
+    M.(fold_map_m ~init c ~f:(fun k x -> f k x >>| fun x' -> (x', x)) >>| fst)
 
   let mapi_m ~f c =
     M.(
       fold_map_m ~init:0 c ~f:(fun k x -> f k x >>| fun x' -> (k + 1, x'))
-      >>| snd)
+      >>| snd )
 end
 
 (** Internal functor for generating several derived non-applicative,
@@ -97,10 +96,10 @@ end
 (** Internal functor for rearranging arity-0 basics to derived-ops makers. *)
 module Basic0_to_derived_ops_maker (I : Basic0) :
   Derived_ops_maker
-    with type 'a t = I.t
+    with type ('a, 'phantom) t = I.t
      and type 'a elt = I.Elt.t
      and module On = I.On = struct
-  type 'a t = I.t
+  type ('a, 'phantom) t = I.t
 
   type 'a elt = I.Elt.t
 
@@ -110,10 +109,10 @@ end
 (** Internal functor for rearranging arity-1 basics to derived-ops makers. *)
 module Basic1_to_derived_ops_maker (I : Basic1) :
   Derived_ops_maker
-    with type 'a t = 'a I.t
+    with type ('a, 'phantom) t = 'a I.t
      and type 'a elt = 'a
      and module On = I.On = struct
-  type 'a t = 'a I.t
+  type ('a, 'phantom) t = 'a I.t
 
   type 'a elt = 'a
 
@@ -123,9 +122,10 @@ end
 (** [Container_gen] is an internal functor used to generate the input to
     [Container] functors in an arity-generic way. *)
 module Container_gen (I : Derived_ops_maker) : sig
-  val fold : 'a I.t -> init:'acc -> f:('acc -> 'a I.elt -> 'acc) -> 'acc
+  val fold :
+    ('a, 'phantom) I.t -> init:'acc -> f:('acc -> 'a I.elt -> 'acc) -> 'acc
 
-  val iter : [> `Custom of 'a I.t -> f:('a I.elt -> unit) -> unit]
+  val iter : [> `Custom of ('a, 'phantom) I.t -> f:('a I.elt -> unit) -> unit]
 
   val length : [> `Define_using_fold]
 end = struct

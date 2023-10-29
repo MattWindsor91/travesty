@@ -65,7 +65,8 @@ module type Basic_generic_on_applicative = sig
   (** [M] is the applicative functor over which we're fold-mapping. *)
   module M : Applicative.S
 
-  val map_m : 'a t -> f:('a elt -> 'b elt M.t) -> 'b t M.t
+  val map_m :
+    ('a, 'phantom) t -> f:('a elt -> 'b elt M.t) -> ('b, 'phantom) t M.t
   (** [map_m c ~f] maps [f] over every [t] in [c], threading through an
       applicative functor.
 
@@ -92,7 +93,7 @@ end
 module type Generic_on_applicative = sig
   include Basic_generic_on_applicative
 
-  val iter_m : 'a t -> f:('a elt -> unit M.t) -> unit M.t
+  val iter_m : ('a, 'phantom) t -> f:('a elt -> unit M.t) -> unit M.t
   (** [iter_m x ~f] iterates the computation [f] over [x], returning the
       final applicative effect. *)
 end
@@ -112,24 +113,30 @@ module type Generic_on_monad = sig
   include Generic_on_applicative with module M := Monad_exts.App(M)
 
   val fold_map_m :
-       'a t
+       ('a, 'phantom) t
     -> f:('acc -> 'a elt -> ('acc * 'b elt) M.t)
     -> init:'acc
-    -> ('acc * 'b t) M.t
+    -> ('acc * ('b, 'phantom) t) M.t
   (** [fold_map_m c ~f ~init] folds [f] applicatively over every [t] in [c],
       threading through an accumulator with initial value [init]. *)
 
   val fold_m :
-    'a t -> init:'acc -> f:('acc -> 'a elt -> 'acc M.t) -> 'acc M.t
+       ('a, 'phantom) t
+    -> init:'acc
+    -> f:('acc -> 'a elt -> 'acc M.t)
+    -> 'acc M.t
   (** [fold_m x ~init ~f] folds the applicative computation [f] over [x],
       starting with initial value [init], and returning the final value
       inside the applicative effect. *)
 
-  val iter_m : 'a t -> f:('a elt -> unit M.t) -> unit M.t
+  val iter_m : ('a, 'phantom) t -> f:('a elt -> unit M.t) -> unit M.t
   (** [iter_m x ~f] iterates the computation [f] over [x], returning the
       final applicative effect. *)
 
-  val mapi_m : f:(int -> 'a elt -> 'b elt M.t) -> 'a t -> 'b t M.t
+  val mapi_m :
+       f:(int -> 'a elt -> 'b elt M.t)
+    -> ('a, 'phantom) t
+    -> ('b, 'phantom) t M.t
   (** [mapi_m ~f x] behaves as [map_m], but also supplies [f] with the index
       of the element. This index should match the actual position of the
       element in the container [x]. *)
@@ -143,7 +150,9 @@ module type Basic0_on_applicative = sig
   include Generic_types.S0
 
   include
-    Basic_generic_on_applicative with type 'a t := t and type 'a elt := elt
+    Basic_generic_on_applicative
+      with type ('a, 'phantom) t := t
+       and type 'a elt := elt
 end
 
 (** [Basic1_on_applicative] is the inner signature of a traversal over
@@ -153,7 +162,9 @@ module type Basic1_on_applicative = sig
   type 'a t
 
   include
-    Basic_generic_on_applicative with type 'a t := 'a t and type 'a elt := 'a
+    Basic_generic_on_applicative
+      with type ('a, 'phantom) t := 'a t
+       and type 'a elt := 'a
 end
 
 (** {4:oms Expanded signatures} *)
@@ -163,7 +174,10 @@ end
 module type S1_on_applicative = sig
   type 'a t
 
-  include Generic_on_applicative with type 'a t := 'a t and type 'a elt := 'a
+  include
+    Generic_on_applicative
+      with type ('a, 'phantom) t := 'a t
+       and type 'a elt := 'a
 
   val sequence_m : 'a M.t t -> 'a t M.t
   (** [sequence_m x] lifts a container of applicatives [x] to an applicative
@@ -176,7 +190,8 @@ end
 module type S1_on_monad = sig
   type 'a t
 
-  include Generic_on_monad with type 'a t := 'a t and type 'a elt := 'a
+  include
+    Generic_on_monad with type ('a, 'phantom) t := 'a t and type 'a elt := 'a
 
   val sequence_m : 'a M.t t -> 'a t M.t
   (** [sequence_m x] lifts a container of applicatives [x] to an applicative
@@ -259,7 +274,7 @@ module type Generic = sig
   (** [On] implements traversal operators for a given applicative [M]. *)
   module On (M : Applicative.S) :
     Generic_on_applicative
-      with type 'a t := 'a t
+      with type ('a, 'phantom) t := ('a, 'phantom) t
        and type 'a elt := 'a elt
        and module M := M
 
@@ -268,30 +283,39 @@ module type Generic = sig
       operators available only for monads. *)
   module On_monad (M : Monad.S) :
     Generic_on_monad
-      with type 'a t := 'a t
+      with type ('a, 'phantom) t := ('a, 'phantom) t
        and type 'a elt := 'a elt
        and module M := M
 
   (** We can do generic container operations. *)
-  include Container.Generic with type 'a t := 'a t and type 'a elt := 'a elt
+  include
+    Container.Generic
+      with type ('a, 'phantom) t := ('a, 'phantom) t
+       and type 'a elt := 'a elt
 
   (** We can do non-applicative mapping operations. *)
   include
-    Mappable_types.Generic with type 'a t := 'a t and type 'a elt := 'a elt
+    Mappable_types.Generic
+      with type ('a, 'phantom) t := ('a, 'phantom) t
+       and type 'a elt := 'a elt
 
   val fold_map :
-    'a t -> f:('acc -> 'a elt -> 'acc * 'b elt) -> init:'acc -> 'acc * 'b t
+       ('a, 'phantom) t
+    -> f:('acc -> 'a elt -> 'acc * 'b elt)
+    -> init:'acc
+    -> 'acc * ('b, 'phantom) t
   (** [fold_map c ~f ~init] folds [f] over every [t] in [c], threading
       through an accumulator with initial value [init]. *)
 
-  val mapi : f:(int -> 'a elt -> 'b elt) -> 'a t -> 'b t
+  val mapi :
+    f:(int -> 'a elt -> 'b elt) -> ('a, 'phantom) t -> ('b, 'phantom) t
   (** [mapi ~f t] maps [f] across [t], passing in an increasing position
       counter. *)
 
   (** [With_errors] specialises [On_applicative] to the error applicative. *)
   module With_errors :
     Generic_on_monad
-      with type 'a t := 'a t
+      with type ('a, 'phantom) t := ('a, 'phantom) t
        and type 'a elt := 'a elt
        and module M := Or_error
 end
@@ -307,7 +331,7 @@ module type S0 = sig
       containers. *)
   include Generic_types.S0 with type elt = Elt.t
 
-  include Generic with type 'a t := t and type 'a elt := Elt.t
+  include Generic with type ('a, 'phantom) t := t and type 'a elt := Elt.t
 
   include Mappable_types.S0_container with type t := t and type elt := Elt.t
 end
@@ -335,7 +359,7 @@ module type S1 = sig
 
   include
     Generic
-      with type 'a t := 'a t
+      with type ('a, 'phantom) t := 'a t
        and type 'a elt := 'a
        and module On := On
        and module On_monad := On_monad

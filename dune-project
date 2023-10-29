@@ -1,4 +1,4 @@
-(lang dune 3.2)
+(lang dune 3.6)
 (name travesty)
 (implicit_transitive_deps false)
 
@@ -19,7 +19,7 @@ contains various helpers for monadic code, such as state transformers and
 extension functions for common monads and containers.  It sits on top of Jane
 Street's Base library and ecosystem.")
  (depends
-  (ocaml (>= 4.14))
-  (ppx_jane (and (>= v0.15.0)))
-  (ppx_expect (and :with-test (>= v0.15.0)))
-  (base (>= v0.15.0))))
+  (ocaml (>= 5.1))
+  (ppx_jane (and (>= v0.16.0)))
+  (ppx_expect (and :with-test (>= v0.16.0)))
+  (base (>= v0.16.3))))

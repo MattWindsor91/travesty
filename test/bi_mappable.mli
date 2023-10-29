@@ -23,7 +23,7 @@
 (** Parametric tests for bi-mappable types *)
 
 (** [Make0] builds a module of test laws for an arity-0 account. *)
-module Make0 (I : sig
+module Make0 (_ : sig
   val here : Lexing.position
   (** Should point to where the law tests were generated. *)
 
@@ -42,4 +42,5 @@ module Make0 (I : sig
       with type t := t
        and type left := Left.t
        and type right := Right.t
-end) : sig end
+end) : sig
+end
